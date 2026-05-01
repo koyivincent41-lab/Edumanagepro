@@ -717,3 +717,97 @@ export const exportPayrollToPDF = async (
 
   doc.save(`Payroll_Summary_${getMonthName(period.month)}_${period.year}.pdf`);
 };
+
+export const exportSubscriptionReceiptToPDF = async (
+  payment: any,
+  school: School | null,
+  systemBranding: any
+) => {
+  const doc = new jsPDF({
+    format: 'a5',
+    orientation: 'landscape',
+    unit: 'mm'
+  });
+  
+  const pageWidth = doc.internal.pageSize.width;
+  let currentY = 15;
+
+  // System Logo
+  if (systemBranding?.logo) {
+    const img = await loadImage(systemBranding.logo);
+    if (img) {
+      doc.addImage(img, 'PNG', 15, 10, 30, 30);
+    }
+  }
+
+  // System Info
+  doc.setTextColor(50, 50, 50);
+  doc.setFontSize(18);
+  doc.setFont('helvetica', 'bold');
+  doc.text(systemBranding?.name || 'Super Admin', 50, 20);
+
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'normal');
+  doc.text(`Email: ${systemBranding?.email || ''}`, 50, 26);
+  doc.text(`Phone: ${systemBranding?.phone || ''}`, 50, 31);
+  if (systemBranding?.website) {
+    doc.text(`Website: ${systemBranding.website}`, 50, 36);
+  }
+
+  // Receipt Details
+  doc.setTextColor(0, 0, 0);
+  doc.setFontSize(14);
+  doc.setFont('helvetica', 'bold');
+  doc.text('PAYMENT RECEIPT', pageWidth - 15, 20, { align: 'right' });
+
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'normal');
+  doc.text(`Receipt Code: ${payment.mpesaConfirmationCode}`, pageWidth - 15, 28, { align: 'right' });
+  doc.text(`Date: ${new Date(payment.submittedAt).toLocaleDateString()}`, pageWidth - 15, 33, { align: 'right' });
+  
+  doc.setDrawColor(200, 200, 200);
+  doc.setLineWidth(0.5);
+  doc.line(15, 45, pageWidth - 15, 45);
+  
+  currentY = 55;
+
+  // Billed To
+  doc.setFontSize(11);
+  doc.setFont('helvetica', 'bold');
+  doc.text('BILLED TO:', 15, currentY);
+  
+  doc.setFontSize(10);
+  doc.setFont('helvetica', 'normal');
+  doc.text(school?.name || 'School Name', 15, currentY + 7);
+  doc.text(school?.email || '', 15, currentY + 13);
+  doc.text(school?.phone || '', 15, currentY + 19);
+
+  // Payment Details
+  doc.setFontSize(11);
+  doc.setFont('helvetica', 'bold');
+  doc.text('PAYMENT DETAILS:', pageWidth / 2, currentY);
+
+  doc.setFontSize(10);
+  doc.setFont('helvetica', 'normal');
+  doc.text(`Package: ${payment.packageId?.toUpperCase() || 'Subscription'}`, pageWidth / 2, currentY + 7);
+  doc.text(`Billing Cycle: ${payment.billingCycle || 'N/A'}`, pageWidth / 2, currentY + 13);
+  doc.text(`Status: ${payment.paymentStatus}`, pageWidth / 2, currentY + 19);
+
+  // Amount Box
+  doc.setFillColor(245, 245, 245);
+  doc.rect(15, currentY + 30, pageWidth - 30, 20, 'F');
+  
+  doc.setFontSize(12);
+  doc.setFont('helvetica', 'bold');
+  doc.text('AMOUNT PAID:', 20, currentY + 43);
+  doc.setTextColor(0, 150, 0);
+  doc.text(`KES ${payment.payableAmountKES?.toLocaleString()}`, pageWidth - 20, currentY + 43, { align: 'right' });
+
+  // Footer
+  doc.setTextColor(150, 150, 150);
+  doc.setFontSize(8);
+  doc.setFont('helvetica', 'italic');
+  doc.text('Thank you for subscribing to our school management platform.', pageWidth / 2, doc.internal.pageSize.height - 15, { align: 'center' });
+
+  doc.save(`Subscription_Receipt_${payment.mpesaConfirmationCode}.pdf`);
+};

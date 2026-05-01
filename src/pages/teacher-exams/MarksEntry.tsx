@@ -411,7 +411,7 @@ const EditLearnerModal = ({ student, onClose, teacher, selectedExamSessionId, se
                               max="100"
                               className="w-full pl-4 pr-10 py-2.5 bg-white border border-gray-200 rounded-xl outline-none focus:ring-4 focus:ring-maroon/5 focus:border-maroon transition-all font-black text-gray-900"
                               placeholder="0"
-                              value={currentMarks === '' ? '' : currentMarks}
+                              value={currentMarks ?? ''}
                               onChange={(e) => handleMarkChange(subject.id, e.target.value)}
                             />
                             <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-black text-gray-300">/ 100</span>

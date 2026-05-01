@@ -3,7 +3,8 @@ import { School, Package, SubscriptionPayment } from '../../types';
 import { db } from '../../firebase';
 import { doc, getDoc, updateDoc, collection, addDoc, setDoc, query, where, getDocs, onSnapshot } from 'firebase/firestore';
 import { toast } from 'sonner';
-import { CreditCard, AlertCircle, CheckCircle2, Loader2, Calendar, Globe, Phone, Mail, X, Info, Clock, Package as PackageIcon, Tag } from 'lucide-react';
+import { CreditCard, AlertCircle, CheckCircle2, Loader2, Calendar, Globe, Phone, Mail, X, Info, Clock, Package as PackageIcon, Tag, Download, Eye } from 'lucide-react';
+import { jsPDF } from 'jspdf';
 import { getExchangeRates, SUPPORTED_CURRENCIES, ExchangeRates } from '../../services/currencyService';
 import { subscriptionService } from '../../services/subscriptionService';
 import { MPESA_CONFIG } from '../../constants/mpesa';
@@ -29,9 +30,18 @@ export default function Billing({ school }: { school: School | null }) {
   const [submissions, setSubmissions] = useState<SubscriptionPayment[]>([]);
   const [selectingPlan, setSelectingPlan] = useState(false);
 
-  const [selectedBillingCycle, setSelectedBillingCycle] = useState<'monthly' | 'six-months' | 'yearly'>((school as any).billingCycle || 'monthly');
+  const [systemBranding, setSystemBranding] = useState<any>(null);
+  const [viewReceipt, setViewReceipt] = useState<any | null>(null);
+  const [selectedBillingCycle, setSelectedBillingCycle] = useState<'monthly' | 'six-months' | 'yearly'>((school as any)?.billingCycle || 'monthly');
 
   useEffect(() => {
+    const fetchSystemBranding = async () => {
+      onSnapshot(doc(db, 'settings', 'system'), (snapshot) => {
+        if (snapshot.exists()) setSystemBranding(snapshot.data());
+      });
+    };
+    fetchSystemBranding();
+
     const fetchPackage = async () => {
       if (!school?.packageId) {
         setLoading(false);
@@ -93,6 +103,86 @@ export default function Billing({ school }: { school: School | null }) {
   }, [school?.packageId, school?.id]);
 
   if (!school) return null;
+
+  const handleDownloadReceipt = (sub: any) => {
+    const doc = new jsPDF();
+    
+    if (systemBranding?.logo) {
+      try {
+        doc.addImage(systemBranding.logo, 'PNG', 20, 20, 30, 30);
+      } catch (e) {
+        console.warn('Could not add logo to PDF', e);
+      }
+    }
+
+    doc.setFontSize(22);
+    doc.setTextColor(0, 0, 0);
+    doc.text(systemBranding?.appName || 'EduManagePro', 20, 60);
+    
+    doc.setFontSize(10);
+    doc.setTextColor(100, 100, 100);
+    doc.text(`Email: ${systemBranding?.supportEmail || systemBranding?.email || 'N/A'}`, 20, 70);
+    doc.text(`Phone: ${systemBranding?.contactPhone || systemBranding?.phone || 'N/A'}`, 20, 75);
+    doc.text(`Website: ${systemBranding?.website || 'N/A'}`, 20, 80);
+
+    doc.setFontSize(18);
+    // Maroon color RGB ~ (136, 17, 36)
+    doc.setTextColor(136, 17, 36); 
+    doc.text('PAYMENT RECEIPT', 130, 40);
+
+    doc.setFontSize(10);
+    doc.setTextColor(100, 100, 100);
+    doc.text(`Receipt No: RCT-${sub.mpesaConfirmationCode}`, 130, 50);
+    doc.text(`Date: ${new Date(sub.submittedAt).toLocaleDateString()}`, 130, 55);
+    doc.text(`Status: ${sub.paymentStatus}`, 130, 60);
+
+    doc.setDrawColor(200, 200, 200);
+    doc.line(20, 90, 190, 90);
+
+    doc.setFontSize(12);
+    doc.setTextColor(0, 0, 0);
+    doc.text('Billed To:', 20, 105);
+    doc.setFontSize(10);
+    doc.setTextColor(100, 100, 100);
+    doc.text(`School: ${school?.name || 'N/A'}`, 20, 115);
+    doc.text(`Email: ${school?.email || 'N/A'}`, 20, 120);
+    doc.text(`Phone: ${school?.phone || 'N/A'}`, 20, 125);
+
+    doc.setFontSize(12);
+    doc.setTextColor(0, 0, 0);
+    doc.text('Payment Information:', 120, 105);
+    doc.setFontSize(10);
+    doc.setTextColor(100, 100, 100);
+    doc.text(`Transaction Code: ${sub.mpesaConfirmationCode}`, 120, 115);
+    doc.text(`Payment Method: M-PESA`, 120, 120);
+
+    doc.line(20, 135, 190, 135);
+
+    doc.setFontSize(10);
+    doc.setTextColor(0, 0, 0);
+    doc.text('Description', 20, 150);
+    doc.text('Amount Paid', 160, 150);
+
+    doc.line(20, 155, 190, 155);
+
+    doc.setTextColor(100, 100, 100);
+    doc.text(`Subscription Payment - ${sub.mpesaConfirmationCode}`, 20, 165);
+    doc.text(`KES ${sub.payableAmountKES.toLocaleString()}`, 160, 165);
+
+    doc.line(20, 175, 190, 175);
+
+    doc.setFontSize(12);
+    doc.setTextColor(0, 0, 0);
+    doc.text('Total Paid:', 120, 190);
+    doc.text(`KES ${sub.payableAmountKES.toLocaleString()}`, 160, 190);
+
+    doc.setFontSize(8);
+    doc.setTextColor(150, 150, 150);
+    doc.text('This is an automatically generated receipt.', 105, 250, { align: 'center' });
+    doc.text('Thank you for your business!', 105, 255, { align: 'center' });
+
+    doc.save(`Receipt_${sub.mpesaConfirmationCode}.pdf`);
+  };
 
   const handleSelectPackage = async (p: Package) => {
     setPkg(p);
@@ -683,22 +773,43 @@ export default function Billing({ school }: { school: School | null }) {
                   <th className="px-4 py-3">Code</th>
                   <th className="px-4 py-3">Amount</th>
                   <th className="px-4 py-3">Status</th>
+                  <th className="px-4 py-3 text-right">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
                 {submissions.map((sub: any) => (
-                  <tr key={sub.id} className="text-sm">
-                    <td className="px-4 py-3 text-gray-600">{new Date(sub.submittedAt).toLocaleDateString()}</td>
-                    <td className="px-4 py-3 font-mono font-bold text-maroon">{sub.mpesaConfirmationCode}</td>
-                    <td className="px-4 py-3 font-bold">KES {sub.payableAmountKES.toLocaleString()}</td>
-                    <td className="px-4 py-3">
-                      <span className={`px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-widest ${
+                  <tr key={sub.id} className="text-sm border-b border-gray-50 last:border-0 hover:bg-gray-50/50 transition-colors">
+                    <td className="px-4 py-4 text-gray-600">{new Date(sub.submittedAt).toLocaleDateString()}</td>
+                    <td className="px-4 py-4 font-mono font-bold text-maroon">{sub.mpesaConfirmationCode}</td>
+                    <td className="px-4 py-4 font-bold">KES {sub.payableAmountKES.toLocaleString()}</td>
+                    <td className="px-4 py-4">
+                      <span className={`px-2 py-1 rounded text-[10px] font-black uppercase tracking-widest ${
                         sub.paymentStatus === 'Approved' ? 'bg-green-100 text-green-600' :
                         sub.paymentStatus === 'Rejected' ? 'bg-red-100 text-red-600' :
                         'bg-blue-100 text-blue-600'
                       }`}>
                         {sub.paymentStatus}
                       </span>
+                    </td>
+                    <td className="px-4 py-4 text-right">
+                      {sub.paymentStatus === 'Approved' && (
+                        <div className="flex items-center justify-end gap-2">
+                          <button
+                            onClick={() => setViewReceipt(sub)}
+                            className="p-2 bg-gray-100 text-gray-600 hover:bg-gray-200 rounded-lg transition-colors"
+                            title="View Receipt"
+                          >
+                            <Eye className="h-4 w-4" />
+                          </button>
+                          <button
+                            onClick={() => handleDownloadReceipt(sub)}
+                            className="p-2 bg-maroon/10 text-maroon hover:bg-maroon/20 rounded-lg transition-colors"
+                            title="Download Receipt"
+                          >
+                            <Download className="h-4 w-4" />
+                          </button>
+                        </div>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -712,6 +823,104 @@ export default function Billing({ school }: { school: School | null }) {
         )}
       </div>
     </>
+    )}
+
+    {viewReceipt && (
+      <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200 cursor-auto">
+        <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
+          <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+            <div>
+              <h2 className="text-xl font-black text-gray-900">Payment Receipt</h2>
+              <p className="text-xs text-gray-500 uppercase tracking-widest font-bold mt-1">RCT-{viewReceipt.mpesaConfirmationCode}</p>
+            </div>
+            <div className="flex items-center gap-3">
+              <button 
+                onClick={() => handleDownloadReceipt(viewReceipt)}
+                className="flex items-center gap-2 px-4 py-2 bg-maroon/10 text-maroon hover:bg-maroon/20 rounded-xl transition-all font-bold text-xs uppercase tracking-widest"
+              >
+                <Download className="h-4 w-4" />
+                Download PDF
+              </button>
+              <button 
+                onClick={() => setViewReceipt(null)}
+                className="p-2 hover:bg-gray-200 rounded-xl text-gray-400 hover:text-gray-900 transition-colors"
+              >
+                <X className="h-6 w-6" />
+              </button>
+            </div>
+          </div>
+          
+          <div className="p-10 overflow-y-auto">
+            {/* Modal Receipt Content */}
+            <div className="border border-gray-100 rounded-2xl p-8 bg-white shadow-sm">
+              <div className="flex justify-between items-start mb-8 pb-8 border-b border-gray-100">
+                <div className="flex items-center gap-4">
+                  {systemBranding?.logo ? (
+                    <img src={systemBranding.logo} alt="Logo" className="h-16 w-16 object-contain rounded-xl" />
+                  ) : (
+                    <div className="h-16 w-16 bg-maroon/10 text-maroon flex items-center justify-center rounded-xl">
+                      <PackageIcon className="h-8 w-8" />
+                    </div>
+                  )}
+                  <div>
+                    <h3 className="text-xl font-black text-gray-900">{systemBranding?.appName || 'EduManagePro'}</h3>
+                    <p className="text-sm text-gray-500">{systemBranding?.supportEmail || systemBranding?.email || ''}</p>
+                    <p className="text-sm text-gray-500">{systemBranding?.contactPhone || systemBranding?.phone || ''}</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <h3 className="text-2xl font-black text-maroon uppercase tracking-tight">Receipt</h3>
+                  <p className="text-sm font-bold text-gray-900 mt-2">Date: {new Date(viewReceipt.submittedAt).toLocaleDateString()}</p>
+                  <p className="text-sm font-bold text-green-600 uppercase tracking-widest">Paid</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-8 mb-8 pb-8 border-b border-gray-100">
+                <div>
+                  <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Billed To</h4>
+                  <p className="text-sm font-bold text-gray-900">{school?.name}</p>
+                  <p className="text-sm text-gray-500">{school?.email}</p>
+                  <p className="text-sm text-gray-500">{school?.phone}</p>
+                </div>
+                <div>
+                  <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Payment Info</h4>
+                  <p className="text-sm font-bold text-gray-900">Method: M-PESA</p>
+                  <p className="text-sm text-gray-500">Transaction: <span className="font-mono text-maroon">{viewReceipt.mpesaConfirmationCode}</span></p>
+                  <p className="text-sm text-gray-500">Package ID: {school?.packageId}</p>
+                </div>
+              </div>
+
+              <table className="w-full text-left mb-8">
+                <thead>
+                  <tr className="border-b border-gray-100">
+                    <th className="py-3 text-[10px] font-black text-gray-400 uppercase tracking-widest">Description</th>
+                    <th className="py-3 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-b border-gray-50">
+                    <td className="py-4 text-sm font-bold text-gray-900">Subscription Payment - {viewReceipt.mpesaConfirmationCode}</td>
+                    <td className="py-4 text-sm font-black text-gray-900 text-right">KES {viewReceipt.payableAmountKES.toLocaleString()}</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div className="flex justify-end pt-4">
+                <div className="w-64">
+                  <div className="flex justify-between py-2 items-center">
+                    <span className="text-sm font-bold text-gray-500">Total Paid</span>
+                    <span className="text-xl font-black text-maroon">KES {viewReceipt.payableAmountKES.toLocaleString()}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-12 text-center">
+                <p className="text-xs text-gray-400 italic">Thank you for your business. This is an automatically generated receipt.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     )}
   </div>
 );
