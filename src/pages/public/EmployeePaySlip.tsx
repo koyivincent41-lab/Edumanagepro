@@ -45,17 +45,21 @@ export default function EmployeePaySlip() {
       const periodsSnap = await getDocs(
         query(
           collection(db, 'schools', empData.schoolId, 'payroll_periods'),
-          where('status', '==', 'paid'),
-          orderBy('year', 'desc'),
-          orderBy('month', 'desc')
+          where('status', 'in', ['approved', 'paid'])
         )
       );
       
       const periodsData = periodsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      // Sort manually to avoid composite index requirement
+      periodsData.sort((a: any, b: any) => {
+        if (b.year !== a.year) return b.year - a.year;
+        return b.month - a.month;
+      });
+
       setPeriods(periodsData);
 
       if (periodsData.length === 0) {
-        toast.error('No paid payslips found for your account.');
+        toast.error('No approved or paid payslips found for your school.');
         setLoading(false);
         return;
       }
@@ -151,7 +155,7 @@ export default function EmployeePaySlip() {
                       <input
                         type="text"
                         value={staffNumber}
-                        onChange={(e) => setStaffNumber(e.target.value.toUpperCase())}
+                        onChange={(e) => setStaffNumber(e.target.value.toUpperCase().trim())}
                         className="w-full pl-12 pr-4 py-4 rounded-2xl border border-gray-100 bg-gray-50 focus:bg-white focus:border-maroon focus:ring-4 focus:ring-maroon/5 outline-none transition-all font-medium text-gray-900 uppercase"
                         placeholder="e.g. 12AB"
                         required

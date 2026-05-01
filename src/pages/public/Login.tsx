@@ -115,14 +115,20 @@ export default function Login({ profile }: { profile: UserProfile | null }) {
       navigate('/dashboard');
     } catch (error: any) {
       console.error('Login error:', error);
-      if (error.code === 'auth/operation-not-allowed') {
+      if (error.code === 'auth/operation-not-allowed' || error.code === 'auth/admin-restricted-operation') {
         const pId = auth.app.options.projectId;
         const consoleLink = `https://console.firebase.google.com/project/${pId}/authentication/providers`;
         toast.error(
           <div className="flex flex-col gap-1">
-            <p className="font-black text-[10px] uppercase tracking-widest text-red-500">Auth Method Disabled</p>
-            <p className="text-[10px] font-medium">Email/Password is not enabled for project: <span className="font-mono text-maroon font-bold select-all">{pId}</span></p>
-            <a href={consoleLink} target="_blank" rel="noreferrer" className="text-[10px] font-bold text-blue-500 hover:underline mt-1">Open Firebase Console &rarr;</a>
+            <p className="font-black text-[10px] uppercase tracking-widest text-red-500">Auth Method Restricted</p>
+            <p className="text-[10px] font-medium leading-relaxed">
+              Email/Password is either disabled or restricted for project: <span className="font-mono text-maroon font-bold select-all">{pId}</span>
+              <br />
+              1. Enable "Email/Password" in Firebase Console.
+              <br />
+              2. Add <span className="font-mono font-bold">{window.location.hostname}</span> to "Authorized Domains" in Auth settings.
+            </p>
+            <a href={consoleLink} target="_blank" rel="noreferrer" className="text-[10px] font-bold text-blue-500 hover:underline mt-1">Open Firebase Settings &rarr;</a>
           </div>,
           { duration: 25000 }
         );
@@ -145,14 +151,20 @@ export default function Login({ profile }: { profile: UserProfile | null }) {
       navigate('/dashboard');
     } catch (error: any) {
       console.error('Login error:', error);
-      if (error.code === 'auth/operation-not-allowed') {
+      if (error.code === 'auth/operation-not-allowed' || error.code === 'auth/admin-restricted-operation') {
         const pId = auth.app.options.projectId;
         const consoleLink = `https://console.firebase.google.com/project/${pId}/authentication/providers`;
         toast.error(
           <div className="flex flex-col gap-1">
-            <p className="font-black text-[10px] uppercase tracking-widest text-red-500">Google Auth Disabled</p>
-            <p className="text-[10px] font-medium">Google Login is not enabled for project: <span className="font-mono text-maroon font-bold select-all">{pId}</span></p>
-            <a href={consoleLink} target="_blank" rel="noreferrer" className="text-[10px] font-bold text-blue-500 hover:underline mt-1">Open Firebase Console &rarr;</a>
+            <p className="font-black text-[10px] uppercase tracking-widest text-red-500">Google Auth Restricted</p>
+            <p className="text-[10px] font-medium leading-relaxed">
+              Google Login is either disabled or restricted for project: <span className="font-mono text-maroon font-bold select-all">{pId}</span>
+              <br />
+              1. Enable "Google" in Firebase Console.
+              <br />
+              2. Add <span className="font-mono font-bold">{window.location.hostname}</span> to "Authorized Domains" in Auth settings.
+            </p>
+            <a href={consoleLink} target="_blank" rel="noreferrer" className="text-[10px] font-bold text-blue-500 hover:underline mt-1">Open Firebase Settings &rarr;</a>
           </div>,
           { duration: 25000 }
         );
