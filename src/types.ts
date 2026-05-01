@@ -104,6 +104,7 @@ export interface School {
   invoiceFooter?: string;
   receiptFooter?: string;
   attendanceSettings?: AttendanceSettings;
+  totalPaid?: number;
 }
 
 export interface SubscriptionHistory {

@@ -44,6 +44,7 @@ export default function Reports() {
   const [revenueData, setRevenueData] = useState<any[]>([]);
   const [packageDistribution, setPackageDistribution] = useState<any[]>([]);
   const [recentActivity, setRecentActivity] = useState<any[]>([]);
+  const [packages, setPackages] = useState<any[]>([]);
   const [rates, setRates] = useState<any>(null);
 
   useEffect(() => {
@@ -61,6 +62,7 @@ export default function Reports() {
         // Fetch packages
         const packagesSnap = await getDocs(collection(db, 'packages'));
         const packages = packagesSnap.docs.map(d => ({ id: d.id, ...d.data() as any }));
+        setPackages(packages);
 
         // Fetch schools
         const schoolsSnap = await getDocs(collection(db, 'schools'));
@@ -327,13 +329,25 @@ export default function Reports() {
                   <td className="px-8 py-4 text-sm font-black text-gray-900">
                     {systemBranding?.currency || 'UGX'}{" "}
                     {(() => {
-                      const amount = activity.totalPaid || 0;
-                      const schoolCurrency = activity.currency || 'UGX';
+                      const pkg = packages.find((p: any) => p.id === activity.packageId);
+                      if (!pkg) return '0';
+                      
+                      const billingCycle = activity.billingCycle || 'monthly';
+                      let priceUSD = 0;
+                      if (billingCycle === 'yearly') {
+                        priceUSD = (pkg.monthlyPrice * 12) * 0.7; // 30% discount
+                      } else if (billingCycle === 'six-months') {
+                        priceUSD = pkg.monthlyPrice * 6;
+                      } else {
+                        priceUSD = pkg.monthlyPrice;
+                      }
+
+                      // Convert USD price to system currency
                       const targetCurrency = systemBranding?.currency || 'UGX';
-                      if (schoolCurrency === targetCurrency || !rates) return amount.toLocaleString();
-                      const sourceRate = rates[schoolCurrency] || 1;
+                      if (targetCurrency === 'USD' || !rates) return Math.round(priceUSD).toLocaleString();
+                      
                       const targetRate = rates[targetCurrency] || 1;
-                      return ((amount / sourceRate) * targetRate).toLocaleString(undefined, { maximumFractionDigits: 0 });
+                      return Math.round(priceUSD * targetRate).toLocaleString();
                     })()}
                   </td>
                   <td className="px-8 py-4 text-sm text-gray-500">{new Date(activity.createdAt).toLocaleDateString()}</td>
