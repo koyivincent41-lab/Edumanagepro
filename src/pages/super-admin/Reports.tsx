@@ -43,10 +43,11 @@ export default function Reports() {
   const [systemBranding, setSystemBranding] = useState<any>(null);
   const [revenueData, setRevenueData] = useState<any[]>([]);
   const [packageDistribution, setPackageDistribution] = useState<any[]>([]);
+  const [recentActivity, setRecentActivity] = useState<any[]>([]);
   const [rates, setRates] = useState<any>(null);
 
   useEffect(() => {
-    const fetchData = async () => {
+      const fetchData = async () => {
       try {
         // Fetch system branding & settings
         const brandingSnap = await getDoc(doc(db, 'settings', 'system'));
@@ -57,26 +58,44 @@ export default function Reports() {
         const exchangeRates = await getExchangeRates();
         setRates(exchangeRates);
 
+        // Fetch packages
+        const packagesSnap = await getDocs(collection(db, 'packages'));
+        const packages = packagesSnap.docs.map(d => ({ id: d.id, ...d.data() as any }));
+
         // Fetch schools
         const schoolsSnap = await getDocs(collection(db, 'schools'));
-        const schools = schoolsSnap.docs.map(d => d.data());
+        const schools = schoolsSnap.docs.map(d => d.data() as any);
         
         const activeSubs = schools.filter(s => s.subscriptionStatus === 'active').length;
         
-        // Calculate total revenue with conversion
-        const totalRev = schools.reduce((acc, s) => {
-          const amount = s.totalPaid || 0;
-          const schoolCurrency = s.currency || 'UGX';
-          const targetCurrency = brandingData?.currency || 'UGX';
-          
-          if (schoolCurrency === targetCurrency || !exchangeRates) return acc + amount;
-          
-          const sourceRate = exchangeRates[schoolCurrency] || 1;
-          const targetRate = exchangeRates[targetCurrency] || 1;
-          const convertedAmount = (amount / sourceRate) * targetRate;
-          
-          return acc + convertedAmount;
+        // Calculate total revenue from active subscriptions based on package prices in USD
+        const totalRevenueUSD = schools.reduce((sum: number, s: any) => {
+          if (s.subscriptionStatus === 'active' && s.packageId) {
+            const pkg = packages.find((p: any) => p.id === s.packageId);
+            if (pkg) {
+              const billingCycle = s.billingCycle || 'monthly';
+              let priceUSD = 0;
+              if (billingCycle === 'yearly') {
+                priceUSD = (pkg.monthlyPrice * 12) * 0.7; // 30% discount
+              } else if (billingCycle === 'six-months') {
+                priceUSD = pkg.monthlyPrice * 6;
+              } else {
+                priceUSD = pkg.monthlyPrice;
+              }
+              return sum + priceUSD;
+            }
+          }
+          return sum;
         }, 0);
+
+        let totalRev = totalRevenueUSD;
+        if (exchangeRates && brandingData) {
+          const targetCurrency = brandingData.currency || 'UGX';
+          if (targetCurrency !== 'USD') {
+            const targetRate = exchangeRates[targetCurrency] || 1;
+            totalRev = totalRevenueUSD * targetRate;
+          }
+        }
         
         const now = new Date();
         const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -107,6 +126,15 @@ export default function Reports() {
           pkgCounts[s.packageId] = (pkgCounts[s.packageId] || 0) + 1;
         });
         setPackageDistribution(Object.entries(pkgCounts).map(([name, value]) => ({ name, value })));
+
+        // Recent Subscription Activities based on schools list
+        // Filter schools that have some active status or a package
+        const recentSchools = [...schools]
+          .filter(s => s.subscriptionStatus === 'active' || s.subscriptionStatus === 'trial')
+          .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+          .slice(0, 5);
+          
+        setRecentActivity(recentSchools);
 
         setLoading(false);
       } catch (error) {
@@ -285,24 +313,35 @@ export default function Reports() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {[1, 2, 3, 4, 5].map((_, i) => (
-                <tr key={i} className="hover:bg-gray-50/50 transition-colors">
+              {recentActivity.map((activity) => (
+                <tr key={activity.id || activity.name} className="hover:bg-gray-50/50 transition-colors">
                   <td className="px-8 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center text-primary font-bold text-xs">
-                        S{i}
+                      <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center text-primary font-bold text-xs uppercase">
+                        {activity.name?.charAt(0) || 'S'}
                       </div>
-                      <span className="text-sm font-bold text-gray-900">Sample School {i + 1}</span>
+                      <span className="text-sm font-bold text-gray-900">{activity.name}</span>
                     </div>
                   </td>
-                  <td className="px-8 py-4 text-sm text-gray-600">Subscription Renewal</td>
-                  <td className="px-8 py-4 text-sm font-black text-gray-900">{systemBranding?.currency || 'UGX'} {systemBranding?.currency === 'USD' ? '400' : '1,500,000'}</td>
-                  <td className="px-8 py-4 text-sm text-gray-500">Oct {10 + i}, 2024</td>
+                  <td className="px-8 py-4 text-sm text-gray-600 capitalize">Subscription - {activity.packageId || 'N/A'}</td>
+                  <td className="px-8 py-4 text-sm font-black text-gray-900">{activity.currency || systemBranding?.currency || 'UGX'} {(activity.totalPaid || 0).toLocaleString()}</td>
+                  <td className="px-8 py-4 text-sm text-gray-500">{new Date(activity.createdAt).toLocaleDateString()}</td>
                   <td className="px-8 py-4">
-                    <span className="px-3 py-1 bg-green-100 text-green-700 text-[10px] font-black rounded-full uppercase tracking-widest">Completed</span>
+                    <span className={`px-3 py-1 text-[10px] font-black rounded-full uppercase tracking-widest ${
+                      activity.subscriptionStatus === 'active' ? 'bg-green-100 text-green-700' :
+                      activity.subscriptionStatus === 'trial' ? 'bg-blue-100 text-blue-700' :
+                      'bg-orange-100 text-orange-700'
+                    }`}>
+                      {activity.subscriptionStatus || 'Unknown'}
+                    </span>
                   </td>
                 </tr>
               ))}
+              {recentActivity.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="px-8 py-8 text-center text-gray-500 font-medium">No recent subscriptions found.</td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

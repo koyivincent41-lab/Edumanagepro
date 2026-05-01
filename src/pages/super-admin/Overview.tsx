@@ -32,69 +32,92 @@ export default function Overview() {
   const [rates, setRates] = useState<any>(null);
 
   useEffect(() => {
-    // Fetch system settings
-    getDoc(doc(db, 'settings', 'system')).then(snap => {
-      if (snap.exists()) setSystemSettings(snap.data());
-    });
+    let unsubscribeSchools: () => void;
+    let unsubscribeHistory: () => void;
 
-    // Fetch exchange rates
-    getExchangeRates().then(setRates);
+    const initializeData = async () => {
+      // Fetch packages
+      const pkgSnap = await getDocs(collection(db, 'packages'));
+      const packages = pkgSnap.docs.map(doc => ({ id: doc.id, ...doc.data() as any }));
 
-    const unsubscribeSchools = onSnapshot(collection(db, 'schools'), (snapshot) => {
-      const schools = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
-      
-      // Calculate total revenue with conversion if needed
-      // Note: We'll use the schools' totalPaid field and convert to system currency
-      const calculateRevenue = () => {
-        if (!rates || !systemSettings) return schools.reduce((sum, s) => sum + (s.totalPaid || 0), 0);
-        
-        return schools.reduce((sum, s) => {
-          const amount = s.totalPaid || 0;
-          const schoolCurrency = s.currency || 'UGX';
-          const targetCurrency = systemSettings.currency || 'UGX';
-          
-          if (schoolCurrency === targetCurrency) return sum + amount;
-          
-          const sourceRate = rates[schoolCurrency] || 1;
-          const targetRate = rates[targetCurrency] || 1;
-          const convertedAmount = (amount / sourceRate) * targetRate;
-          
-          return sum + convertedAmount;
-        }, 0);
-      };
-
-      setStats(prev => ({
-        ...prev,
-        totalSchools: schools.length,
-        activeSchools: schools.filter(s => s.status === 'active').length,
-        inactiveSchools: schools.filter(s => s.status === 'inactive').length,
-        suspendedSchools: schools.filter(s => s.status === 'suspended').length,
-        trialSchools: schools.filter(s => s.subscriptionStatus === 'trial').length,
-        expiredSubscriptions: schools.filter(s => s.subscriptionStatus === 'expired').length,
-        activeSubscriptions: schools.filter(s => s.subscriptionStatus === 'active').length,
-        totalRevenue: calculateRevenue(),
-        recentSignups: schools.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 5),
-      }));
-      setLoading(false);
-    }, (error) => {
-      console.error("Schools listener error:", error);
-      setLoading(false);
-    });
-
-    const unsubscribeHistory = onSnapshot(
-      query(collection(db, 'subscription_history'), where('action', 'in', ['upgrade', 'downgrade', 'assign']), orderBy('createdAt', 'desc')),
-      (snapshot) => {
-        const changes = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any)).slice(0, 5);
-        setStats(prev => ({ ...prev, recentPlanChanges: changes }));
-      },
-      (error) => {
-        console.error("Subscription history listener error:", error);
+      // Fetch system settings
+      const settingsSnap = await getDoc(doc(db, 'settings', 'system'));
+      if (settingsSnap.exists()) {
+        setSystemSettings(settingsSnap.data());
       }
-    );
+
+      // Fetch exchange rates
+      const fetchedRates = await getExchangeRates();
+      setRates(fetchedRates);
+
+      unsubscribeSchools = onSnapshot(collection(db, 'schools'), (snapshot) => {
+        const schools = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
+        
+        const calculateRevenue = () => {
+          // Calculate total revenue from active subscriptions based on package prices in USD
+          const totalRevenueUSD = schools.reduce((sum: number, s: any) => {
+            if (s.subscriptionStatus === 'active' && s.packageId) {
+              const pkg = packages.find((p: any) => p.id === s.packageId);
+              if (pkg) {
+                const billingCycle = s.billingCycle || 'monthly';
+                let priceUSD = 0;
+                if (billingCycle === 'yearly') {
+                  priceUSD = (pkg.monthlyPrice * 12) * 0.7; // 30% discount
+                } else if (billingCycle === 'six-months') {
+                  priceUSD = pkg.monthlyPrice * 6;
+                } else {
+                  priceUSD = pkg.monthlyPrice;
+                }
+                return sum + priceUSD;
+              }
+            }
+            return sum;
+          }, 0);
+
+          if (!fetchedRates || !settingsSnap.exists()) return totalRevenueUSD;
+          const sysSettings = settingsSnap.data();
+          const targetCurrency = sysSettings.currency || 'UGX';
+          if (targetCurrency === 'USD') return totalRevenueUSD;
+          
+          const targetRate = fetchedRates[targetCurrency] || 1;
+          return totalRevenueUSD * targetRate;
+        };
+
+        setStats(prev => ({
+          ...prev,
+          totalSchools: schools.length,
+          activeSchools: schools.filter((s: any) => s.status === 'active').length,
+          inactiveSchools: schools.filter((s: any) => s.status === 'inactive').length,
+          suspendedSchools: schools.filter((s: any) => s.status === 'suspended').length,
+          trialSchools: schools.filter((s: any) => s.subscriptionStatus === 'trial').length,
+          expiredSubscriptions: schools.filter((s: any) => s.subscriptionStatus === 'expired').length,
+          activeSubscriptions: schools.filter((s: any) => s.subscriptionStatus === 'active').length,
+          totalRevenue: calculateRevenue(),
+          recentSignups: schools.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 5),
+        }));
+        setLoading(false);
+      }, (error) => {
+        console.error("Schools listener error:", error);
+        setLoading(false);
+      });
+
+      unsubscribeHistory = onSnapshot(
+        query(collection(db, 'subscription_history'), where('action', 'in', ['upgrade', 'downgrade', 'assign']), orderBy('createdAt', 'desc')),
+        (snapshot) => {
+          const changes = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any)).slice(0, 5);
+          setStats(prev => ({ ...prev, recentPlanChanges: changes }));
+        },
+        (error) => {
+          console.error("Subscription history listener error:", error);
+        }
+      );
+    };
+
+    initializeData();
 
     return () => {
-      unsubscribeSchools();
-      unsubscribeHistory();
+      if (unsubscribeSchools) unsubscribeSchools();
+      if (unsubscribeHistory) unsubscribeHistory();
     };
   }, []);
 
