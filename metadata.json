@@ -1,0 +1,5 @@
+{
+  "name": "EduManagePro",
+  "description": "A comprehensive multi-tenant SaaS school management and fee invoicing platform.",
+  "requestFramePermissions": ["geolocation", "camera"]
+}

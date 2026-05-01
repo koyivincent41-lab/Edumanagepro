@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: var(--school-primary, #800000);
+  --color-secondary: var(--school-secondary, #800000);
+  --color-primary-50: color-mix(in srgb, var(--school-primary, #800000) 5%, white);
+  --color-primary-100: color-mix(in srgb, var(--school-primary, #800000) 10%, white);
+  --color-primary-200: color-mix(in srgb, var(--school-primary, #800000) 20%, white);
+  --color-primary-300: color-mix(in srgb, var(--school-primary, #800000) 30%, white);
+  --color-primary-400: color-mix(in srgb, var(--school-primary, #800000) 40%, white);
+  --color-primary-500: color-mix(in srgb, var(--school-primary, #800000) 50%, white);
+  --color-primary-600: color-mix(in srgb, var(--school-primary, #800000) 60%, white);
+  --color-primary-700: color-mix(in srgb, var(--school-primary, #800000) 70%, white);
+  --color-primary-800: color-mix(in srgb, var(--school-primary, #800000) 80%, white);
+  --color-primary-900: color-mix(in srgb, var(--school-primary, #800000) 90%, white);
+  
+  --color-maroon: #800000;
+  --color-maroon-50: #fff1f1;
+  --color-maroon-100: #ffe1e1;
+  --color-maroon-200: #ffc7c7;
+  --color-maroon-300: #ffa0a0;
+  --color-maroon-400: #ff6a6a;
+  --color-maroon-500: #ee3d3d;
+  --color-maroon-600: #d62222;
+  --color-maroon-700: #b31818;
+  --color-maroon-800: #941717;
+  --color-maroon-900: #800000;
+}
+
+@layer base {
+  .dark {
+    --color-background: #0a0a0a;
+    --color-foreground: #ededed;
+  }
+}
+
+@utility bg-school-gradient {
+  background: var(--school-gradient, var(--school-primary, #800000));
+}
+
+@utility bg-striped-primary {
+  background-image: repeating-linear-gradient(
+    45deg,
+    var(--school-primary, #800000),
+    var(--school-primary, #800000) 10px,
+    color-mix(in srgb, var(--school-primary, #800000) 80%, black) 10px,
+    color-mix(in srgb, var(--school-primary, #800000) 80%, black) 20px
+  );
+}
+
+@utility text-shadow-sm {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@utility animate-scroll {
+  animation: scroll 30s linear infinite;
+  width: max-content;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #printable-document, #printable-document * {
+    visibility: visible;
+  }
+  #printable-document {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 2rem;
+    border: none;
+    box-shadow: none;
+  }
+  .no-print {
+    display: none !important;
+  }
+}
