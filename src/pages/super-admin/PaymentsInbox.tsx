@@ -106,6 +106,7 @@ export default function PaymentsInbox() {
           subscriptionExpiry: newExpiry.toISOString(),
           packageId: payment.selectedPackageId,
           billingCycle: payment.billingCycle,
+          totalPaid: (schoolData.totalPaid || 0) + payment.payableAmountKES,
           updatedAt: new Date().toISOString()
         });
 

@@ -324,7 +324,18 @@ export default function Reports() {
                     </div>
                   </td>
                   <td className="px-8 py-4 text-sm text-gray-600 capitalize">Subscription - {activity.packageId || 'N/A'}</td>
-                  <td className="px-8 py-4 text-sm font-black text-gray-900">{activity.currency || systemBranding?.currency || 'UGX'} {(activity.totalPaid || 0).toLocaleString()}</td>
+                  <td className="px-8 py-4 text-sm font-black text-gray-900">
+                    {systemBranding?.currency || 'UGX'}{" "}
+                    {(() => {
+                      const amount = activity.totalPaid || 0;
+                      const schoolCurrency = activity.currency || 'UGX';
+                      const targetCurrency = systemBranding?.currency || 'UGX';
+                      if (schoolCurrency === targetCurrency || !rates) return amount.toLocaleString();
+                      const sourceRate = rates[schoolCurrency] || 1;
+                      const targetRate = rates[targetCurrency] || 1;
+                      return ((amount / sourceRate) * targetRate).toLocaleString(undefined, { maximumFractionDigits: 0 });
+                    })()}
+                  </td>
                   <td className="px-8 py-4 text-sm text-gray-500">{new Date(activity.createdAt).toLocaleDateString()}</td>
                   <td className="px-8 py-4">
                     <span className={`px-3 py-1 text-[10px] font-black rounded-full uppercase tracking-widest ${
