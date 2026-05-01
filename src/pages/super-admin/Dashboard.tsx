@@ -65,7 +65,7 @@ export default function SuperAdminDashboard({ profile }: SuperAdminDashboardProp
     });
 
     const unsubscribeInbox = onSnapshot(
-      query(collection(db, 'school_messages'), where('status', '==', 'unread')),
+      query(collection(db, 'system_emails'), where('type', '==', 'incoming'), where('read', '==', false)),
       (snapshot) => setUnreadCount(snapshot.size)
     );
 

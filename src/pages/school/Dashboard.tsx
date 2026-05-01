@@ -105,7 +105,7 @@ export default function SchoolDashboard({ profile }: { profile: UserProfile }) {
   useEffect(() => {
     if (!profile.schoolId) return;
     const unsubscribe = onSnapshot(
-      query(collection(db, 'school_messages'), where('status', '==', 'unread'), where('schoolId', '==', profile.schoolId)),
+      query(collection(db, 'schools', profile.schoolId, 'inbox'), where('status', '==', 'unread')),
       (snapshot) => setUnreadCount(snapshot.size)
     );
     return () => unsubscribe();

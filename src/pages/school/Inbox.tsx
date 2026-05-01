@@ -299,13 +299,22 @@ export default function Inbox({ school, defaultTab = 'inbox' }: { school: School
     <div className="space-y-6">
       <div className="bg-school-gradient p-6 rounded-[2.5rem] shadow-lg shadow-maroon/20">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-black text-white">School {activeTab === 'inbox' ? 'Inbox' : 'Outbox'}</h1>
-            <p className="text-sm text-white/80 font-medium tracking-wide">
-              {activeTab === 'inbox' 
-                ? 'System notifications, invoices, and payment receipts.' 
-                : 'Messages sent to the system administration.'}
-            </p>
+          <div className="flex items-center gap-4">
+            <div>
+              <div className="flex items-center gap-3">
+                <h1 className="text-2xl font-black text-white">School {activeTab === 'inbox' ? 'Inbox' : 'Outbox'}</h1>
+                {notifications.filter(n => n.status === 'unread').length > 0 && (
+                  <span className="bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-sm shadow-red-500/40">
+                    {notifications.filter(n => n.status === 'unread').length} New
+                  </span>
+                )}
+              </div>
+              <p className="text-sm text-white/80 font-medium tracking-wide">
+                {activeTab === 'inbox' 
+                  ? 'System notifications, invoices, and payment receipts.' 
+                  : 'Messages sent to the system administration.'}
+              </p>
+            </div>
           </div>
           <div className="flex flex-wrap items-center gap-3">
             <button 

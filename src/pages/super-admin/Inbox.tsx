@@ -35,6 +35,7 @@ export default function Inbox() {
   const [composeData, setComposeData] = useState({ schoolId: '', subject: '', message: '', attachment: null as { name: string, data: string } | null });
   const [isSending, setIsSending] = useState(false);
   const [systemBranding, setSystemBranding] = useState<any>(null);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
     const q = query(
@@ -49,6 +50,11 @@ export default function Inbox() {
       setLoading(false);
     });
 
+    const unsubscribeUnread = onSnapshot(
+      query(collection(db, 'system_emails'), where('type', '==', 'incoming'), where('read', '==', false)),
+      (snapshot) => setUnreadCount(snapshot.size)
+    );
+
     onSnapshot(doc(db, 'settings', 'system'), (snapshot) => {
       if (snapshot.exists()) setSystemBranding(snapshot.data());
     });
@@ -60,9 +66,10 @@ export default function Inbox() {
 
     return () => {
       unsubscribe();
+      unsubscribeUnread();
       unsubSchools();
     };
-  }, []);
+  }, [activeTab]);
 
   const handleMarkAsRead = async (email: SystemEmail) => {
     if (email.read) return;
@@ -213,9 +220,18 @@ export default function Inbox() {
     <div className="h-full flex flex-col gap-6">
       <div className="bg-school-gradient p-6 rounded-[2.5rem] shadow-lg shadow-maroon/20">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-black text-white">Communications</h1>
-            <p className="text-sm text-white/80 font-medium tracking-wide">Manage incoming and outgoing messages across the system.</p>
+          <div className="flex items-center gap-4">
+            <div>
+              <div className="flex items-center gap-3">
+                <h1 className="text-2xl font-black text-white">Communications</h1>
+                {unreadCount > 0 && (
+                  <span className="bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-sm shadow-red-500/40">
+                    {unreadCount} New
+                  </span>
+                )}
+              </div>
+              <p className="text-sm text-white/80 font-medium tracking-wide">Manage incoming and outgoing messages across the system.</p>
+            </div>
           </div>
           <div className="flex items-center gap-3">
             <button 
