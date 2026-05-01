@@ -38,6 +38,19 @@ export default function Login({ profile }: { profile: UserProfile | null }) {
         navigate('/super-admin/dashboard');
       } else if (profile.role === 'parent') {
         navigate('/parent-portal/dashboard');
+      } else if (profile.role === 'employee') {
+        // Sync with Teacher Exams Portal session requirements
+        sessionStorage.setItem('teacherExamsAuth', JSON.stringify({
+          id: profile.employeeId,
+          schoolId: profile.schoolId,
+          schoolName: (profile as any).schoolName,
+          academicYear: (profile as any).academicYear,
+          branchId: profile.branchId,
+          fullName: profile.fullName,
+          staffNumber: profile.staffNumber,
+          classTeacherAssignment: profile.classTeacherAssignment
+        }));
+        navigate('/teacher-exams/dashboard');
       } else {
         navigate('/dashboard');
       }
@@ -215,7 +228,7 @@ export default function Login({ profile }: { profile: UserProfile | null }) {
                     : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
                 }`}
               >
-                School Admin
+                Admin & Staff
               </button>
               <button
                 onClick={() => setActiveTab('exams')}

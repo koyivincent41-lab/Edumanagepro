@@ -3,12 +3,19 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { db } from '../firebase';
-import { collection, addDoc, onSnapshot, query, where, doc, updateDoc, getDocs, writeBatch } from 'firebase/firestore';
+import { collection, addDoc, onSnapshot, query, where, doc, updateDoc, getDocs, writeBatch, setDoc } from 'firebase/firestore';
+import { getApps, initializeApp } from 'firebase/app';
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import firebaseConfig from '../../firebase-applet-config.json';
 import { toast } from 'sonner';
 import { Loader2, X } from 'lucide-react';
 import { School, SalaryStructure, Class, Employee } from '../types';
 import { handleFirestoreError, OperationType } from '../lib/firestoreErrorHandler';
 import { useBranch } from '../context/BranchContext';
+
+// Initialize secondary Firebase app for creating employees without affecting admin session
+const secondaryApp = getApps().find(app => app.name === 'EmployeeCreation') || initializeApp(firebaseConfig, 'EmployeeCreation');
+const secondaryAuth = getAuth(secondaryApp);
 
 const employeeSchema = z.object({
   fullName: z.string().min(2, 'Full name is required'),
@@ -193,6 +200,28 @@ export default function EmployeeRegistrationForm({ school, employee, onClose, on
     try {
       const bcrypt = await import('bcryptjs');
       let passwordHash = employee?.passwordHash;
+      let firebaseUid = (employee as any)?.firebaseUid;
+
+      // Handle Firebase Auth Synchronization for NEW employees
+      if (!employee && data.email && data.password) {
+        try {
+          const userCredential = await createUserWithEmailAndPassword(secondaryAuth, data.email, data.password);
+          firebaseUid = userCredential.user.uid;
+        } catch (authError: any) {
+          console.error('Firebase Auth creation error:', authError);
+          if (authError.code === 'auth/email-already-in-use') {
+            toast.error('This email is already in use by another account');
+            setLoading(false);
+            return;
+          } else if (authError.code === 'auth/weak-password') {
+            toast.error('Password is too weak. Please use at least 6 characters');
+            setLoading(false);
+            return;
+          }
+          throw authError;
+        }
+      }
+
       if (data.password) {
         passwordHash = await bcrypt.hash(data.password, 10);
       }
@@ -200,11 +229,12 @@ export default function EmployeeRegistrationForm({ school, employee, onClose, on
       const { password, employmentDate, ...employeeData } = data;
       const staffNumber = employee?.staffNumber || generateStaffNumber();
       
-      const employeePayload = {
+      const employeePayload: any = {
         ...employeeData,
         dateOfEmployment: employmentDate,
         designation: data.jobTitle, 
         passwordHash,
+        firebaseUid, // Link to Firebase Auth
         staffNumber,
         schoolId: school.id,
         ...(currentBranch ? { branchId: currentBranch.id } : {}),
@@ -212,18 +242,43 @@ export default function EmployeeRegistrationForm({ school, employee, onClose, on
         updatedAt: new Date().toISOString(),
       };
 
+      // Filter out undefined values to prevent Firestore errors
+      const cleanPayload = Object.fromEntries(
+        Object.entries(employeePayload).filter(([_, v]) => v !== undefined)
+      );
+
       let employeeId = employee?.id;
 
       if (employee) {
-        await updateDoc(doc(db, 'employees', employee.id), employeePayload);
+        await updateDoc(doc(db, 'employees', employee.id), cleanPayload);
         toast.success('Employee updated successfully');
       } else {
         const docRef = await addDoc(collection(db, 'employees'), {
-          ...employeePayload,
+          ...cleanPayload,
           createdAt: new Date().toISOString(),
         });
         employeeId = docRef.id;
         toast.success(`Employee registered successfully with ID: ${staffNumber}`);
+
+        // Create/Update user profile doc for portal access
+        if (firebaseUid) {
+          const userRef = doc(db, 'users', firebaseUid);
+          await setDoc(userRef, {
+            email: data.email,
+            fullName: data.fullName,
+            role: 'employee',
+            status: 'active',
+            schoolId: school.id,
+            schoolName: school.name,
+            academicYear: school.academicYear,
+            branchId: currentBranch?.id || null,
+            employeeId: employeeId,
+            staffNumber: staffNumber,
+            classTeacherAssignment: data.classTeacherAssignment || null,
+            updatedAt: new Date().toISOString(),
+            ...(employee ? {} : { createdAt: new Date().toISOString() })
+          }, { merge: true });
+        }
       }
 
       // Handle Class Teacher Assignment Reflection

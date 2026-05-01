@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import { collection, query, where, onSnapshot, getDocs, doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
-import { Class, Student, ExamSession, Subject, ExamResult } from '../../types';
+import { Class, Student, ExamSession, Subject, ExamResult, GradingSystem } from '../../types';
 import ResultsSlip from '../../components/ResultsSlip';
 
 export default function MarksEntry({ teacher }: { teacher: any }) {
@@ -220,68 +220,105 @@ export default function MarksEntry({ teacher }: { teacher: any }) {
 // Edit Modal Component
 const EditLearnerModal = ({ student, onClose, teacher, selectedExamSessionId, selectedExamsCategory, selectedAcademicYear, selectedTerm }: { student: Student, onClose: () => void, teacher: any, selectedExamSessionId: string, selectedExamsCategory: string, selectedAcademicYear: string, selectedTerm: string }) => {
   const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [gradingSystem, setGradingSystem] = useState<GradingSystem | null>(null);
   const [marks, setMarks] = useState<Record<string, number | ''>>({});
-  const [loadingSubjects, setLoadingSubjects] = useState(true);
+  const [loadingData, setLoadingData] = useState(true);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    const fetchSubjectsAndMarks = async () => {
-      setLoadingSubjects(true);
-      // 1. Get ClassSubjects for this class
-      const csQ = query(collection(db, 'class_subjects'), where('classId', '==', student.classId));
-      const csSnap = await getDocs(csQ);
-      const subjectIds = csSnap.docs.map(d => d.data().subjectId);
-      
-      // 2. Get actual Subjects
-      if (subjectIds.length > 0) {
-        const allSubjectsSnap = await getDocs(query(collection(db, 'subjects'), where('schoolId', '==', teacher.schoolId)));
-        const filteredSubjects = allSubjectsSnap.docs
-          .map(d => ({ id: d.id, ...d.data() } as Subject))
-          .filter(s => subjectIds.includes(s.id));
-        setSubjects(filteredSubjects);
+    const fetchData = async () => {
+      setLoadingData(true);
+      try {
+        // 1. Fetch Grading System
+        const gradingQ = query(collection(db, 'grading_systems'), where('schoolId', '==', teacher.schoolId));
+        const gradingSnap = await getDocs(gradingQ);
+        if (!gradingSnap.empty) {
+          setGradingSystem({ id: gradingSnap.docs[0].id, ...gradingSnap.docs[0].data() } as GradingSystem);
+        }
 
-        // 3. Fetch existing marks
-        const marksQ = query(collection(db, 'exam_results'),
-          where('studentId', '==', student.id),
-          where('examSessionId', '==', selectedExamSessionId)
-        );
-        const marksSnap = await getDocs(marksQ);
-        const existingMarks: Record<string, number | ''> = {};
-        marksSnap.docs.forEach(d => {
-          const data = d.data();
-          existingMarks[data.subjectId] = data.scoreObtained;
-        });
-        setMarks(existingMarks);
+        // 2. Get ClassSubjects for this class
+        const csQ = query(collection(db, 'class_subjects'), where('classId', '==', student.classId));
+        const csSnap = await getDocs(csQ);
+        const subjectIds = csSnap.docs.map(d => d.data().subjectId);
+        
+        if (subjectIds.length > 0) {
+          // 3. Get actual Subjects
+          const allSubjectsSnap = await getDocs(query(collection(db, 'subjects'), where('schoolId', '==', teacher.schoolId)));
+          const filteredSubjects = allSubjectsSnap.docs
+            .map(d => ({ id: d.id, ...d.data() } as Subject))
+            .filter(s => subjectIds.includes(s.id))
+            .sort((a, b) => a.name.localeCompare(b.name));
+          setSubjects(filteredSubjects);
+
+          // 4. Fetch existing marks for this session
+          const marksQ = query(collection(db, 'exam_results'),
+            where('studentId', '==', student.id),
+            where('examSessionId', '==', selectedExamSessionId)
+          );
+          const marksSnap = await getDocs(marksQ);
+          const existingMarks: Record<string, number | ''> = {};
+          marksSnap.docs.forEach(d => {
+            const data = d.data();
+            existingMarks[data.subjectId] = data.scoreObtained;
+          });
+          setMarks(existingMarks);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        toast.error('Failed to load subjects or marks');
+      } finally {
+        setLoadingData(false);
       }
-      setLoadingSubjects(false);
     };
-    fetchSubjectsAndMarks();
+    fetchData();
   }, [student.classId, student.id, selectedExamSessionId, teacher.schoolId]);
+
+  const getGrade = (score: number | '') => {
+    if (score === '' || isNaN(Number(score))) return '-';
+    if (!gradingSystem || !gradingSystem.bands) return '-';
+    const s = Number(score);
+    const band = gradingSystem.bands.find(b => s >= b.minScore && s <= b.maxScore);
+    return band ? band.gradeName : '-';
+  };
+
+  const handleMarkChange = (subjectId: string, value: string) => {
+    const num = value === '' ? '' : Number(value);
+    if (num !== '' && (num < 0 || num > 100)) {
+      toast.error('Marks must be between 0 and 100');
+      return;
+    }
+    setMarks(prev => ({ ...prev, [subjectId]: num }));
+  };
 
   const handleSave = async () => {
     setSaving(true);
     try {
       // Upsert marks
-      for (const [subjectId, score] of Object.entries(marks)) {
-        if (score === '') continue;
+      for (const subject of subjects) {
+        const score = marks[subject.id];
+        if (score === '' || score === undefined) continue;
+
+        const grade = getGrade(score);
+        
         const markData = {
           schoolId: teacher.schoolId,
+          branchId: teacher.branchId || null,
           studentId: student.id,
           classId: student.classId,
-          subjectId,
+          subjectId: subject.id,
           examSessionId: selectedExamSessionId,
           examsCategory: selectedExamsCategory,
           scoreObtained: Number(score),
-          maximumScore: 100, // Should be fetched from session
+          maximumScore: 100,
+          gradeGenerated: grade,
           academicYear: selectedAcademicYear,
           term: selectedTerm,
           updatedAt: new Date().toISOString()
         };
         
-        // Use a composite key or query to check for existing record
         const q = query(collection(db, 'exam_results'), 
           where('studentId', '==', student.id),
-          where('subjectId', '==', subjectId),
+          where('subjectId', '==', subject.id),
           where('examSessionId', '==', selectedExamSessionId)
         );
         const snap = await getDocs(q);
@@ -289,12 +326,16 @@ const EditLearnerModal = ({ student, onClose, teacher, selectedExamSessionId, se
         if (!snap.empty) {
           await setDoc(doc(db, 'exam_results', snap.docs[0].id), markData, { merge: true });
         } else {
-          await setDoc(doc(collection(db, 'exam_results')), { ...markData, createdAt: new Date().toISOString() });
+          await setDoc(doc(collection(db, 'exam_results')), { 
+            ...markData, 
+            createdAt: new Date().toISOString() 
+          });
         }
       }
       toast.success('Marks saved successfully');
       onClose();
     } catch (e) {
+      console.error('Error saving marks:', e);
       toast.error('Failed to save marks');
     } finally {
       setSaving(false);
@@ -302,32 +343,130 @@ const EditLearnerModal = ({ student, onClose, teacher, selectedExamSessionId, se
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl p-8 max-h-[90vh] overflow-y-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-black">Enter Marks for {student.fullName}</h2>
-          <button onClick={onClose}><X className="h-6 w-6" /></button>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden border border-gray-100">
+        <div className="p-8 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+          <div>
+            <h2 className="text-2xl font-black text-gray-900 leading-none">Enter Marks</h2>
+            <p className="text-sm text-gray-500 mt-2 font-medium">Student: <span className="text-maroon font-black uppercase tracking-tight">{student.fullName}</span></p>
+          </div>
+          <button 
+            onClick={onClose}
+            className="p-3 hover:bg-white rounded-2xl text-gray-400 hover:text-gray-900 transition-all shadow-sm border border-transparent hover:border-gray-200"
+          >
+            <X className="h-6 w-6" />
+          </button>
         </div>
         
-        {loadingSubjects ? <Loader2 className="animate-spin mx-auto" /> : (
-          <div className="space-y-4">
-            {subjects.map(s => (
-              <div key={s.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-                <span className="font-bold">{s.name}</span>
-                <input 
-                  type="number" 
-                  className="w-24 p-2 border rounded-lg"
-                  placeholder="0"
-                  value={marks[s.id] || ''}
-                  onChange={(e) => setMarks(prev => ({ ...prev, [s.id]: Number(e.target.value) }))}
-                />
+        <div className="flex-1 overflow-y-auto p-8">
+          {loadingData ? (
+            <div className="flex flex-col items-center justify-center py-20 gap-4">
+              <Loader2 className="h-12 w-12 text-maroon animate-spin" />
+              <p className="text-sm font-bold text-gray-400 uppercase tracking-widest">Loading Subjects & Marks...</p>
+            </div>
+          ) : subjects.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-20 text-center">
+              <div className="bg-gray-50 p-6 rounded-3xl mb-4">
+                <AlertCircle className="h-12 w-12 text-gray-300" />
               </div>
-            ))}
-            <button onClick={handleSave} disabled={saving} className="w-full py-3 bg-maroon text-white font-black rounded-xl">
-              {saving ? 'Saving...' : 'Save Marks'}
+              <h3 className="text-lg font-bold text-gray-900">No Subjects Found</h3>
+              <p className="text-gray-500 max-w-xs mt-2">There are no subjects linked to this class. Please assign subjects first.</p>
+            </div>
+          ) : (
+            <div className="border border-gray-100 rounded-3xl overflow-hidden shadow-sm">
+              <table className="w-full text-left border-collapse">
+                <thead className="bg-gray-50 border-b border-gray-100">
+                  <tr>
+                    <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Subject</th>
+                    <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Max Mark</th>
+                    <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Marks Obtained</th>
+                    <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Grade</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {subjects.map(subject => {
+                    const currentMarks = marks[subject.id];
+                    const grade = getGrade(currentMarks);
+
+                    return (
+                      <tr key={subject.id} className="hover:bg-gray-50/50 transition-colors group">
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 bg-maroon/5 rounded-lg flex items-center justify-center text-maroon font-bold text-xs">
+                              {subject.code || subject.name.substring(0, 2).toUpperCase()}
+                            </div>
+                            <span className="font-bold text-gray-900">{subject.name}</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 text-center">
+                          <span className="inline-flex items-center px-3 py-1 bg-gray-100 text-gray-500 text-xs font-black rounded-lg">
+                            100
+                          </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="relative max-w-[120px]">
+                            <input 
+                              type="number" 
+                              min="0"
+                              max="100"
+                              className="w-full pl-4 pr-10 py-2.5 bg-white border border-gray-200 rounded-xl outline-none focus:ring-4 focus:ring-maroon/5 focus:border-maroon transition-all font-black text-gray-900"
+                              placeholder="0"
+                              value={currentMarks === '' ? '' : currentMarks}
+                              onChange={(e) => handleMarkChange(subject.id, e.target.value)}
+                            />
+                            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-black text-gray-300">/ 100</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 text-center">
+                          <div className={`inline-flex items-center px-4 py-2 rounded-xl font-black text-sm shadow-sm transition-all ${
+                            grade === '-' ? 'bg-gray-100 text-gray-400' : 
+                            ['A','B'].some(g => grade.startsWith(g)) ? 'bg-green-50 text-green-600' :
+                            ['C'].some(g => grade.startsWith(g)) ? 'bg-blue-50 text-blue-600' :
+                            ['D'].some(g => grade.startsWith(g)) ? 'bg-amber-50 text-amber-600' : 'bg-red-50 text-red-600'
+                          }`}>
+                            {grade}
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+
+        <div className="p-8 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
+          <div className="flex items-center gap-3 text-amber-600 bg-amber-50 px-4 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest border border-amber-100">
+            <AlertCircle className="h-4 w-4" />
+            Validate marks before saving
+          </div>
+          <div className="flex items-center gap-4">
+            <button 
+              onClick={onClose}
+              className="px-6 py-3 text-xs font-black text-gray-400 uppercase tracking-widest hover:text-gray-600 transition-colors"
+            >
+              Cancel
+            </button>
+            <button 
+              onClick={handleSave} 
+              disabled={saving || subjects.length === 0} 
+              className="flex items-center gap-2 px-10 py-4 bg-maroon text-white font-black rounded-2xl shadow-xl shadow-maroon/20 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100 transition-all uppercase tracking-widest text-xs"
+            >
+              {saving ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <Save className="h-4 w-4" />
+                  Save All Marks
+                </>
+              )}
             </button>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

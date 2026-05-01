@@ -1,5 +1,5 @@
 export type SchoolStatus = 'pending' | 'active' | 'suspended' | 'inactive';
-export type UserRole = 'super-admin' | 'owner' | 'admin' | 'accountant' | 'clerk' | 'teacher' | 'parent';
+export type UserRole = 'super-admin' | 'owner' | 'admin' | 'accountant' | 'clerk' | 'teacher' | 'parent' | 'employee';
 export type UserStatus = 'pending' | 'active' | 'suspended' | 'inactive' | 'incomplete';
 export type PackagePlan = 'Silver' | 'Gold' | 'Diamond' | string;
 export type InvoiceStatus = 'draft' | 'sent' | 'partially_paid' | 'paid' | 'overdue' | 'cancelled';
@@ -127,6 +127,9 @@ export interface UserProfile {
   role: UserRole | 'branch-admin';
   status: UserStatus;
   createdAt: string;
+  employeeId?: string;
+  staffNumber?: string;
+  classTeacherAssignment?: string | null;
 }
 
 export interface Student {
