@@ -68,38 +68,31 @@ export default function Register() {
   }, [watchCountry, setValue]);
 
   useEffect(() => {
-    // Mock packages instead of fetching from Firestore
-    setPackages([
-      {
-        id: '1',
-        name: 'Basic Plan',
-        description: 'Starter plan for small schools',
-        monthlyPrice: 20,
-        yearlyPrice: 200,
-        studentLimit: 100,
-        userLimit: 10,
-        trialDays: 14,
-        features: [],
-        status: 'active',
-        isFeatured: false,
-        order: 1
-      },
-      {
-        id: '2',
-        name: 'Pro Plan',
-        description: 'Advanced plan for growing schools',
-        monthlyPrice: 50,
-        yearlyPrice: 500,
-        studentLimit: 500,
-        userLimit: 50,
-        trialDays: 14,
-        features: [],
-        status: 'active',
-        isFeatured: true,
-        order: 2
+    const fetchPackages = async () => {
+      try {
+        const q = query(
+          collection(db, 'packages'),
+          where('status', '==', 'active')
+        );
+        const querySnapshot = await getDocs(q);
+        const pkgs = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        } as Package)).sort((a, b) => (a.order || 0) - (b.order || 0));
+        
+        setPackages(pkgs);
+        if (pkgs.length > 0 && !watchPackageId) {
+          setValue('packageId', pkgs[0].id);
+        }
+      } catch (error) {
+        console.error('Error fetching packages:', error);
+        toast.error('Failed to load packages');
+      } finally {
+        setLoadingPackages(false);
       }
-    ]);
-    setLoadingPackages(false);
+    };
+
+    fetchPackages();
 
     const fetchRates = async () => {
       const r = await getExchangeRates();

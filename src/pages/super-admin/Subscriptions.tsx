@@ -501,24 +501,25 @@ export default function Subscriptions() {
                 placeholder="Enter Verification Code"
               />
 
-              <div className="flex gap-4">
+              <div className="flex flex-col gap-3">
                 <button 
                   onClick={async () => {
-                    const trimmedCode = verificationCode.trim();
+                    const trimmedCode = verificationCode.trim().toUpperCase();
                     if (trimmedCode.length !== 10) {
                       toast.error("M-PESA confirmation code must be exactly 10 characters.");
                       return;
                     }
-                    if (trimmedCode !== selectedPayment.mpesaConfirmationCode) {
-                      toast.error("Transaction doesn't match!");
+                    if (trimmedCode !== selectedPayment.mpesaConfirmationCode.toUpperCase()) {
+                      toast.error("Transaction code does not match the one submitted by the school.");
                       return;
                     }
-                      try {
+                    
+                    try {
                       // Update payment submission
                       await updateDoc(doc(db, 'payment_submissions', selectedPayment.id), {
                         paymentStatus: 'Approved',
                         subscriptionStatus: 'Active',
-                        adminVerificationCode: verificationCode,
+                        adminVerificationCode: trimmedCode,
                         verifiedAt: new Date().toISOString(),
                         approvedBy: auth.currentUser?.email || 'Admin'
                       });
@@ -537,10 +538,9 @@ export default function Subscriptions() {
                             baseDate = currentExpiryTime;
                           }
                         }
-                        // If they are on trial, baseDate remains Date.now(), so the new cycle starts today
                         
                         let daysToAdd = 30;
-                        if (selectedPayment.billingCycle === 'yearly') daysToAdd = 364;
+                        if (selectedPayment.billingCycle === 'yearly') daysToAdd = 365;
                         else if (selectedPayment.billingCycle === 'six-months') daysToAdd = 180;
                         
                         const newExpiry = new Date(baseDate + daysToAdd * 24 * 60 * 60 * 1000);
@@ -548,17 +548,28 @@ export default function Subscriptions() {
                         await updateDoc(schoolRef, {
                           subscriptionStatus: 'active',
                           subscriptionExpiry: newExpiry.toISOString(),
-                          packageId: selectedPayment.selectedPackageId
+                          packageId: selectedPayment.selectedPackageId,
+                          billingCycle: selectedPayment.billingCycle
                         });
 
-                        // Generate automated receipt
-                        import('../../services/subscriptionService').then(({ subscriptionService }) => {
-                          subscriptionService.generatePaymentReceipt({ id: schoolSnap.id, ...schoolData }, {
-                            amount: selectedPayment.payableAmountKES,
-                            method: 'M-PESA',
-                            period: selectedPayment.billingCycle,
-                            transactionCode: selectedPayment.mpesaConfirmationCode
-                          });
+                        // Add history entry
+                        await addDoc(collection(db, 'subscription_history'), {
+                          schoolId: selectedPayment.schoolId,
+                          packageId: selectedPayment.selectedPackageId,
+                          action: 'activate',
+                          notes: `Payment Approved - ${selectedPayment.selectedPackageName} (${selectedPayment.billingCycle})`,
+                          createdAt: new Date().toISOString(),
+                          performedBy: auth.currentUser?.email || 'Admin',
+                        });
+
+                        // Notify school
+                        await addDoc(collection(db, 'notifications'), {
+                          schoolId: selectedPayment.schoolId,
+                          title: 'Payment Approved',
+                          message: `Your payment for ${selectedPayment.selectedPackageName} plan has been verified. Your subscription is now active until ${newExpiry.toLocaleDateString()}.`,
+                          type: 'payment_approved',
+                          read: false,
+                          createdAt: new Date().toISOString()
                         });
                       }
 
@@ -570,9 +581,58 @@ export default function Subscriptions() {
                       toast.error("Failed to verify payment");
                     }
                   }}
-                  className="flex-1 py-4 bg-green-600 text-white font-bold rounded-2xl shadow-xl shadow-green-200 hover:scale-[1.02] transition-all"
+                  className="w-full py-4 bg-green-600 text-white font-black uppercase tracking-widest text-xs rounded-2xl shadow-xl shadow-green-200 hover:scale-[1.02] transition-all flex items-center justify-center gap-2"
                 >
-                  Verify & Activate
+                  <CheckCircle2 className="h-4 w-4" />
+                  Approve & Activate
+                </button>
+
+                <button 
+                  onClick={async () => {
+                    if (!window.confirm('Are you sure you want to reject this payment?')) return;
+                    
+                    try {
+                      await updateDoc(doc(db, 'payment_submissions', selectedPayment.id), {
+                        paymentStatus: 'Rejected',
+                        subscriptionStatus: 'Rejected',
+                        verifiedAt: new Date().toISOString(),
+                        approvedBy: auth.currentUser?.email || 'Admin'
+                      });
+
+                      // Reset school status if it was pending
+                      const schoolRef = doc(db, 'schools', selectedPayment.schoolId);
+                      const schoolSnap = await getDoc(schoolRef);
+                      if (schoolSnap.exists()) {
+                        const schoolData = schoolSnap.data() as School;
+                        if (schoolData.subscriptionStatus === 'pending_approval') {
+                          // Try to determine previous status from history or default to trial/expired
+                          await updateDoc(schoolRef, {
+                            subscriptionStatus: 'expired' 
+                          });
+                        }
+
+                        // Notify school
+                        await addDoc(collection(db, 'notifications'), {
+                          schoolId: selectedPayment.schoolId,
+                          title: 'Payment Rejected',
+                          message: `Payment could not be verified. Please confirm your transaction code (${selectedPayment.mpesaConfirmationCode}) and try again.`,
+                          type: 'payment_declined',
+                          read: false,
+                          createdAt: new Date().toISOString()
+                        });
+                      }
+
+                      toast.error("Payment submission rejected");
+                      setIsPaymentManageModalOpen(false);
+                    } catch (error) {
+                      console.error(error);
+                      toast.error("Failed to reject payment");
+                    }
+                  }}
+                  className="w-full py-4 bg-red-50 text-red-600 font-black uppercase tracking-widest text-xs rounded-2xl hover:bg-red-100 transition-all flex items-center justify-center gap-2"
+                >
+                  <XCircle className="h-4 w-4" />
+                  Reject Submission
                 </button>
               </div>
             </div>

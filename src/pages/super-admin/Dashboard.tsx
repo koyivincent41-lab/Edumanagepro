@@ -36,6 +36,7 @@ import Pricing from './Pricing';
 import Inbox from './Inbox';
 import Outbox from './Outbox';
 import Reports from './Reports';
+import PaymentsInbox from './PaymentsInbox';
 
 interface SuperAdminDashboardProps {
   profile: UserProfile;
@@ -86,6 +87,7 @@ export default function SuperAdminDashboard({ profile }: SuperAdminDashboardProp
   const menuItems = [
     { name: 'Overview', path: '/super-admin/dashboard', icon: LayoutDashboard },
     { name: 'Schools', path: '/super-admin/schools', icon: School },
+    { name: 'Payments Inbox', path: '/super-admin/payments', icon: InboxIcon, badge: pendingPaymentsCount },
     { name: 'Packages', path: '/super-admin/packages', icon: Package },
     { name: 'Subscriptions', path: '/super-admin/subscriptions', icon: CreditCard, badge: pendingPaymentsCount },
     { name: 'Reports', path: '/super-admin/reports', icon: BarChart3 },
@@ -197,6 +199,7 @@ export default function SuperAdminDashboard({ profile }: SuperAdminDashboardProp
             <Route path="/dashboard" element={<Overview />} />
             <Route path="/schools" element={<Schools />} />
             <Route path="/packages" element={<Packages />} />
+            <Route path="/payments" element={<PaymentsInbox />} />
             <Route path="/subscriptions" element={<Subscriptions />} />
             <Route path="/inbox" element={<Inbox />} />
             <Route path="/outbox" element={<Outbox />} />

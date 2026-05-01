@@ -43,6 +43,9 @@ export default function Schools() {
       email: '',
       phone: '',
       address: '',
+      packageId: '',
+      subscriptionStatus: 'trial',
+      subscriptionExpiry: '',
     }
   });
 
@@ -84,6 +87,9 @@ export default function Schools() {
       email: school.email,
       phone: school.phone,
       address: school.address,
+      packageId: school.packageId || '',
+      subscriptionStatus: school.subscriptionStatus || 'trial',
+      subscriptionExpiry: school.subscriptionExpiry ? school.subscriptionExpiry.split('T')[0] : '',
     });
     setIsEditModalOpen(true);
   };
@@ -414,11 +420,39 @@ export default function Schools() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-2">Address</label>
-                  <input
-                    {...register('address')}
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Package</label>
+                  <select
+                    {...register('packageId')}
                     className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-primary outline-none"
-                  />
+                  >
+                    <option value="">No Package</option>
+                    {packages.map(p => (
+                      <option key={p.id} value={p.id}>{p.name}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">Subs Status</label>
+                    <select
+                      {...register('subscriptionStatus')}
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-primary outline-none"
+                    >
+                      <option value="trial">Trial</option>
+                      <option value="active">Active</option>
+                      <option value="expired">Expired</option>
+                      <option value="deactivated">Deactivated</option>
+                      <option value="pending_approval">Pending Approval</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-gray-700 mb-2">Expiry Date</label>
+                    <input
+                      type="date"
+                      {...register('subscriptionExpiry')}
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-primary outline-none"
+                    />
+                  </div>
                 </div>
               </div>
 
