@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-primary: var(--school-primary, #800000);
   --color-secondary: var(--school-secondary, #800000);

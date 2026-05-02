@@ -86,40 +86,40 @@ export default function Dashboard() {
       </div>
 
       {/* Tabs */}
-      <div className="flex flex-wrap gap-3 mb-8">
+      <div className="flex flex-row overflow-x-auto sm:flex-wrap gap-2 md:gap-3 mb-6 md:mb-8 pb-2 no-scrollbar">
         <button 
           onClick={() => setActiveTab('marks_entry')}
-          className={`flex items-center gap-2 px-5 py-3 rounded-xl font-bold transition-all ${activeTab === 'marks_entry' ? 'bg-maroon text-white shadow-lg shadow-maroon/20' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'}`}
+          className={`flex items-center gap-1.5 md:gap-2 px-3 md:px-5 py-2 md:py-3 rounded-lg md:rounded-xl text-xs md:text-sm font-bold transition-all whitespace-nowrap ${activeTab === 'marks_entry' ? 'bg-maroon text-white shadow-lg shadow-maroon/20' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'}`}
         >
-          <Edit3 className="h-5 w-5" />
+          <Edit3 className="h-4 w-4 md:h-5 md:w-5" />
           Marks Entry
         </button>
         <button 
           onClick={() => setActiveTab('opener')}
-          className={`flex items-center gap-2 px-5 py-3 rounded-xl font-bold transition-all ${activeTab === 'opener' ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'}`}
+          className={`flex items-center gap-1.5 md:gap-2 px-3 md:px-5 py-2 md:py-3 rounded-lg md:rounded-xl text-xs md:text-sm font-bold transition-all whitespace-nowrap ${activeTab === 'opener' ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'}`}
         >
-          <LayoutDashboard className="h-5 w-5" />
+          <LayoutDashboard className="h-4 w-4 md:h-5 md:w-5" />
           Openar Exams
         </button>
         <button 
           onClick={() => setActiveTab('midterm')}
-          className={`flex items-center gap-2 px-5 py-3 rounded-xl font-bold transition-all ${activeTab === 'midterm' ? 'bg-amber-600 text-white shadow-lg shadow-amber-600/20' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'}`}
+          className={`flex items-center gap-1.5 md:gap-2 px-3 md:px-5 py-2 md:py-3 rounded-lg md:rounded-xl text-xs md:text-sm font-bold transition-all whitespace-nowrap ${activeTab === 'midterm' ? 'bg-amber-600 text-white shadow-lg shadow-amber-600/20' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'}`}
         >
-          <LayoutDashboard className="h-5 w-5" />
+          <LayoutDashboard className="h-4 w-4 md:h-5 md:w-5" />
           Midterm Exams
         </button>
         <button 
           onClick={() => setActiveTab('end_term')}
-          className={`flex items-center gap-2 px-5 py-3 rounded-xl font-bold transition-all ${activeTab === 'end_term' ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'}`}
+          className={`flex items-center gap-1.5 md:gap-2 px-3 md:px-5 py-2 md:py-3 rounded-lg md:rounded-xl text-xs md:text-sm font-bold transition-all whitespace-nowrap ${activeTab === 'end_term' ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'}`}
         >
-          <LayoutDashboard className="h-5 w-5" />
+          <LayoutDashboard className="h-4 w-4 md:h-5 md:w-5" />
           End Term Exams
         </button>
         <button 
           onClick={() => setActiveTab('report_form')}
-          className={`flex items-center gap-2 px-5 py-3 rounded-xl font-bold transition-all ${activeTab === 'report_form' ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/20' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'}`}
+          className={`flex items-center gap-1.5 md:gap-2 px-3 md:px-5 py-2 md:py-3 rounded-lg md:rounded-xl text-xs md:text-sm font-bold transition-all whitespace-nowrap ${activeTab === 'report_form' ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/20' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'}`}
         >
-          <FileText className="h-5 w-5" />
+          <FileText className="h-4 w-4 md:h-5 md:w-5" />
           Term Report Form
         </button>
       </div>
