@@ -159,6 +159,106 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
   const finalMean = numSubjects > 0 ? finalTotal / (numSubjects * 3) : 0;
   const finalGrade = getGrade(finalMean);
 
+  const { teacherComment, principalComment } = React.useMemo(() => {
+    if (combinedResults.length === 0) return { teacherComment: '', principalComment: '' };
+    
+    const name = student.fullName.split(' ')[0];
+
+    const excellentTeacher = [
+      `${name} has demonstrated outstanding academic excellence this term. Keep up the phenomenal work!`,
+      `An exceptional performance by ${name}! Your dedication to your studies is truly inspiring.`,
+      `Brilliant results, ${name}! You have set a great example for your peers.`,
+      `${name} is a highly motivated learner. Let's aim even higher next term!`,
+      `A pleasure to teach. ${name} consistently produces top-tier work. Keep shining!`
+    ];
+    
+    const excellentPrincipal = [
+      `Outstanding achievement! The school is incredibly proud of your hard work, ${name}.`,
+      `Excellent term, ${name}. Continue striving for greatness. The sky is your limit.`,
+      `A stellar performance. ${name}, your commitment to academic excellence is commendable.`,
+      `Superb results! We look forward to seeing your continued success in the future.`,
+      `Congratulations on an amazing term, ${name}! You are a true asset to our school.`
+    ];
+
+    const goodTeacher = [
+      `${name} has performed very well this term. Keep focusing and you will achieve even greater heights.`,
+      `A solid performance, ${name}. I am proud of the progress you have made.`,
+      `Great work, ${name}! With a little more effort, you can reach the top of the class.`,
+      `${name} is a diligent student who has shown great commitment. Well done!`,
+      `Good effort this term, ${name}. Keep believing in yourself and keep pushing forward.`
+    ];
+
+    const goodPrincipal = [
+      `Very good performance, ${name}. I encourage you to keep up the hard work.`,
+      `A commendable effort this term. The school believes in your immense potential, ${name}.`,
+      `Well done, ${name}! We are happy with your results and know you can achieve even more.`,
+      `A successful term! Keep working hard and never stop believing in your abilities.`,
+      `Good job, ${name}. Keep focused and continue to chase excellence.`
+    ];
+
+    const averageTeacher = [
+      `${name} has made a fair effort this term. I encourage you to study harder to unlock your true potential.`,
+      `A steady term, ${name}. With more focus and determination, your grades will surely improve.`,
+      `${name} has the ability to do much better. Let's work together to achieve higher results next term.`,
+      `Keep pushing yourself, ${name}. You are capable of great things if you put in the extra effort.`,
+      `A fair performance. I believe in you, ${name}. Let's aim for better results next term.`
+    ];
+
+    const averagePrincipal = [
+      `A fair attempt, ${name}. The school expects more from you because we know you can do it!`,
+      `${name}, your potential is limitless. Focus more on your studies and you will succeed.`,
+      `Keep working hard, ${name}. Every step forward is progress. We believe in you.`,
+      `You have the capacity to excel, ${name}. Dedicate more time to your studies next term.`,
+      `A decent effort, but there is plenty of room for improvement. Keep pushing, ${name}!`
+    ];
+
+    const belowAverageTeacher = [
+      `This term has been challenging, but I believe in your ability to bounce back, ${name}. Don't give up!`,
+      `${name}, your true potential is yet to be seen. Let's work harder and turn things around next term.`,
+      `Every setback is a setup for a comeback. Keep your head up, ${name}, and keep trying.`,
+      `Results don't define you, ${name}. Let this be motivation to work twice as hard. I am here to help.`,
+      `You faced some difficulties this term, but I know you are capable of improving. Believe in yourself, ${name}.`
+    ];
+
+    const belowAveragePrincipal = [
+      `We believe in you, ${name}. Do not be discouraged; use this as a stepping stone to work harder.`,
+      `Success takes time, ${name}. Keep putting in the effort and the results will surely follow.`,
+      `The school is here to support you, ${name}. Stay positive and commit more time to your studies.`,
+      `You have what it takes to improve, ${name}. Let's make the next term your best one yet!`,
+      `Do not lose hope, ${name}. Hard work and perseverance will eventually pay off. Keep pushing forward.`
+    ];
+
+    let tComments = [];
+    let pComments = [];
+
+    if (finalMean >= 80) {
+      tComments = excellentTeacher;
+      pComments = excellentPrincipal;
+    } else if (finalMean >= 60) {
+      tComments = goodTeacher;
+      pComments = goodPrincipal;
+    } else if (finalMean >= 40) {
+      tComments = averageTeacher;
+      pComments = averagePrincipal;
+    } else {
+      tComments = belowAverageTeacher;
+      pComments = belowAveragePrincipal;
+    }
+
+    let hash = 0;
+    const seed = `${student.id}-${term}-${academicYear}`;
+    for (let i = 0; i < seed.length; i++) {
+      hash = ((hash << 5) - hash) + seed.charCodeAt(i);
+      hash |= 0;
+    }
+    const absHash = Math.abs(hash);
+    
+    return {
+      teacherComment: tComments[absHash % tComments.length],
+      principalComment: pComments[(absHash + 1) % pComments.length]
+    };
+  }, [finalMean, student.id, student.fullName, term, academicYear, combinedResults.length]);
+
   const handlePrint = () => {
     window.print();
   };
@@ -357,11 +457,11 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
               <div className="grid grid-cols-1 gap-6 text-sm">
                 <div className="flex items-end">
                   <span className="font-bold text-gray-700 whitespace-nowrap mr-2">Class Teacher's Comment:</span>
-                  <div className="flex-1 border-b border-gray-400 border-dashed"></div>
+                  <div className="flex-1 border-b border-gray-400 border-dashed pb-0.5 px-2 text-gray-800 italic">{teacherComment}</div>
                 </div>
                 <div className="flex items-end">
                   <span className="font-bold text-gray-700 whitespace-nowrap mr-2">Principal's Comment:</span>
-                  <div className="flex-1 border-b border-gray-400 border-dashed"></div>
+                  <div className="flex-1 border-b border-gray-400 border-dashed pb-0.5 px-2 text-gray-800 italic">{principalComment}</div>
                 </div>
                 <div className="grid grid-cols-2 gap-8">
                   <div className="flex items-end">
@@ -543,11 +643,11 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
                   <div className="grid grid-cols-1 gap-6 text-sm">
                     <div className="flex items-end">
                       <span className="font-bold text-gray-700 whitespace-nowrap mr-2">Class Teacher's Comment:</span>
-                      <div className="flex-1 border-b border-gray-400 border-dashed"></div>
+                      <div className="flex-1 border-b border-gray-400 border-dashed pb-0.5 px-2 text-gray-800 italic">{teacherComment}</div>
                     </div>
                     <div className="flex items-end">
                       <span className="font-bold text-gray-700 whitespace-nowrap mr-2">Principal's Comment:</span>
-                      <div className="flex-1 border-b border-gray-400 border-dashed"></div>
+                      <div className="flex-1 border-b border-gray-400 border-dashed pb-0.5 px-2 text-gray-800 italic">{principalComment}</div>
                     </div>
                     <div className="grid grid-cols-2 gap-8">
                       <div className="flex items-end">
