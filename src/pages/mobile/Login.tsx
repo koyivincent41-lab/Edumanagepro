@@ -1,29 +1,30 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { db, auth } from '../../firebase';
-import { collection, query, where, getDocs, doc, setDoc } from 'firebase/firestore';
-import { signInAnonymously } from 'firebase/auth';
+import { db } from '../../firebase';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 import { toast } from 'sonner';
-import { Loader2, Lock, User, Eye, EyeOff, Users, ArrowLeft } from 'lucide-react';
-import bcrypt from 'bcryptjs';
+import { Loader2, User, Users, ArrowLeft } from 'lucide-react';
 import PublicLayout from '../../components/PublicLayout';
 
 export default function MobileLogin() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [staffId, setStaffId] = useState('');
   const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!staffId.trim()) {
+      toast.error('Please enter your Staff ID');
+      return;
+    }
+
     setLoading(true);
     try {
-      const q = query(collection(db, 'employees'), where('username', '==', username));
+      const q = query(collection(db, 'employees'), where('staffNumber', '==', staffId.trim()));
       const querySnapshot = await getDocs(q);
 
       if (querySnapshot.empty) {
-        toast.error('Invalid username or password');
+        toast.error('Invalid Staff ID');
         return;
       }
 
@@ -34,29 +35,6 @@ export default function MobileLogin() {
         toast.error('Your account is not active. Please contact admin.');
         return;
       }
-
-      const isPasswordValid = await bcrypt.compare(password, employeeData.passwordHash);
-
-      if (!isPasswordValid) {
-        toast.error('Invalid username or password');
-        return;
-      }
-
-      // 1. Sign in anonymously to get a Firebase Auth UID
-      const userCredential = await signInAnonymously(auth);
-      const uid = userCredential.user.uid;
-
-      // 2. Create/Update a user profile for this anonymous session to satisfy security rules
-      await setDoc(doc(db, 'users', uid), {
-        uid,
-        email: employeeData.email || `${username}@school.internal`,
-        fullName: employeeData.fullName,
-        role: 'teacher', // Use teacher role for employees to access school data
-        status: 'active',
-        schoolId: employeeData.schoolId,
-        branchId: employeeData.branchId || null,
-        createdAt: new Date().toISOString()
-      });
 
       // Store employee info in session/local storage for MVP
       localStorage.setItem('employeeId', employeeDoc.id);
@@ -91,7 +69,7 @@ export default function MobileLogin() {
             <h1 className="text-4xl font-black text-gray-900 dark:text-white mb-3 tracking-tight">
               Employee <span className="text-blue-600">Portal</span>
             </h1>
-            <p className="text-gray-500 dark:text-gray-400 font-medium">Sign in to access your attendance workspace.</p>
+            <p className="text-gray-500 dark:text-gray-400 font-medium">Sign in using your Employee Unique ID.</p>
           </div>
 
           <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-2xl p-10 rounded-[3rem] border border-white/50 dark:border-gray-800 shadow-[0_32px_64px_-15px_rgba(0,0,0,0.1)] dark:shadow-[0_32px_64px_-15px_rgba(0,0,0,0.5)] relative overflow-hidden group">
@@ -100,41 +78,17 @@ export default function MobileLogin() {
             
             <form onSubmit={handleLogin} className="space-y-6 relative">
               <div className="space-y-2">
-                <label className="block text-xs font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 ml-1">Username</label>
+                <label className="block text-xs font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 ml-1">Staff ID / Unique ID</label>
                 <div className="relative group/input">
                   <User className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within/input:text-blue-600 transition-colors" />
                   <input
                     type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    value={staffId}
+                    onChange={(e) => setStaffId(e.target.value)}
                     className="w-full pl-12 pr-4 py-4 rounded-2xl border border-gray-100 dark:border-gray-800 bg-white/50 dark:bg-gray-800/50 focus:bg-white dark:focus:bg-gray-800 focus:border-blue-600 focus:ring-4 focus:ring-blue-600/5 outline-none transition-all font-medium text-gray-900 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600"
-                    placeholder="Enter your username"
+                    placeholder="Enter your Staff ID"
                     required
                   />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex items-center justify-between ml-1">
-                  <label className="block text-xs font-black uppercase tracking-widest text-gray-400 dark:text-gray-500">Password</label>
-                </div>
-                <div className="relative group/input">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within/input:text-blue-600 transition-colors" />
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="w-full pl-12 pr-12 py-4 rounded-2xl border border-gray-100 dark:border-gray-800 bg-white/50 dark:bg-gray-800/50 focus:bg-white dark:focus:bg-gray-800 focus:border-blue-600 focus:ring-4 focus:ring-blue-600/5 outline-none transition-all font-medium text-gray-900 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600"
-                    placeholder="••••••••"
-                    required
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-600 transition-colors"
-                  >
-                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                  </button>
                 </div>
               </div>
 
@@ -188,3 +142,4 @@ export default function MobileLogin() {
     </PublicLayout>
   );
 }
+
