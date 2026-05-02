@@ -159,6 +159,18 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
   const finalMean = numSubjects > 0 ? finalTotal / (numSubjects * 3) : 0;
   const finalGrade = getGrade(finalMean);
 
+  // Dynamic sizing logic to ensure it fits on one page
+  const isCompact = numSubjects > 5;
+  const isVeryCompact = numSubjects > 7;
+
+  const tableTextClass = isVeryCompact ? 'text-[9px]' : isCompact ? 'text-[10px]' : 'text-xs';
+  const tablePaddingClass = isVeryCompact ? 'p-0.5' : isCompact ? 'p-1' : 'p-2';
+  const sectionGapClass = isVeryCompact ? 'gap-1' : isCompact ? 'gap-2' : 'gap-4';
+  const summaryPaddingClass = isVeryCompact ? 'p-1' : isCompact ? 'p-2' : 'p-4';
+  const commentGapClass = isVeryCompact ? 'gap-2' : isCompact ? 'gap-3' : 'gap-6';
+  const headerMarginClass = isVeryCompact ? 'mb-1' : isCompact ? 'mb-2' : 'mb-4';
+  const sectionMarginClass = isVeryCompact ? 'mb-1' : isCompact ? 'mb-3' : 'mb-6';
+
   const { teacherComment, principalComment } = React.useMemo(() => {
     if (combinedResults.length === 0) return { teacherComment: '', principalComment: '' };
     
@@ -331,67 +343,66 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
 
   if (isBulkPrint) {
     return (
-      <div className="print-area relative bg-white" style={{ pageBreakAfter: 'always' }}>
+      <div className={`print-area relative bg-white ${isVeryCompact ? 'compact-report' : ''}`} style={{ pageBreakAfter: 'always' }}>
         {school && (
-          <div className="text-center mb-4">
-            {school.logo && <img src={school.logo} alt="School Logo" className="h-14 mx-auto mb-2 object-contain" />}
-            <h1 className="text-2xl font-black" style={{ color: school.primaryColor || '#000000' }}>{school.name}</h1>
-            <p className="text-gray-600 mt-1 text-sm">{school.address}</p>
-            <p className="text-gray-600 text-sm">{school.email} | {school.phone}</p>
+          <div className={`text-center ${headerMarginClass}`}>
+            {school.logo && <img src={school.logo} alt="School Logo" className={`${isVeryCompact ? 'h-10' : 'h-14'} mx-auto mb-1 object-contain`} />}
+            <h1 className={`${isVeryCompact ? 'text-xl' : 'text-2xl'} font-black`} style={{ color: school.primaryColor || '#000000' }}>{school.name}</h1>
+            <p className="text-gray-600 mt-0.5 text-xs">{school.address}</p>
+            <p className="text-gray-600 text-xs">{school.email} | {school.phone}</p>
           </div>
         )}
 
-        <div className="border-b-2 border-gray-800 pb-2 mb-4">
-          <h2 className="text-xl font-black text-center tracking-widest">REPORT FORM</h2>
+        <div className={`border-b-2 border-gray-800 pb-1 ${headerMarginClass}`}>
+          <h2 className={`${isVeryCompact ? 'text-lg' : 'text-xl'} font-black text-center tracking-widest`}>REPORT FORM</h2>
         </div>
         
-        <div className="flex justify-between items-start mb-6 text-sm">
-          <div className="space-y-1 flex-1 pr-4">
+        <div className={`flex justify-between items-start ${sectionMarginClass} text-xs`}>
+          <div className="space-y-0.5 flex-1 pr-4">
             <p><span className="font-bold text-gray-600">Serial Number:</span> <span className="font-mono font-semibold">{serialNumber}</span></p>
             <p><span className="font-bold text-gray-600">Exam Type:</span> End Term Report</p>
             <p><span className="font-bold text-gray-600">Term:</span> {term}</p>
             <p><span className="font-bold text-gray-600">Academic Year:</span> {academicYear}</p>
           </div>
-          <div className="space-y-1 text-right flex-1 pl-4">
-            <p className="break-words"><span className="font-bold text-gray-600">Learner Name:</span> <span className="font-bold text-base">{student.fullName}</span></p>
+          <div className="space-y-0.5 text-right flex-1 pl-4">
+            <p className="break-words"><span className="font-bold text-gray-600">Learner Name:</span> <span className={`font-bold ${isVeryCompact ? 'text-sm' : 'text-base'}`}>{student.fullName}</span></p>
             <p className="break-words"><span className="font-bold text-gray-600">Admission Number:</span> {student.admissionNumber}</p>
             <p className="break-words"><span className="font-bold text-gray-600">Class:</span> {studentClass?.name || ''}</p>
             <p className="break-words"><span className="font-bold text-gray-600">Stream:</span> {studentStream?.name || ''}</p>
           </div>
         </div>
 
-        <table className="w-full mb-6 border-collapse text-sm">
+        <table className={`w-full ${sectionMarginClass} border-collapse ${tableTextClass}`}>
           <thead>
             <tr style={{ backgroundColor: school?.primaryColor ? `${school.primaryColor}20` : '#f3f4f6' }}>
-              <th className="p-2 text-left border-b-2 border-gray-300 font-bold">Subject</th>
-              <th className="p-2 text-right border-b-2 border-gray-300 font-bold">Openar</th>
-              <th className="p-2 text-right border-b-2 border-gray-300 font-bold">Midterm</th>
-              <th className="p-2 text-right border-b-2 border-gray-300 font-bold">End Term</th>
-              <th className="p-2 text-right border-b-2 border-gray-300 font-bold">Total</th>
-              <th className="p-2 text-right border-b-2 border-gray-300 font-bold">Average</th>
-              <th className="p-2 text-right border-b-2 border-gray-300 font-bold">Grade</th>
+              <th className={`${tablePaddingClass} text-left border-b-2 border-gray-300 font-bold`}>Subject</th>
+              <th className={`${tablePaddingClass} text-right border-b-2 border-gray-300 font-bold`}>Openar</th>
+              <th className={`${tablePaddingClass} text-right border-b-2 border-gray-300 font-bold`}>Midterm</th>
+              <th className={`${tablePaddingClass} text-right border-b-2 border-gray-300 font-bold`}>End Term</th>
+              <th className={`${tablePaddingClass} text-right border-b-2 border-gray-300 font-bold`}>Total</th>
+              <th className={`${tablePaddingClass} text-right border-b-2 border-gray-300 font-bold`}>Average</th>
+              <th className={`${tablePaddingClass} text-right border-b-2 border-gray-300 font-bold`}>Grade</th>
             </tr>
           </thead>
           <tbody>
             {combinedResults.length > 0 ? (
               combinedResults.map(r => (
                 <tr key={r.subjectId} className="border-b border-gray-200">
-                  <td className="p-2">{r.subjectName}</td>
-                  <td className="p-2 text-right">{r.opener}</td>
-                  <td className="p-2 text-right">{r.midterm}</td>
-                  <td className="p-2 text-right">{r.endTerm}</td>
-                  <td className="p-2 text-right font-semibold">{r.total}</td>
-                  <td className="p-2 text-right">{r.average.toFixed(1)}%</td>
-                  <td className="p-2 text-right font-bold" style={{ color: school?.primaryColor || '#000000' }}>{r.grade}</td>
+                  <td className={`${tablePaddingClass}`}>{r.subjectName}</td>
+                  <td className={`${tablePaddingClass} text-right`}>{r.opener}</td>
+                  <td className={`${tablePaddingClass} text-right`}>{r.midterm}</td>
+                  <td className={`${tablePaddingClass} text-right`}>{r.endTerm}</td>
+                  <td className={`${tablePaddingClass} text-right font-semibold`}>{r.total}</td>
+                  <td className={`${tablePaddingClass} text-right`}>{r.average.toFixed(1)}%</td>
+                  <td className={`${tablePaddingClass} text-right font-bold`} style={{ color: school?.primaryColor || '#000000' }}>{r.grade}</td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan={7} className="p-8 text-center">
+                <td colSpan={7} className="p-8 text-center text-xs">
                   <div className="flex flex-col items-center justify-center text-amber-600">
                     <AlertTriangle className="w-8 h-8 mb-2" />
                     <p className="font-bold">Incomplete report data for this learner.</p>
-                    <p className="text-xs text-amber-500 mt-1">No exam marks found for the selected term and year.</p>
                   </div>
                 </td>
               </tr>
@@ -400,61 +411,61 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
         </table>
 
         {combinedResults.length > 0 && (
-          <div className="flex flex-col gap-4">
+          <div className={`flex flex-col ${sectionGapClass}`}>
             {/* Summary Section */}
-            <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
-              <h3 className="text-center font-bold text-gray-700 mb-2 uppercase tracking-wider text-xs">Term Summary</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-                <div className="space-y-1">
-                  <p className="text-gray-500 font-medium text-[10px] uppercase">Openar Exams</p>
-                  <p className="text-base font-bold">{openerTotal} <span className="text-xs text-gray-400 font-normal">/ {maxPossiblePerExam}</span></p>
-                  <p className="text-xs text-gray-600">Mean: <span className="font-semibold">{openerMean.toFixed(1)}%</span></p>
+            <div className={`bg-gray-50 ${summaryPaddingClass} rounded-xl border border-gray-200`}>
+              <h3 className="text-center font-bold text-gray-700 mb-1 uppercase tracking-wider text-[10px]">Term Summary</h3>
+              <div className="grid grid-cols-3 gap-2 text-center">
+                <div className="space-y-0.5">
+                  <p className="text-gray-500 font-medium text-[8px] uppercase">Openar</p>
+                  <p className={`${isVeryCompact ? 'text-sm' : 'text-base'} font-bold`}>{openerTotal} <span className="text-[8px] text-gray-400 font-normal">/ {maxPossiblePerExam}</span></p>
+                  <p className="text-[10px] text-gray-600">Mean: <span className="font-semibold">{openerMean.toFixed(1)}%</span></p>
                 </div>
-                <div className="space-y-1">
-                  <p className="text-gray-500 font-medium text-[10px] uppercase">Midterm Exams</p>
-                  <p className="text-base font-bold">{midtermTotal} <span className="text-xs text-gray-400 font-normal">/ {maxPossiblePerExam}</span></p>
-                  <p className="text-xs text-gray-600">Mean: <span className="font-semibold">{midtermMean.toFixed(1)}%</span></p>
+                <div className="space-y-0.5">
+                  <p className="text-gray-500 font-medium text-[8px] uppercase">Midterm</p>
+                  <p className={`${isVeryCompact ? 'text-sm' : 'text-base'} font-bold`}>{midtermTotal} <span className="text-[8px] text-gray-400 font-normal">/ {maxPossiblePerExam}</span></p>
+                  <p className="text-[10px] text-gray-600">Mean: <span className="font-semibold">{midtermMean.toFixed(1)}%</span></p>
                 </div>
-                <div className="space-y-1">
-                  <p className="text-gray-500 font-medium text-[10px] uppercase">End Term Exams</p>
-                  <p className="text-base font-bold">{endTermTotal} <span className="text-xs text-gray-400 font-normal">/ {maxPossiblePerExam}</span></p>
-                  <p className="text-xs text-gray-600">Mean: <span className="font-semibold">{endTermMean.toFixed(1)}%</span></p>
+                <div className="space-y-0.5">
+                  <p className="text-gray-500 font-medium text-[8px] uppercase">End Term</p>
+                  <p className={`${isVeryCompact ? 'text-sm' : 'text-base'} font-bold`}>{endTermTotal} <span className="text-[8px] text-gray-400 font-normal">/ {maxPossiblePerExam}</span></p>
+                  <p className="text-[10px] text-gray-600">Mean: <span className="font-semibold">{endTermMean.toFixed(1)}%</span></p>
                 </div>
               </div>
             </div>
 
             {/* Final Grade Section */}
             <div className="flex items-center justify-between gap-4">
-              <div className="bg-gray-100 p-4 rounded-xl border border-gray-300 flex-1 flex items-center justify-around">
+              <div className={`bg-gray-100 ${summaryPaddingClass} rounded-xl border border-gray-300 flex-1 flex items-center justify-around`}>
                 <div className="text-center">
-                  <p className="text-gray-500 font-medium mb-1 uppercase text-[10px] tracking-wider">Final Mean</p>
-                  <p className="text-2xl font-black">{finalMean.toFixed(2)}%</p>
+                  <p className="text-gray-500 font-medium mb-0.5 uppercase text-[8px] tracking-wider">Final Mean</p>
+                  <p className={`${isVeryCompact ? 'text-xl' : 'text-2xl'} font-black`}>{finalMean.toFixed(2)}%</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-gray-500 font-medium mb-1 uppercase text-[10px] tracking-wider">Final Grade</p>
-                  <p className="text-3xl font-black" style={{ color: school?.primaryColor || '#000000' }}>{finalGrade}</p>
+                  <p className="text-gray-500 font-medium mb-0.5 uppercase text-[8px] tracking-wider">Final Grade</p>
+                  <p className={`${isVeryCompact ? 'text-2xl' : 'text-3xl'} font-black`} style={{ color: school?.primaryColor || '#000000' }}>{finalGrade}</p>
                 </div>
               </div>
 
               {/* School Seal */}
               <div 
-                className="w-24 h-24 shrink-0 rounded-full border-[3px] border-double flex items-center justify-center p-1 opacity-80 rotate-[-15deg] pointer-events-none" 
+                className={`${isVeryCompact ? 'w-20 h-20' : 'w-24 h-24'} shrink-0 rounded-full border-[3px] border-double flex items-center justify-center p-1 opacity-80 rotate-[-15deg] pointer-events-none`} 
                 style={{ borderColor: school?.primaryColor || '#1e3a8a', color: school?.primaryColor || '#1e3a8a' }}
               >
                 <div className="w-full h-full rounded-full border border-dashed flex flex-col items-center justify-center text-center p-1 relative bg-white">
-                  <div className="font-black text-[6px] uppercase tracking-wider mb-0.5 border-b border-current pb-0.5 w-full truncate px-1">{school?.name}</div>
-                  <div className="font-bold text-[5px] uppercase text-gray-600">REPORT FORM</div>
-                  <div className="font-bold text-[5px] uppercase mt-0.5">Adm: {student.admissionNumber}</div>
-                  <div className="font-bold text-[5px] uppercase">Cls: {studentClass?.name || ''}</div>
-                  <div className="font-bold text-[5px] uppercase">Str: {studentStream?.name || ''}</div>
-                  <div className="font-bold text-[5px] uppercase mt-0.5 border-t border-current pt-0.5 w-full">{academicYear}</div>
+                  <div className="font-black text-[5px] uppercase tracking-wider mb-0.5 border-b border-current pb-0.5 w-full truncate px-1">{school?.name}</div>
+                  <div className="font-bold text-[4px] uppercase text-gray-600">REPORT FORM</div>
+                  <div className="font-bold text-[4px] uppercase mt-0.5">Adm: {student.admissionNumber}</div>
+                  <div className="font-bold text-[4px] uppercase">Cls: {studentClass?.name || ''}</div>
+                  <div className="font-bold text-[4px] uppercase">Str: {studentStream?.name || ''}</div>
+                  <div className="font-bold text-[4px] uppercase mt-0.5 border-t border-current pt-0.5 w-full">{academicYear}</div>
                 </div>
               </div>
             </div>
 
             {/* Manual Comments Section */}
-            <div className="mt-4 pt-4 border-t-2 border-gray-200">
-              <div className="grid grid-cols-1 gap-6 text-sm">
+            <div className={`mt-2 pt-2 border-t-2 border-gray-200`}>
+              <div className={`grid grid-cols-1 ${commentGapClass} text-xs`}>
                 <div className="flex items-end">
                   <span className="font-bold text-gray-700 whitespace-nowrap mr-2">Class Teacher's Comment:</span>
                   <div className="flex-1 border-b border-gray-400 border-dashed pb-0.5 px-2 text-gray-800 italic">{teacherComment}</div>
@@ -487,16 +498,17 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
         {`
           body * { visibility: hidden; }
           .print-area, .print-area * { visibility: visible; }
-          .print-area { position: absolute; left: 0; top: 0; width: 100%; }
-          @page { margin: 20mm; }
+          .print-area { position: absolute; left: 0; top: 0; width: 100%; height: auto; }
+          @page { size: A4; margin: 10mm; }
+          .compact-report { transform-origin: top center; }
         `}
       </style>
       <style>
         {`
           .pdf-exporting {
-            width: 800px !important;
+            width: 794px !important; /* A4 width at 96 DPI */
             max-width: none !important;
-            padding: 40px !important;
+            padding: 30px !important;
             background: white !important;
             position: relative !important;
             left: 0 !important;
@@ -523,58 +535,58 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
           </div>
           
           {/* Printable Area */}
-          <div className="print-area relative bg-white" id="report-form-print-area">
+          <div className={`print-area relative bg-white ${isVeryCompact ? 'compact-report' : ''}`} id="report-form-print-area">
             {school && (
-              <div className="text-center mb-4">
-                {school.logo && <img src={school.logo} alt="School Logo" className="h-14 mx-auto mb-2 object-contain" />}
-                <h1 className="text-2xl font-black" style={{ color: school.primaryColor || '#000000' }}>{school.name}</h1>
-                <p className="text-gray-600 mt-1 text-sm">{school.address}</p>
-                <p className="text-gray-600 text-sm">{school.email} | {school.phone}</p>
+              <div className={`text-center ${headerMarginClass}`}>
+                {school.logo && <img src={school.logo} alt="School Logo" className={`${isVeryCompact ? 'h-10' : 'h-14'} mx-auto mb-1 object-contain`} />}
+                <h1 className={`${isVeryCompact ? 'text-xl' : 'text-2xl'} font-black`} style={{ color: school.primaryColor || '#000000' }}>{school.name}</h1>
+                <p className="text-gray-600 mt-0.5 text-xs">{school.address}</p>
+                <p className="text-gray-600 text-xs">{school.email} | {school.phone}</p>
               </div>
             )}
 
-            <div className="border-b-2 border-gray-800 pb-2 mb-4">
-              <h2 className="text-xl font-black text-center tracking-widest">REPORT FORM</h2>
+            <div className={`border-b-2 border-gray-800 pb-1 ${headerMarginClass}`}>
+              <h2 className={`${isVeryCompact ? 'text-lg' : 'text-xl'} font-black text-center tracking-widest`}>REPORT FORM</h2>
             </div>
             
-            <div className="flex justify-between items-start mb-6 text-sm">
-              <div className="space-y-1 flex-1 pr-4">
+            <div className={`flex justify-between items-start ${sectionMarginClass} text-xs`}>
+              <div className="space-y-0.5 flex-1 pr-4">
                 <p><span className="font-bold text-gray-600">Serial Number:</span> <span className="font-mono font-semibold">{serialNumber}</span></p>
                 <p><span className="font-bold text-gray-600">Exam Type:</span> End Term Report</p>
                 <p><span className="font-bold text-gray-600">Term:</span> {term}</p>
                 <p><span className="font-bold text-gray-600">Academic Year:</span> {academicYear}</p>
               </div>
-              <div className="space-y-1 text-right flex-1 pl-4">
-                <p className="break-words"><span className="font-bold text-gray-600">Learner Name:</span> <span className="font-bold text-base">{student.fullName}</span></p>
+              <div className="space-y-0.5 text-right flex-1 pl-4">
+                <p className="break-words"><span className="font-bold text-gray-600">Learner Name:</span> <span className={`font-bold ${isVeryCompact ? 'text-sm' : 'text-base'}`}>{student.fullName}</span></p>
                 <p className="break-words"><span className="font-bold text-gray-600">Admission Number:</span> {student.admissionNumber}</p>
                 <p className="break-words"><span className="font-bold text-gray-600">Class:</span> {studentClass?.name || ''}</p>
                 <p className="break-words"><span className="font-bold text-gray-600">Stream:</span> {studentStream?.name || ''}</p>
               </div>
             </div>
 
-            <table className="w-full mb-6 border-collapse text-sm">
+            <table className={`w-full ${sectionMarginClass} border-collapse ${tableTextClass}`}>
               <thead>
                 <tr style={{ backgroundColor: school?.primaryColor ? `${school.primaryColor}20` : '#f3f4f6' }}>
-                  <th className="p-2 text-left border-b-2 border-gray-300 font-bold">Subject</th>
-                  <th className="p-2 text-right border-b-2 border-gray-300 font-bold">Openar</th>
-                  <th className="p-2 text-right border-b-2 border-gray-300 font-bold">Midterm</th>
-                  <th className="p-2 text-right border-b-2 border-gray-300 font-bold">End Term</th>
-                  <th className="p-2 text-right border-b-2 border-gray-300 font-bold">Total</th>
-                  <th className="p-2 text-right border-b-2 border-gray-300 font-bold">Average</th>
-                  <th className="p-2 text-right border-b-2 border-gray-300 font-bold">Grade</th>
+                  <th className={`${tablePaddingClass} text-left border-b-2 border-gray-300 font-bold`}>Subject</th>
+                  <th className={`${tablePaddingClass} text-right border-b-2 border-gray-300 font-bold`}>Openar</th>
+                  <th className={`${tablePaddingClass} text-right border-b-2 border-gray-300 font-bold`}>Midterm</th>
+                  <th className={`${tablePaddingClass} text-right border-b-2 border-gray-300 font-bold`}>End Term</th>
+                  <th className={`${tablePaddingClass} text-right border-b-2 border-gray-300 font-bold`}>Total</th>
+                  <th className={`${tablePaddingClass} text-right border-b-2 border-gray-300 font-bold`}>Average</th>
+                  <th className={`${tablePaddingClass} text-right border-b-2 border-gray-300 font-bold`}>Grade</th>
                 </tr>
               </thead>
               <tbody>
                 {combinedResults.length > 0 ? (
                   combinedResults.map(r => (
                     <tr key={r.subjectId} className="border-b border-gray-200">
-                      <td className="p-2">{r.subjectName}</td>
-                      <td className="p-2 text-right">{r.opener}</td>
-                      <td className="p-2 text-right">{r.midterm}</td>
-                      <td className="p-2 text-right">{r.endTerm}</td>
-                      <td className="p-2 text-right font-semibold">{r.total}</td>
-                      <td className="p-2 text-right">{r.average.toFixed(1)}%</td>
-                      <td className="p-2 text-right font-bold" style={{ color: school?.primaryColor || '#000000' }}>{r.grade}</td>
+                      <td className={`${tablePaddingClass}`}>{r.subjectName}</td>
+                      <td className={`${tablePaddingClass} text-right`}>{r.opener}</td>
+                      <td className={`${tablePaddingClass} text-right`}>{r.midterm}</td>
+                      <td className={`${tablePaddingClass} text-right`}>{r.endTerm}</td>
+                      <td className={`${tablePaddingClass} text-right font-semibold`}>{r.total}</td>
+                      <td className={`${tablePaddingClass} text-right`}>{r.average.toFixed(1)}%</td>
+                      <td className={`${tablePaddingClass} text-right font-bold`} style={{ color: school?.primaryColor || '#000000' }}>{r.grade}</td>
                     </tr>
                   ))
                 ) : (
@@ -586,61 +598,61 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
             </table>
 
             {combinedResults.length > 0 && (
-              <div className="flex flex-col gap-4">
+              <div className={`flex flex-col ${sectionGapClass}`}>
                 {/* Summary Section */}
-                <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
-                  <h3 className="text-center font-bold text-gray-700 mb-2 uppercase tracking-wider text-xs">Term Summary</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-                    <div className="space-y-1">
-                      <p className="text-gray-500 font-medium text-[10px] uppercase">Openar Exams</p>
-                      <p className="text-base font-bold">{openerTotal} <span className="text-xs text-gray-400 font-normal">/ {maxPossiblePerExam}</span></p>
-                      <p className="text-xs text-gray-600">Mean: <span className="font-semibold">{openerMean.toFixed(1)}%</span></p>
+                <div className={`bg-gray-50 ${summaryPaddingClass} rounded-xl border border-gray-200`}>
+                  <h3 className="text-center font-bold text-gray-700 mb-1 uppercase tracking-wider text-[10px]">Term Summary</h3>
+                  <div className="grid grid-cols-3 gap-2 text-center">
+                    <div className="space-y-0.5">
+                      <p className="text-gray-500 font-medium text-[8px] uppercase">Openar</p>
+                      <p className={`${isVeryCompact ? 'text-sm' : 'text-base'} font-bold`}>{openerTotal} <span className="text-[8px] text-gray-400 font-normal">/ {maxPossiblePerExam}</span></p>
+                      <p className="text-[10px] text-gray-600">Mean: <span className="font-semibold">{openerMean.toFixed(1)}%</span></p>
                     </div>
-                    <div className="space-y-1">
-                      <p className="text-gray-500 font-medium text-[10px] uppercase">Midterm Exams</p>
-                      <p className="text-base font-bold">{midtermTotal} <span className="text-xs text-gray-400 font-normal">/ {maxPossiblePerExam}</span></p>
-                      <p className="text-xs text-gray-600">Mean: <span className="font-semibold">{midtermMean.toFixed(1)}%</span></p>
+                    <div className="space-y-0.5">
+                      <p className="text-gray-500 font-medium text-[8px] uppercase">Midterm</p>
+                      <p className={`${isVeryCompact ? 'text-sm' : 'text-base'} font-bold`}>{midtermTotal} <span className="text-[8px] text-gray-400 font-normal">/ {maxPossiblePerExam}</span></p>
+                      <p className="text-[10px] text-gray-600">Mean: <span className="font-semibold">{midtermMean.toFixed(1)}%</span></p>
                     </div>
-                    <div className="space-y-1">
-                      <p className="text-gray-500 font-medium text-[10px] uppercase">End Term Exams</p>
-                      <p className="text-base font-bold">{endTermTotal} <span className="text-xs text-gray-400 font-normal">/ {maxPossiblePerExam}</span></p>
-                      <p className="text-xs text-gray-600">Mean: <span className="font-semibold">{endTermMean.toFixed(1)}%</span></p>
+                    <div className="space-y-0.5">
+                      <p className="text-gray-500 font-medium text-[8px] uppercase">End Term</p>
+                      <p className={`${isVeryCompact ? 'text-sm' : 'text-base'} font-bold`}>{endTermTotal} <span className="text-[8px] text-gray-400 font-normal">/ {maxPossiblePerExam}</span></p>
+                      <p className="text-[10px] text-gray-600">Mean: <span className="font-semibold">{endTermMean.toFixed(1)}%</span></p>
                     </div>
                   </div>
                 </div>
 
                 {/* Final Grade Section */}
                 <div className="flex items-center justify-between gap-4">
-                  <div className="bg-gray-100 p-4 rounded-xl border border-gray-300 flex-1 flex items-center justify-around">
+                  <div className={`bg-gray-100 ${summaryPaddingClass} rounded-xl border border-gray-300 flex-1 flex items-center justify-around`}>
                     <div className="text-center">
-                      <p className="text-gray-500 font-medium mb-1 uppercase text-[10px] tracking-wider">Final Mean</p>
-                      <p className="text-2xl font-black">{finalMean.toFixed(2)}%</p>
+                      <p className="text-gray-500 font-medium mb-0.5 uppercase text-[8px] tracking-wider">Final Mean</p>
+                      <p className={`${isVeryCompact ? 'text-xl' : 'text-2xl'} font-black`}>{finalMean.toFixed(2)}%</p>
                     </div>
                     <div className="text-center">
-                      <p className="text-gray-500 font-medium mb-1 uppercase text-[10px] tracking-wider">Final Grade</p>
-                      <p className="text-3xl font-black" style={{ color: school?.primaryColor || '#000000' }}>{finalGrade}</p>
+                      <p className="text-gray-500 font-medium mb-0.5 uppercase text-[8px] tracking-wider">Final Grade</p>
+                      <p className={`${isVeryCompact ? 'text-2xl' : 'text-3xl'} font-black`} style={{ color: school?.primaryColor || '#000000' }}>{finalGrade}</p>
                     </div>
                   </div>
 
                   {/* School Seal */}
                   <div 
-                    className="w-24 h-24 shrink-0 rounded-full border-[3px] border-double flex items-center justify-center p-1 opacity-80 rotate-[-15deg] pointer-events-none" 
+                    className={`${isVeryCompact ? 'w-20 h-20' : 'w-24 h-24'} shrink-0 rounded-full border-[3px] border-double flex items-center justify-center p-1 opacity-80 rotate-[-15deg] pointer-events-none`} 
                     style={{ borderColor: school?.primaryColor || '#1e3a8a', color: school?.primaryColor || '#1e3a8a' }}
                   >
                     <div className="w-full h-full rounded-full border border-dashed flex flex-col items-center justify-center text-center p-1 relative bg-white">
-                      <div className="font-black text-[6px] uppercase tracking-wider mb-0.5 border-b border-current pb-0.5 w-full truncate px-1">{school?.name}</div>
-                      <div className="font-bold text-[5px] uppercase text-gray-600">REPORT FORM</div>
-                      <div className="font-bold text-[5px] uppercase mt-0.5">Adm: {student.admissionNumber}</div>
-                      <div className="font-bold text-[5px] uppercase">Cls: {studentClass?.name || ''}</div>
-                      <div className="font-bold text-[5px] uppercase">Str: {studentStream?.name || ''}</div>
-                      <div className="font-bold text-[5px] uppercase mt-0.5 border-t border-current pt-0.5 w-full">{academicYear}</div>
+                      <div className="font-black text-[5px] uppercase tracking-wider mb-0.5 border-b border-current pb-0.5 w-full truncate px-1">{school?.name}</div>
+                      <div className="font-bold text-[4px] uppercase text-gray-600">REPORT FORM</div>
+                      <div className="font-bold text-[4px] uppercase mt-0.5">Adm: {student.admissionNumber}</div>
+                      <div className="font-bold text-[4px] uppercase">Cls: {studentClass?.name || ''}</div>
+                      <div className="font-bold text-[4px] uppercase">Str: {studentStream?.name || ''}</div>
+                      <div className="font-bold text-[4px] uppercase mt-0.5 border-t border-current pt-0.5 w-full">{academicYear}</div>
                     </div>
                   </div>
                 </div>
 
                 {/* Manual Comments Section */}
-                <div className="mt-4 pt-4 border-t-2 border-gray-200">
-                  <div className="grid grid-cols-1 gap-6 text-sm">
+                <div className={`mt-2 pt-2 border-t-2 border-gray-200`}>
+                  <div className={`grid grid-cols-1 ${commentGapClass} text-xs`}>
                     <div className="flex items-end">
                       <span className="font-bold text-gray-700 whitespace-nowrap mr-2">Class Teacher's Comment:</span>
                       <div className="flex-1 border-b border-gray-400 border-dashed pb-0.5 px-2 text-gray-800 italic">{teacherComment}</div>
