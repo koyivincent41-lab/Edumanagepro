@@ -72,6 +72,16 @@ export default function Parents({ schoolId }: { schoolId: string }) {
     }
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const parentData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Parent));
+      
+      parentData.forEach(async (p) => {
+        if (!p.parentId) {
+          const newId = Math.floor(1000 + Math.random() * 9000).toString();
+          try {
+            await updateDoc(doc(db, 'schools', schoolId, 'parents', p.id), { parentId: newId });
+          } catch(e) {}
+        }
+      });
+
       setParents(parentData);
       setLoading(false);
     });
@@ -117,8 +127,10 @@ export default function Parents({ schoolId }: { schoolId: string }) {
         const user = userCredential.user;
 
         // Create Parent Document
+        const newParentId = Math.floor(1000 + Math.random() * 9000).toString();
         await addDoc(collection(db, 'schools', schoolId, 'parents'), {
           ...data,
+          parentId: newParentId,
           uid: user.uid,
           schoolId,
           ...(currentBranch ? { branchId: currentBranch.id } : {}),
@@ -239,8 +251,10 @@ export default function Parents({ schoolId }: { schoolId: string }) {
               if (existingParent) {
                 parentId = existingParent.id;
               } else {
+                const newParentUniqueId = Math.floor(1000 + Math.random() * 9000).toString();
                 const parentDoc = await addDoc(collection(db, 'schools', schoolId, 'parents'), {
                   fullName: row['Parent Full Name'] || 'Unknown Parent',
+                  parentId: newParentUniqueId,
                   phone: phone,
                   email: row['Email'] || '',
                   address: row['Address'] || '',
@@ -354,12 +368,17 @@ export default function Parents({ schoolId }: { schoolId: string }) {
                 </div>
                 <div>
                   <h3 className="font-bold text-gray-900">{parent.fullName}</h3>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary/10 text-primary uppercase tracking-widest border border-primary/20">
+                      ID: {parent.parentId || '---'}
+                    </span>
                   <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase flex items-center gap-1 ${
                     parent.status === 'active' ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-500'
                   }`}>
                     {parent.status === 'active' ? <CheckCircle2 className="h-3 w-3" /> : <XCircle className="h-3 w-3" />}
                     {parent.status || 'active'}
                   </span>
+                  </div>
                 </div>
               </div>
               <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">

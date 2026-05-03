@@ -153,6 +153,7 @@ export interface Student {
 
 export interface Parent {
   id: string;
+  parentId?: string;
   schoolId: string;
   branchId?: string;
   fullName: string;

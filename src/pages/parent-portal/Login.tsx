@@ -1,17 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth, db } from '../../firebase';
-import { collection, query, where, getDocs } from 'firebase/firestore';
-import { Eye, EyeOff, GraduationCap, LogOut, Moon, Sun } from 'lucide-react';
+import { db } from '../../firebase';
+import { collection, query, where, getDocs, collectionGroup } from 'firebase/firestore';
+import { GraduationCap, LogOut, Moon, Sun, Key } from 'lucide-react';
 import { toast } from 'sonner';
 import ThemeToggle from '../../components/ThemeToggle';
 import { UserProfile } from '../../types';
 
 export default function ParentLogin({ profile }: { profile: UserProfile | null }) {
-  const [emailOrUsername, setEmailOrUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
+  const [parentId, setParentId] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -23,29 +20,38 @@ export default function ParentLogin({ profile }: { profile: UserProfile | null }
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!parentId.trim()) {
+      toast.error('Please enter your Parent ID');
+      return;
+    }
+    
     setLoading(true);
     try {
-      let email = emailOrUsername;
+      const q = query(collection(db, 'parents'), where('parentId', '==', parentId.trim()));
+      // Since parents are under 'schools/{schoolId}/parents', we actually need a collectionGroup query or to search differently.
+      // Wait, let's use collectionGroup('parents') since we don't know the schoolId.
+      const parentsRef = collectionGroup(db, 'parents');
+      const pq = query(parentsRef, where('parentId', '==', parentId.trim()));
+      const querySnapshot = await getDocs(pq);
       
-      // If it doesn't look like an email, try to find it by username
-      if (!email.includes('@')) {
-        const usersRef = collection(db, 'users');
-        const q = query(usersRef, where('username', '==', emailOrUsername));
-        const querySnapshot = await getDocs(q);
-        
-        if (querySnapshot.empty) {
-          toast.error('Invalid username or email');
-          setLoading(false);
-          return;
-        }
-        
-        email = querySnapshot.docs[0].data().email;
+      if (querySnapshot.empty) {
+        toast.error('Invalid Parent ID');
+        return;
       }
+      
+      const parentDoc = querySnapshot.docs[0];
+      const parentData = parentDoc.data();
 
-      await signInWithEmailAndPassword(auth, email, password);
+      // Save the parent collection doc ID so it can be picked up by the portal
+      localStorage.setItem('parentDocId', parentDoc.id);
+      localStorage.setItem('parentId', parentData.parentId || '');
+      localStorage.setItem('parentSchoolId', parentData.schoolId || '');
+      localStorage.setItem('parentName', parentData.fullName || 'Parent');
+
       navigate('/parent-portal/dashboard');
     } catch (error) {
-      toast.error('Invalid email/username or password');
+      console.error('Login error:', error);
+      toast.error('An error occurred. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -71,42 +77,28 @@ export default function ParentLogin({ profile }: { profile: UserProfile | null }
           </div>
         </div>
         <h2 className="text-4xl font-black text-center text-gray-900 dark:text-white mb-3 tracking-tight">Parent Portal</h2>
-        <p className="text-center text-gray-500 dark:text-gray-400 mb-10 font-medium">Access your children's financial records.</p>
+        <p className="text-center text-gray-500 dark:text-gray-400 mb-10 font-medium">Log in with your Parent ID.</p>
         
         <form onSubmit={handleLogin} className="space-y-6">
           <div className="space-y-2">
-            <label className="block text-xs font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 ml-1">Email or Username</label>
-            <input
-              type="text"
-              value={emailOrUsername}
-              onChange={(e) => setEmailOrUsername(e.target.value)}
-              className="w-full px-5 py-4 rounded-2xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-950 focus:border-primary outline-none transition-all font-medium text-gray-900 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600"
-              placeholder="parent@school.com"
-              required
-            />
+            <label className="block text-xs font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 ml-1">Parent Unique ID</label>
+            <div className="relative group/input">
+              <Key className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within/input:text-primary transition-colors" />
+              <input
+                type="text"
+                value={parentId}
+                onChange={(e) => setParentId(e.target.value)}
+                className="w-full pl-12 pr-5 py-4 rounded-2xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-950 focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all font-medium text-gray-900 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600"
+                placeholder="e.g. 4589"
+                required
+              />
+            </div>
           </div>
-          <div className="relative space-y-2">
-            <label className="block text-xs font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 ml-1">Password</label>
-            <input
-              type={showPassword ? 'text' : 'password'}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-5 py-4 rounded-2xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-950 focus:border-primary outline-none transition-all font-medium text-gray-900 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600"
-              placeholder="••••••••"
-              required
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-4 top-11 text-gray-400 hover:text-gray-600"
-            >
-              {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-            </button>
-          </div>
+          
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-black uppercase tracking-[0.2em] text-xs rounded-2xl shadow-2xl shadow-gray-900/30 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50"
+            className="w-full py-5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-black uppercase tracking-[0.2em] text-xs rounded-2xl shadow-2xl shadow-gray-900/30 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {loading ? 'Authenticating...' : 'Sign In to Portal'}
           </button>

@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Users, FileText, Receipt, History, Settings, LogOut, GraduationCap, Menu, X, Bell } from 'lucide-react';
-import { auth } from '../firebase';
-import { signOut } from 'firebase/auth';
 import ThemeToggle from './ThemeToggle';
 import { UserProfile } from '../types';
 
@@ -12,7 +10,10 @@ export default function ParentLayout({ children, profile }: { children: React.Re
   const location = useLocation();
 
   const handleLogout = async () => {
-    await signOut(auth);
+    localStorage.removeItem('parentDocId');
+    localStorage.removeItem('parentId');
+    localStorage.removeItem('parentSchoolId');
+    localStorage.removeItem('parentName');
     navigate('/parent-portal/login');
   };
 
