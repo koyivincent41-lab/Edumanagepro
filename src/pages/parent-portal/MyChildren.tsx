@@ -30,14 +30,8 @@ export default function MyChildren({ profile }: { profile: UserProfile }) {
 
     const fetchData = async () => {
       try {
-        // Parallelize school and parent fetch for faster loading
-        const [schoolDoc, parentsSnapshot] = await Promise.all([
-          getDoc(doc(db, 'schools', profile.schoolId)),
-          getDocs(query(
-            collection(db, 'schools', profile.schoolId, 'parents'), 
-            where('uid', '==', profile.uid)
-          ))
-        ]);
+        // Fetch school
+        const schoolDoc = await getDoc(doc(db, 'schools', profile.schoolId!));
 
         if (schoolDoc.exists()) {
           setSchool({ id: schoolDoc.id, ...schoolDoc.data() });
@@ -46,12 +40,27 @@ export default function MyChildren({ profile }: { profile: UserProfile }) {
           }
         }
         
-        if (parentsSnapshot.empty) {
+        const parentsQuery = query(
+          collection(db, 'schools', profile.schoolId!, 'parents'), 
+          where('uid', '==', profile.uid)
+        );
+        const parentsSnapshot = await getDocs(parentsQuery);
+        
+        let parentId = '';
+        if (!parentsSnapshot.empty) {
+          parentId = parentsSnapshot.docs[0].id;
+        } else {
+          // Check if profile.uid is actually the parent document ID (from localStorage login)
+          const parentDoc = await getDoc(doc(db, 'schools', profile.schoolId!, 'parents', profile.uid));
+          if (parentDoc.exists()) {
+            parentId = parentDoc.id;
+          }
+        }
+
+        if (!parentId) {
           setLoading(false);
           return;
         }
-        
-        const parentId = parentsSnapshot.docs[0].id;
 
         // Parallelize children, invoices, classes, and streams fetch
         const [childrenSnapshot, invoicesSnapshot, classesSnapshot, streamsSnapshot] = await Promise.all([
@@ -395,6 +404,13 @@ export default function MyChildren({ profile }: { profile: UserProfile }) {
               </div>
               <div className="flex items-center gap-2">
                 <button 
+                  onClick={() => handleAction('Download', selectedInvoice)}
+                  className="p-3 hover:bg-gray-200 rounded-xl transition-colors text-primary flex items-center gap-2 font-bold text-sm"
+                >
+                  <Download className="h-5 w-5" />
+                  Download
+                </button>
+                <button 
                   onClick={() => window.print()}
                   className="p-3 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl transition-colors text-gray-600 dark:text-gray-300 flex items-center gap-2 font-bold text-sm"
                 >
@@ -403,9 +419,10 @@ export default function MyChildren({ profile }: { profile: UserProfile }) {
                 </button>
                 <button 
                   onClick={() => setSelectedInvoice(null)} 
-                  className="p-3 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl transition-colors text-gray-400"
+                  className="p-3 bg-gray-900 text-white hover:bg-gray-800 dark:hover:bg-gray-700 rounded-xl transition-colors flex items-center gap-2 font-bold text-sm shadow-md"
                 >
-                  <X className="h-6 w-6" />
+                  <X className="h-5 w-5" />
+                  Close
                 </button>
               </div>
             </div>
@@ -549,6 +566,13 @@ export default function MyChildren({ profile }: { profile: UserProfile }) {
               </div>
               <div className="flex items-center gap-2">
                 <button 
+                  onClick={() => handleAction('Download', selectedReceipt)}
+                  className="p-3 hover:bg-gray-200 rounded-xl transition-colors text-primary flex items-center gap-2 font-bold text-sm"
+                >
+                  <Download className="h-5 w-5" />
+                  Download
+                </button>
+                <button 
                   onClick={() => window.print()}
                   className="p-3 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl transition-colors text-gray-600 dark:text-gray-300 flex items-center gap-2 font-bold text-sm"
                 >
@@ -557,9 +581,10 @@ export default function MyChildren({ profile }: { profile: UserProfile }) {
                 </button>
                 <button 
                   onClick={() => setSelectedReceipt(null)} 
-                  className="p-3 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl transition-colors text-gray-400"
+                  className="p-3 bg-gray-900 text-white hover:bg-gray-800 dark:hover:bg-gray-700 rounded-xl transition-colors flex items-center gap-2 font-bold text-sm shadow-md"
                 >
-                  <X className="h-6 w-6" />
+                  <X className="h-5 w-5" />
+                  Close
                 </button>
               </div>
             </div>

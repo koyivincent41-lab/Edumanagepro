@@ -3,7 +3,8 @@ import ParentLayout from '../../components/ParentLayout';
 import { db, auth } from '../../firebase';
 import { collection, query, where, getDocs, doc, getDoc, onSnapshot } from 'firebase/firestore';
 import { UserProfile } from '../../types';
-import { Loader2, Download, Printer, Eye, X } from 'lucide-react';
+import { Loader2, Download, Printer, CheckCircle2, Eye, X } from 'lucide-react';
+import { exportReceiptToPDF } from '../../lib/reportUtils';
 
 export default function Receipts({ profile }: { profile: UserProfile }) {
   const [receipts, setReceipts] = useState<any[]>([]);
@@ -32,12 +33,47 @@ export default function Receipts({ profile }: { profile: UserProfile }) {
         );
         const parentsSnapshot = await getDocs(parentsQuery);
         
-        if (parentsSnapshot.empty) {
+        let parentId = '';
+        if (!parentsSnapshot.empty) {
+          parentId = parentsSnapshot.docs[0].id;
+        } else {
+          // Check if profile.uid is actually the parent document ID (from localStorage login)
+          const parentDoc = await getDoc(doc(db, 'schools', profile.schoolId!, 'parents', profile.uid));
+          if (parentDoc.exists()) {
+            parentId = parentDoc.id;
+          }
+        }
+
+        if (!parentId) {
           setLoading(false);
           return;
         }
-        
-        const parentId = parentsSnapshot.docs[0].id;
+
+        // Fetch students directly linked to this parent to get admission numbers and names
+        const studentsQuery = query(
+          collection(db, 'schools', profile.schoolId!, 'students'),
+          where('parentId', '==', parentId)
+        );
+        const studentsSnap = await getDocs(studentsQuery);
+        const studentsMap = new Map();
+        studentsSnap.forEach(doc => {
+          const studentData = doc.data();
+          studentsMap.set(doc.id, {
+            admissionNumber: studentData.admissionNumber || 'N/A',
+            fullName: studentData.fullName || 'N/A'
+          });
+        });
+
+        // Fetch all invoices for parent's children to resolve invoice numbers if missing
+        const invoicesQuery = query(
+          collection(db, 'schools', profile.schoolId!, 'invoices'),
+          where('parentId', '==', parentId)
+        );
+        const invoicesSnap = await getDocs(invoicesQuery);
+        const invoicesMap = new Map();
+        invoicesSnap.forEach(doc => {
+          invoicesMap.set(doc.id, doc.data().invoiceNumber);
+        });
 
         const q = query(
           collection(db, 'schools', profile.schoolId!, 'payments'), 
@@ -46,7 +82,17 @@ export default function Receipts({ profile }: { profile: UserProfile }) {
         );
         
         unsubReceipts = onSnapshot(q, (snap) => {
-          setReceipts(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+          setReceipts(snap.docs.map(d => {
+            const data = d.data();
+            const studentInfo = studentsMap.get(data.studentId) || {};
+            return { 
+              id: d.id, 
+              ...data,
+              studentName: data.studentName || studentInfo.fullName || 'N/A',
+              admissionNumber: data.admissionNumber || studentInfo.admissionNumber || 'N/A',
+              invoiceNumber: data.invoiceNumber || invoicesMap.get(data.invoiceId) || 'N/A'
+            };
+          }));
           setLoading(false);
         });
       } catch (error) {
@@ -73,25 +119,14 @@ export default function Receipts({ profile }: { profile: UserProfile }) {
     window.print();
   };
 
-  const handleDownload = (receipt: any) => {
-    const content = `
-      RECEIPT: ${receipt.receiptNumber}
-      School: ${school?.name || 'EduManagePro'}
-      Student: ${receipt.studentName}
-      Amount Paid: ${formatCurrency(receipt.amount)}
-      Payment Method: ${receipt.paymentMethod}
-      Reference: ${receipt.reference}
-      Date: ${new Date(receipt.paymentDate).toLocaleDateString()}
-    `;
-    const blob = new Blob([content], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `Receipt_${receipt.receiptNumber}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+  const handleDownload = async (receipt: any) => {
+    try {
+      const mockStudent = { fullName: receipt.studentName, admissionNumber: receipt.admissionNumber || 'N/A' } as any;
+      const mockInvoice = { invoiceNumber: receipt.invoiceNumber || 'N/A' } as any;
+      await exportReceiptToPDF(receipt, mockStudent, mockInvoice, school);
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+    }
   };
 
   if (loading) return <ParentLayout profile={profile}><div className="flex items-center justify-center h-64"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div></ParentLayout>;
@@ -156,69 +191,135 @@ export default function Receipts({ profile }: { profile: UserProfile }) {
         </table>
       </div>
 
-      {/* Receipt Modal */}
+      {/* Preview Modal */}
       {selectedReceipt && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm print:p-0 print:bg-white print:static">
-          <div className="bg-white dark:bg-gray-900 w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden print:shadow-none print:rounded-none print:w-full print:max-w-none">
-            <div className="p-8 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between print:hidden">
-              <h2 className="text-2xl font-black text-gray-900 dark:text-white">Receipt Details</h2>
-              <button onClick={() => setSelectedReceipt(null)} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors">
-                <X className="h-6 w-6" />
-              </button>
-            </div>
-            <div className="p-10 space-y-8 print:p-0">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h1 className="text-4xl font-black text-primary mb-2">{school?.name || 'EduManagePro'}</h1>
-                  <p className="text-gray-500 dark:text-gray-400 text-sm">{school?.address}</p>
-                  <p className="text-gray-500 dark:text-gray-400 text-sm">{school?.phone}</p>
+        <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-300">
+          <div className="bg-white w-full max-w-3xl rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 flex flex-col max-h-[90vh]">
+            <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-gray-50/50 print:hidden">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-school-gradient/10 rounded-xl text-green-600">
+                  <CheckCircle2 className="h-5 w-5" />
                 </div>
-                <div className="text-right">
-                  <h2 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter">Receipt</h2>
-                  <p className="text-gray-500 dark:text-gray-400 font-bold">#{selectedReceipt.receiptNumber}</p>
-                  <p className="text-gray-400 text-xs mt-1">{new Date(selectedReceipt.paymentDate).toLocaleDateString()}</p>
-                </div>
+                <h2 className="text-xl font-bold text-gray-900">Official Receipt</h2>
               </div>
-
-              <div className="grid grid-cols-2 gap-10 py-8 border-y border-gray-100 dark:border-gray-800">
-                <div>
-                  <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Received From</h3>
-                  <p className="font-black text-gray-900 dark:text-white text-lg">{profile.fullName}</p>
-                  <p className="text-gray-500 dark:text-gray-400 text-sm">Parent of {selectedReceipt.studentName}</p>
-                </div>
-                <div className="text-right">
-                  <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Payment Method</h3>
-                  <p className="font-black text-gray-900 dark:text-white uppercase text-sm">{selectedReceipt.paymentMethod?.replace('_', ' ')}</p>
-                  <p className="text-gray-500 dark:text-gray-400 text-xs mt-1">Ref: {selectedReceipt.reference}</p>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <div className="flex justify-between items-center py-4 border-b border-gray-100 dark:border-gray-800">
-                  <span className="text-lg font-black text-gray-900 dark:text-white uppercase tracking-widest">Amount Received</span>
-                  <span className="text-4xl font-black text-green-600">{formatCurrency(selectedReceipt.amount)}</span>
-                </div>
-              </div>
-
-              <div className="pt-10 flex gap-4 print:hidden">
-                <button
-                  onClick={handlePrint}
-                  className="flex-1 py-4 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white font-black uppercase tracking-widest text-xs rounded-2xl hover:bg-gray-200 transition-all flex items-center justify-center gap-2"
-                >
-                  <Printer className="h-4 w-4" />
-                  Print Receipt
-                </button>
-                <button
+              <div className="flex items-center gap-2">
+                <button 
                   onClick={() => handleDownload(selectedReceipt)}
-                  className="flex-1 py-4 bg-primary text-white font-black uppercase tracking-widest text-xs rounded-2xl shadow-xl shadow-primary/20 hover:scale-105 transition-all flex items-center justify-center gap-2"
+                  className="p-3 hover:bg-gray-200 rounded-xl transition-colors text-primary flex items-center gap-2 font-bold text-sm"
                 >
-                  <Download className="h-4 w-4" />
+                  <Download className="h-5 w-5" />
                   Download
                 </button>
+                <button 
+                  onClick={() => window.print()}
+                  className="p-3 hover:bg-gray-200 rounded-xl transition-colors text-gray-600 flex items-center gap-2 font-bold text-sm"
+                >
+                  <Printer className="h-5 w-5" />
+                  Print
+                </button>
+                <button 
+                  onClick={() => setSelectedReceipt(null)} 
+                  className="p-3 bg-gray-900 text-white hover:bg-gray-800 rounded-xl transition-colors flex items-center gap-2 font-bold text-sm shadow-md"
+                >
+                  <X className="h-5 w-5" />
+                  Close
+                </button>
               </div>
-              
-              <div className="hidden print:block pt-20 text-center border-t border-dashed border-gray-300 mt-20">
-                <p className="text-xs text-gray-400 uppercase tracking-widest font-black">This is a computer generated receipt</p>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-12 bg-white print:p-0" id="printable-receipt">
+              {/* Letterhead */}
+              <div className="flex justify-between items-start mb-12 border-b-4 pb-8" style={{ borderColor: school?.primaryColor || '#800000' }}>
+                <div className="flex items-center gap-6">
+                  {school?.logo ? (
+                    <img src={school.logo || undefined} alt="Logo" className="h-20 w-20 object-contain rounded-2xl shadow-sm" referrerPolicy="no-referrer" />
+                  ) : (
+                    <div className="h-20 w-20 bg-school-gradient rounded-2xl flex items-center justify-center text-white font-bold text-3xl shadow-lg">
+                      {school?.name?.charAt(0) || 'E'}
+                    </div>
+                  )}
+                  <div>
+                    <h1 className="text-2xl font-black tracking-tighter text-gray-900 uppercase">{school?.name || 'EduManagePro'}</h1>
+                    <p className="text-primary font-bold italic text-sm">{school?.motto}</p>
+                    <div className="mt-2 text-xs text-gray-500 space-y-0.5 font-medium">
+                      <p>{school?.address}</p>
+                      <p>Tel: {school?.phone} | Email: {school?.email}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="inline-block px-5 py-1.5 rounded-full text-white font-black text-[10px] uppercase tracking-widest mb-3" style={{ backgroundColor: school?.primaryColor || '#800000' }}>
+                    Official Receipt
+                  </div>
+                  <p className="text-3xl font-black text-gray-900 tracking-tighter">{selectedReceipt.receiptNumber}</p>
+                  <p className="text-xs font-bold text-gray-400 mt-1 uppercase tracking-widest">Date: {new Date(selectedReceipt.paymentDate).toLocaleDateString()}</p>
+                </div>
+              </div>
+
+              <div className="bg-gray-50 p-8 rounded-[2rem] border border-gray-100 mb-12">
+                <div className="grid grid-cols-2 gap-8">
+                  <div>
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3">Received From:</p>
+                    <div className="space-y-1">
+                      <p className="text-lg font-black text-gray-900">{selectedReceipt.studentName}</p>
+                      <p className="text-xs font-bold text-gray-600">Adm: {selectedReceipt.admissionNumber || 'N/A'}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3">Payment Method:</p>
+                    <p className="text-lg font-black text-gray-900 uppercase">{selectedReceipt.paymentMethod?.replace('_', ' ')}</p>
+                    {selectedReceipt.reference && (
+                      <p className="text-xs font-bold text-gray-500 mt-1">Ref: {selectedReceipt.reference}</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="mb-12">
+                <div className="flex justify-between items-center py-6 border-y-2 border-gray-100">
+                  <div>
+                    <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">Payment For:</p>
+                    <p className="text-lg font-bold text-gray-900">
+                      Invoice {selectedReceipt.invoiceNumber || 'N/A'}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">Amount Paid:</p>
+                    <p className="text-4xl font-black text-green-600">
+                      {school?.currency || currency} {selectedReceipt.amount?.toLocaleString() || '0'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-auto pt-12 border-t border-gray-100 relative">
+                <div className="text-center">
+                  <p className="text-sm font-bold text-gray-400 italic">{school?.receiptFooter || 'Thank you for your payment.'}</p>
+                  <div className="mt-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                    For technical support, contact: support@{school?.email?.split('@')[1] || 'edumanagepro.com'}
+                  </div>
+                  <div className="mt-6 flex justify-center gap-8 text-[10px] font-black text-gray-300 uppercase tracking-[0.3em]">
+                    <span>Official Receipt</span>
+                    <span>•</span>
+                    <span>{school?.name || 'EduManagePro'}</span>
+                    <span>•</span>
+                    <span>{new Date().getFullYear()}</span>
+                  </div>
+                </div>
+
+                {/* Approved Seal */}
+                <div className="absolute right-0 bottom-12 opacity-20 print:opacity-100">
+                  <div 
+                    className="w-32 h-32 rounded-full border-4 flex flex-col items-center justify-center rotate-[-15deg] p-2 text-center"
+                    style={{ borderColor: school?.primaryColor || '#800000', color: school?.primaryColor || '#800000' }}
+                  >
+                    <span className="text-[8px] font-black uppercase tracking-widest leading-none mb-1">{school?.name || 'EduManagePro'}</span>
+                    <span className="text-xl font-black uppercase tracking-tighter leading-none">Approved</span>
+                    <span className="text-[10px] font-bold my-1">{selectedReceipt.receiptNumber}</span>
+                    <span className="text-[8px] font-bold">{new Date().toLocaleDateString()}</span>
+                    <div className="absolute inset-0 rounded-full border border-dashed opacity-50 m-1" style={{ borderColor: school?.primaryColor || '#800000' }}></div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

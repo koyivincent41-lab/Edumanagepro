@@ -16,14 +16,15 @@ import {
   Download,
   FileSpreadsheet,
   CheckCircle2,
-  XCircle
+  XCircle,
+  RefreshCw
 } from 'lucide-react';
 import { collection, onSnapshot, doc, addDoc, updateDoc, deleteDoc, query, where, getDocs, setDoc } from 'firebase/firestore';
 import { db, auth } from '../../firebase';
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
 import { initializeApp, getApps } from 'firebase/app';
 import firebaseConfig from '../../../firebase-applet-config.json';
-import { Parent, Student, Class, Stream } from '../../types';
+import { Parent, Student, Class, Stream, Invoice, Payment } from '../../types';
 import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -311,6 +312,136 @@ export default function Parents({ schoolId }: { schoolId: string }) {
     });
   };
 
+  const synchronizeData = async () => {
+    setLoading(true);
+    try {
+      const studentsSnap = await getDocs(collection(db, 'schools', schoolId, 'students'));
+      const parentsSnap = await getDocs(collection(db, 'schools', schoolId, 'parents'));
+      const invoicesSnap = await getDocs(collection(db, 'schools', schoolId, 'invoices'));
+      const paymentsSnap = await getDocs(collection(db, 'schools', schoolId, 'payments'));
+      const usersSnap = await getDocs(query(collection(db, 'users'), where('schoolId', '==', schoolId), where('role', '==', 'parent')));
+
+      const allStudents = studentsSnap.docs.map(d => ({ id: d.id, ...d.data() } as Student));
+      const allParents = parentsSnap.docs.map(d => ({ id: d.id, ...d.data() } as Parent));
+      const allParentUsers = usersSnap.docs.map(d => ({ id: d.id, ...d.data() } as any));
+      
+      const parentByDisplayId: Record<string, Parent> = {};
+      const parentById: Record<string, Parent> = {};
+      const parentByPhone: Record<string, Parent> = {};
+      const parentByEmail: Record<string, Parent> = {};
+
+      allParents.forEach(p => {
+        if (p.parentId) parentByDisplayId[p.parentId] = p;
+        if (p.phone) parentByPhone[p.phone.trim()] = p;
+        if (p.email) parentByEmail[p.email.toLowerCase().trim()] = p;
+        parentById[p.id] = p;
+      });
+
+      let updatedCount = 0;
+
+      // 1. Link UIDs to parents if missing
+      for (const user of allParentUsers) {
+        const parentDoc = allParents.find(p => 
+          (p.email && p.email.toLowerCase().trim() === user.email?.toLowerCase().trim()) ||
+          (p.phone && p.phone.trim() === user.phone?.trim())
+        );
+
+        if (parentDoc && !parentDoc.uid) {
+          await updateDoc(doc(db, 'schools', schoolId, 'parents', parentDoc.id), {
+            uid: user.uid,
+            updatedAt: new Date().toISOString()
+          });
+          parentDoc.uid = user.uid; // Update local copy for next steps
+          updatedCount++;
+        }
+      }
+
+      // 2. Synchronize Student-Parent Links
+      for (const student of allStudents) {
+        let correctParentId = student.parentId;
+        
+        // If parentId doesn't match an actual doc ID, check display ID, Phone or Email
+        if (!parentById[student.parentId]) {
+           const byDisplay = parentByDisplayId[student.parentId];
+           const byPhone = parentByPhone[student.parentId.trim()];
+           
+           if (byDisplay) {
+             correctParentId = byDisplay.id;
+           } else if (byPhone) {
+             correctParentId = byPhone.id;
+           }
+        }
+
+        if (correctParentId !== student.parentId) {
+          await updateDoc(doc(db, 'schools', schoolId, 'students', student.id), {
+            parentId: correctParentId,
+            updatedAt: new Date().toISOString()
+          });
+          updatedCount++;
+        }
+      }
+
+      // 3. Synchronize Invoices
+      for (const inv of invoicesSnap.docs) {
+        const data = inv.data() as Invoice;
+        const student = allStudents.find(s => s.id === data.studentId);
+        if (student) {
+          const parent = parentById[student.parentId];
+          const needsUpdate = !data.studentName || 
+                            !data.admissionNumber || 
+                            data.studentName !== student.fullName || 
+                            data.admissionNumber !== student.admissionNumber ||
+                            data.parentId !== student.parentId;
+                            
+          if (needsUpdate) {
+            await updateDoc(doc(db, 'schools', schoolId, 'invoices', inv.id), {
+              studentName: student.fullName,
+              admissionNumber: student.admissionNumber,
+              parentId: student.parentId,
+              updatedAt: new Date().toISOString()
+            });
+            updatedCount++;
+          }
+        }
+      }
+
+      // 4. Synchronize Payments
+      for (const pymt of paymentsSnap.docs) {
+        const data = pymt.data() as Payment;
+        const student = allStudents.find(s => s.id === data.studentId);
+        const invoice = invoicesSnap.docs.find(i => i.id === data.invoiceId)?.data() as Invoice | undefined;
+
+        if (student) {
+          const needsUpdate = !data.studentName || 
+                            !data.admissionNumber || 
+                            !data.invoiceNumber ||
+                            data.studentName !== student.fullName || 
+                            data.admissionNumber !== student.admissionNumber ||
+                            data.parentId !== student.parentId ||
+                            (invoice && data.invoiceNumber !== invoice.invoiceNumber);
+
+          if (needsUpdate) {
+            await updateDoc(doc(db, 'schools', schoolId, 'payments', pymt.id), {
+              studentName: student.fullName,
+              admissionNumber: student.admissionNumber,
+              invoiceNumber: invoice?.invoiceNumber || data.invoiceNumber || 'N/A',
+              parentId: student.parentId,
+              updatedAt: new Date().toISOString()
+            });
+            updatedCount++;
+          }
+        }
+      }
+
+      toast.success(`Success! Synchronized ${updatedCount} records.`);
+    } catch (error) {
+      console.error('Sync failed:', error);
+      toast.error('Synchronization failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (loading) {
     return <div className="flex items-center justify-center h-64"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>;
   }
@@ -343,6 +474,14 @@ export default function Parents({ schoolId }: { schoolId: string }) {
             >
               <UserPlus className="h-4 w-4" />
               Add Parent
+            </button>
+            <button 
+              onClick={synchronizeData}
+              className="px-4 py-2.5 bg-white/10 backdrop-blur-md border border-white/20 text-white font-black uppercase tracking-widest text-[10px] rounded-xl hover:bg-white/20 transition-all flex items-center gap-2"
+              title="Fix student links and update invoice student info"
+            >
+              <RefreshCw className="h-4 w-4" />
+              Sync Data
             </button>
             <button 
               onClick={() => {

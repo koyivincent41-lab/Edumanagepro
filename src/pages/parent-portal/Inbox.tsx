@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ParentLayout from '../../components/ParentLayout';
 import { UserProfile, Notification } from '../../types';
 import { Bell, Loader2, CheckCircle2, XCircle, Info, Trash2 } from 'lucide-react';
-import { collection, onSnapshot, query, where, orderBy, doc, updateDoc, deleteDoc, getDocs } from 'firebase/firestore';
+import { collection, onSnapshot, query, where, orderBy, doc, updateDoc, deleteDoc, getDocs, getDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { toast } from 'sonner';
 
@@ -13,43 +13,55 @@ export default function Inbox({ profile }: { profile: UserProfile }) {
   useEffect(() => {
     if (!profile.schoolId) return;
 
-    // Find the parentId first
-    const findParent = async () => {
-      const parentsQuery = query(
-        collection(db, 'schools', profile.schoolId!, 'parents'),
-        where('uid', '==', profile.uid)
-      );
-      const parentsSnapshot = await getDocs(parentsQuery);
-      if (parentsSnapshot.empty) {
+    const fetchNotifications = async () => {
+      try {
+        const parentsQuery = query(
+          collection(db, 'schools', profile.schoolId!, 'parents'), 
+          where('uid', '==', profile.uid)
+        );
+        const parentsSnapshot = await getDocs(parentsQuery);
+        
+        let parentId = '';
+        if (!parentsSnapshot.empty) {
+          parentId = parentsSnapshot.docs[0].id;
+        } else {
+          // Check if profile.uid is actually the parent document ID (from localStorage login)
+          const parentDoc = await getDoc(doc(db, 'schools', profile.schoolId!, 'parents', profile.uid));
+          if (parentDoc.exists()) {
+            parentId = parentDoc.id;
+          }
+        }
+
+        if (!parentId) {
+          setLoading(false);
+          return null;
+        }
+
+        const notificationsQuery = query(
+          collection(db, 'schools', profile.schoolId!, 'notifications'),
+          where('parentId', '==', parentId),
+          orderBy('createdAt', 'desc')
+        );
+
+        return onSnapshot(notificationsQuery, (snapshot) => {
+          setNotifications(snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          })) as Notification[]);
+          setLoading(false);
+        });
+      } catch (error) {
+        console.error("Error fetching notifications:", error);
         setLoading(false);
-        return;
+        return null;
       }
-      const parentId = parentsSnapshot.docs[0].id;
-
-      const notificationsQuery = query(
-        collection(db, 'schools', profile.schoolId!, 'notifications'),
-        where('parentId', '==', parentId),
-        orderBy('createdAt', 'desc')
-      );
-
-      const unsubscribe = onSnapshot(notificationsQuery, (snapshot) => {
-        setNotifications(snapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        })) as Notification[]);
-        setLoading(false);
-      });
-
-      return unsubscribe;
     };
 
-    let unsubscribe: any;
-    findParent().then(unsub => {
-      unsubscribe = unsub;
-    });
+    let unsub: any;
+    fetchNotifications().then(u => { unsub = u; });
 
     return () => {
-      if (unsubscribe) unsubscribe();
+      if (unsub) unsub();
     };
   }, [profile]);
 

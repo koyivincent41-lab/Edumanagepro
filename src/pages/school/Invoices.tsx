@@ -247,6 +247,8 @@ export default function Invoices({ schoolId, school }: { schoolId: string; schoo
         ...(currentBranch ? { branchId: currentBranch.id } : {}),
         invoiceNumber,
         studentId: data.studentId,
+        studentName: student.fullName,
+        admissionNumber: student.admissionNumber,
         parentId: student.parentId,
         totalAmount,
         balanceDue: totalAmount,

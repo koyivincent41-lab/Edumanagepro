@@ -30,19 +30,27 @@ export default function PaymentHistory({ profile }: { profile: UserProfile }) {
           setCurrency(schoolData.currency);
         }
 
-        // Find the parent document
         const parentsQuery = query(
           collection(db, 'schools', profile.schoolId!, 'parents'), 
           where('uid', '==', profile.uid)
         );
         const parentsSnapshot = await getDocs(parentsQuery);
         
-        if (parentsSnapshot.empty) {
+        let parentId = '';
+        if (!parentsSnapshot.empty) {
+          parentId = parentsSnapshot.docs[0].id;
+        } else {
+          // Check if profile.uid is actually the parent document ID (from localStorage login)
+          const parentDoc = await getDoc(doc(db, 'schools', profile.schoolId!, 'parents', profile.uid));
+          if (parentDoc.exists()) {
+            parentId = parentDoc.id;
+          }
+        }
+
+        if (!parentId) {
           setLoading(false);
           return;
         }
-        
-        const parentId = parentsSnapshot.docs[0].id;
 
         // Fetch all invoices for the parent's children to resolve invoice numbers
         const invoicesQuery = query(

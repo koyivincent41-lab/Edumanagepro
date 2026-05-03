@@ -154,6 +154,7 @@ export default function Payments({ schoolId, school }: { schoolId: string; schoo
         if (!studentDoc.exists()) throw new Error("Student does not exist!");
         const studentData = studentDoc.data() as Student;
 
+        let invoiceDoc: any = null;
         if (data.isArrearsPayment) {
           const newArrears = (studentData.arrears || 0) - data.amount;
           if (newArrears < 0) throw new Error("Payment amount exceeds arrears balance!");
@@ -161,10 +162,11 @@ export default function Payments({ schoolId, school }: { schoolId: string; schoo
           transaction.update(studentRef, { arrears: newArrears });
         } else if (data.invoiceId) {
           const invoiceRef = doc(db, 'schools', schoolId, 'invoices', data.invoiceId);
-          const invoiceDoc = await transaction.get(invoiceRef);
+          invoiceDoc = await transaction.get(invoiceRef);
           if (!invoiceDoc.exists()) throw new Error("Invoice does not exist!");
 
           const invoiceData = invoiceDoc.data() as Invoice;
+          const invoiceNumber = invoiceData.invoiceNumber;
           const newBalance = invoiceData.balanceDue - data.amount;
 
           if (newBalance < 0) throw new Error("Payment amount exceeds balance due!");
@@ -183,8 +185,10 @@ export default function Payments({ schoolId, school }: { schoolId: string; schoo
           schoolId,
           ...(currentBranch ? { branchId: currentBranch.id } : {}),
           invoiceId: data.invoiceId || 'arrears',
+          invoiceNumber: (data.invoiceId ? (invoiceDoc?.data() as any)?.invoiceNumber : null) || 'N/A',
           studentId: data.studentId,
           studentName: studentData.fullName,
+          admissionNumber: studentData.admissionNumber,
           parentId: studentData.parentId,
           amount: data.amount,
           paymentMethod: data.paymentMethod,

@@ -154,6 +154,7 @@ export interface Student {
 export interface Parent {
   id: string;
   parentId?: string;
+  uid?: string;
   schoolId: string;
   branchId?: string;
   fullName: string;
@@ -214,6 +215,8 @@ export interface Invoice {
   invoiceNumber: string;
   parentId: string;
   studentId: string;
+  studentName?: string;
+  admissionNumber?: string;
   totalAmount: number;
   balanceDue: number;
   amountPaid?: number;
@@ -232,8 +235,10 @@ export interface Payment {
   schoolId: string;
   branchId?: string;
   invoiceId: string;
+  invoiceNumber?: string;
   studentId: string;
   studentName?: string;
+  admissionNumber?: string;
   parentId: string;
   amount: number;
   paymentMethod: 'cash' | 'bank_transfer' | 'mobile_money' | 'cheque';
