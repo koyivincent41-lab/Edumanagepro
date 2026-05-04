@@ -201,7 +201,7 @@ export default function ParentDashboard({ profile }: { profile: UserProfile }) {
               </div>
               <div>
                 <h3 className="text-xs font-black uppercase tracking-widest text-gray-400">{card.title}</h3>
-                <p className={`text-2xl font-black ${card.color}`}>{card.value}</p>
+                <p className={`${card.title === 'Outstanding Balance' ? 'text-lg md:text-xl' : 'text-2xl'} font-black ${card.color} truncate`} title={card.title === 'Outstanding Balance' ? card.value : undefined}>{card.value}</p>
               </div>
             </div>
           );
