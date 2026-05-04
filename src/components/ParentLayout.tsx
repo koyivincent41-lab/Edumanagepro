@@ -1,13 +1,63 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Users, FileText, Receipt, History, Settings, LogOut, GraduationCap, Menu, X, Bell } from 'lucide-react';
+import { collection, onSnapshot, query, where, getDocs, getDoc, doc } from 'firebase/firestore';
+import { db } from '../firebase';
 import ThemeToggle from './ThemeToggle';
 import { UserProfile } from '../types';
 
 export default function ParentLayout({ children, profile }: { children: React.ReactNode, profile?: UserProfile }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [unreadCount, setUnreadCount] = useState(0);
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    if (!profile?.schoolId || !profile?.uid) return;
+
+    let unsub: any;
+
+    const fetchUnreadCount = async () => {
+      try {
+        const parentsQuery = query(
+          collection(db, 'schools', profile.schoolId!, 'parents'), 
+          where('uid', '==', profile.uid)
+        );
+        const parentsSnapshot = await getDocs(parentsQuery);
+        
+        let parentId = '';
+        if (!parentsSnapshot.empty) {
+          parentId = parentsSnapshot.docs[0].id;
+        } else {
+          const parentDoc = await getDoc(doc(db, 'schools', profile.schoolId!, 'parents', profile.uid));
+          if (parentDoc.exists()) {
+            parentId = parentDoc.id;
+          }
+        }
+
+        if (!parentId) return null;
+
+        const notificationsQuery = query(
+          collection(db, 'schools', profile.schoolId!, 'notifications'),
+          where('parentId', '==', parentId),
+          where('read', '==', false)
+        );
+
+        return onSnapshot(notificationsQuery, (snapshot) => {
+          setUnreadCount(snapshot.docs.length);
+        });
+      } catch (error) {
+        console.error("Error fetching unread notifications:", error);
+        return null;
+      }
+    };
+
+    fetchUnreadCount().then(u => { unsub = u; });
+
+    return () => {
+      if (unsub) unsub();
+    };
+  }, [profile]);
 
   const handleLogout = async () => {
     localStorage.removeItem('parentDocId');
@@ -57,8 +107,25 @@ export default function ParentLayout({ children, profile }: { children: React.Re
                     : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-primary'
                 }`}
               >
-                <Icon className="h-5 w-5 shrink-0" />
-                {isSidebarOpen && <span className="text-sm font-bold">{link.name}</span>}
+                <div className="relative">
+                  <Icon className="h-5 w-5 shrink-0" />
+                  {link.name === 'Inbox' && unreadCount > 0 && (
+                    <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                    </span>
+                  )}
+                </div>
+                {isSidebarOpen && (
+                  <div className="flex-1 flex justify-between items-center">
+                    <span className="text-sm font-bold">{link.name}</span>
+                    {link.name === 'Inbox' && unreadCount > 0 && (
+                      <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                        {unreadCount}
+                      </span>
+                    )}
+                  </div>
+                )}
               </Link>
             );
           })}

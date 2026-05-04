@@ -259,7 +259,7 @@ export interface Notification {
   parentId: string;
   title: string;
   message: string;
-  type: 'payment_approved' | 'payment_declined' | 'general';
+  type: 'payment_approved' | 'payment_declined' | 'general' | 'new_invoice' | 'new_receipt';
   read: boolean;
   createdAt: string;
 }

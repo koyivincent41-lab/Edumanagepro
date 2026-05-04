@@ -200,6 +200,20 @@ export default function Payments({ schoolId, school }: { schoolId: string; schoo
           term: data.term,
           createdAt: new Date().toISOString(),
         });
+        
+        if (studentData.parentId) {
+          const notificationRef = doc(collection(db, 'schools', schoolId, 'notifications'));
+          transaction.set(notificationRef, {
+            schoolId,
+            ...(currentBranch ? { branchId: currentBranch.id } : {}),
+            parentId: studentData.parentId,
+            title: 'New Receipt',
+            message: `A new payment receipt (${receiptNumber}) has been generated for ${studentData.fullName}.`,
+            type: 'new_receipt',
+            read: false,
+            createdAt: new Date().toISOString(),
+          });
+        }
       });
 
       toast.success('Payment recorded successfully');

@@ -261,6 +261,19 @@ export default function Invoices({ schoolId, school }: { schoolId: string; schoo
         createdAt: new Date().toISOString(),
       });
 
+      if (student.parentId) {
+        await addDoc(collection(db, 'schools', schoolId, 'notifications'), {
+          schoolId,
+          ...(currentBranch ? { branchId: currentBranch.id } : {}),
+          parentId: student.parentId,
+          title: 'New Invoice',
+          message: `A new invoice (${invoiceNumber}) has been generated for ${student.fullName}.`,
+          type: 'new_invoice',
+          read: false,
+          createdAt: new Date().toISOString(),
+        });
+      }
+
       toast.success('Invoice created successfully');
       setIsModalOpen(false);
       reset();

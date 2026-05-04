@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ParentLayout from '../../components/ParentLayout';
 import { UserProfile, Notification } from '../../types';
-import { Bell, Loader2, CheckCircle2, XCircle, Info, Trash2 } from 'lucide-react';
+import { Bell, Loader2, CheckCircle2, XCircle, Info, Trash2, FileText, Receipt } from 'lucide-react';
 import { collection, onSnapshot, query, where, orderBy, doc, updateDoc, deleteDoc, getDocs, getDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { toast } from 'sonner';
@@ -93,6 +93,10 @@ export default function Inbox({ profile }: { profile: UserProfile }) {
         return <CheckCircle2 className="h-5 w-5 text-green-500" />;
       case 'payment_declined':
         return <XCircle className="h-5 w-5 text-red-500" />;
+      case 'new_invoice':
+        return <FileText className="h-5 w-5 text-purple-500" />;
+      case 'new_receipt':
+        return <Receipt className="h-5 w-5 text-green-500" />;
       default:
         return <Info className="h-5 w-5 text-blue-500" />;
     }
@@ -131,8 +135,9 @@ export default function Inbox({ profile }: { profile: UserProfile }) {
             >
               <div className="flex items-start gap-4">
                 <div className={`p-3 rounded-2xl ${
-                  notification.type === 'payment_approved' ? 'bg-green-50 dark:bg-green-900/20' :
+                  notification.type === 'payment_approved' || notification.type === 'new_receipt' ? 'bg-green-50 dark:bg-green-900/20' :
                   notification.type === 'payment_declined' ? 'bg-red-50 dark:bg-red-900/20' :
+                  notification.type === 'new_invoice' ? 'bg-purple-50 dark:bg-purple-900/20' :
                   'bg-blue-50 dark:bg-blue-900/20'
                 }`}>
                   {getIcon(notification.type)}
