@@ -17,6 +17,7 @@ export default function Branches({ schoolId, school }: BranchesProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingBranch, setEditingBranch] = useState<Branch | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [branchToDelete, setBranchToDelete] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -108,15 +109,20 @@ export default function Branches({ schoolId, school }: BranchesProps) {
     }
   };
 
-  const handleDelete = async (branchId: string) => {
-    if (window.confirm('Are you sure you want to delete this branch? This action cannot be undone.')) {
-      try {
-        await deleteDoc(doc(db, 'branches', branchId));
-        toast.success('Branch deleted successfully');
-      } catch (error) {
-        handleFirestoreError(error, OperationType.DELETE, `branches/${branchId}`);
-        toast.error('Failed to delete branch');
-      }
+  const handleDelete = (branchId: string) => {
+    setBranchToDelete(branchId);
+  };
+
+  const confirmDelete = async () => {
+    if (!branchToDelete) return;
+    try {
+      await deleteDoc(doc(db, 'branches', branchToDelete));
+      toast.success('Branch deleted successfully');
+    } catch (error) {
+      handleFirestoreError(error, OperationType.DELETE, `branches/${branchToDelete}`);
+      toast.error('Failed to delete branch');
+    } finally {
+      setBranchToDelete(null);
     }
   };
 
@@ -318,6 +324,30 @@ export default function Branches({ schoolId, school }: BranchesProps) {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {branchToDelete && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl w-full max-w-md overflow-hidden p-6">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Delete Branch</h2>
+            <p className="text-gray-500 dark:text-gray-400 mb-6">Are you sure you want to delete this branch? This action cannot be undone.</p>
+            <div className="flex justify-end gap-3">
+              <button 
+                onClick={() => setBranchToDelete(null)}
+                className="px-4 py-2 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors font-medium"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={confirmDelete}
+                className="px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-colors font-medium"
+              >
+                Delete
+              </button>
+            </div>
           </div>
         </div>
       )}
