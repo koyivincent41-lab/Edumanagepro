@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PublicLayout from '../../components/PublicLayout';
-import { Mail, Phone, MapPin, MessageSquare, Loader2 } from 'lucide-react';
+import { FormInput, Phone, MapPin, MessageSquare, Loader2 } from 'lucide-react';
 import { collection, addDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { toast } from 'sonner';
@@ -11,6 +11,7 @@ export default function Contact() {
     firstName: '',
     lastName: '',
     email: '',
+    phone: '',
     message: ''
   });
 
@@ -23,11 +24,13 @@ export default function Contact() {
 
     setIsSubmitting(true);
     try {
+      const fullMessage = `User Phone: ${formData.phone || 'N/A'}\n\nMessage:\n${formData.message}`;
+      
       await addDoc(collection(db, 'system_emails'), {
         from: formData.email,
         to: 'support@edumanagepro.com',
         subject: `Website Inquiry from ${formData.firstName} ${formData.lastName}`,
-        message: formData.message,
+        message: fullMessage,
         type: 'incoming',
         status: 'received',
         read: false,
@@ -36,7 +39,7 @@ export default function Contact() {
       });
 
       toast.success('Message sent successfully! We will get back to you soon.');
-      setFormData({ firstName: '', lastName: '', email: '', message: '' });
+      setFormData({ firstName: '', lastName: '', email: '', phone: '', message: '' });
     } catch (error) {
       console.error('Error sending message:', error);
       toast.error('Failed to send message. Please try again later.');
@@ -66,11 +69,11 @@ export default function Contact() {
             <div className="space-y-12">
               <div className="group flex items-start gap-8 p-8 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-[2.5rem] shadow-xl hover:shadow-2xl transition-all duration-500">
                 <div className="p-5 bg-maroon/10 rounded-2xl text-maroon group-hover:bg-maroon group-hover:text-white transition-all duration-500">
-                  <Mail className="h-7 w-7" />
+                  <MessageSquare className="h-7 w-7" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-black text-gray-900 dark:text-white mb-2 tracking-tight uppercase tracking-widest text-xs">Email Us</h3>
-                  <p className="text-gray-600 dark:text-gray-400 font-bold">support@edumanagepro.com</p>
+                  <h3 className="text-xl font-black text-gray-900 dark:text-white mb-2 tracking-tight uppercase tracking-widest text-xs">Contact Form</h3>
+                  <p className="text-gray-600 dark:text-gray-400 font-bold">Fill out the form to send us a direct message.</p>
                 </div>
               </div>
 
@@ -131,6 +134,16 @@ export default function Contact() {
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     required
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-black text-white/70 uppercase tracking-widest mb-3">Phone Number</label>
+                  <input 
+                    type="tel"
+                    className="w-full px-6 py-4 rounded-2xl bg-white/10 border-2 border-white/20 text-white placeholder-white/50 focus:border-white focus:bg-white/20 outline-none transition-all font-bold backdrop-blur-sm" 
+                    placeholder="+1 234 567 8900"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   />
                 </div>
                 <div>

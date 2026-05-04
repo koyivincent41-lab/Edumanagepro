@@ -27,7 +27,7 @@ import {
   GitBranch
 } from 'lucide-react';
 import { auth, db } from '../../firebase';
-import { doc, getDoc, onSnapshot, collection, updateDoc, query, where, setDoc } from 'firebase/firestore';
+import { doc, getDoc, onSnapshot, collection, updateDoc, query, where, setDoc, addDoc } from 'firebase/firestore';
 import { UserProfile, School, Term } from '../../types';
 import { handleFirestoreError, OperationType } from '../../lib/firestoreErrorHandler';
 import { toast } from 'sonner';
@@ -228,13 +228,63 @@ export default function SchoolDashboard({ profile }: { profile: UserProfile }) {
   const now = new Date();
   
   // isExpired is true if we are past the due date
-  const isExpired = expiryDate ? now > expiryDate : (school?.subscriptionStatus === 'expired');
-  
-  // isDeactivated is true if we are 2 days past the due date (grace period over)
-  const deactivationDate = expiryDate ? new Date(expiryDate.getTime() + 2 * 24 * 60 * 60 * 1000) : null;
-  const isDeactivated = deactivationDate ? now > deactivationDate : (school?.subscriptionStatus === 'expired');
+  const isExpired = expiryDate ? now >= expiryDate : (school?.subscriptionStatus === 'expired');
+  const isDeactivated = isExpired;
 
-  // Auto-deactivate if grace period is over
+  // Check for upcoming expiry notifications
+  useEffect(() => {
+    if (!school || !school.id || !['owner', 'admin'].includes(profile.role)) return;
+
+    const checkAndNotifyExpiry = async () => {
+      let daysRemaining: number | null = null;
+      const isTrial = school.subscriptionStatus === 'trial';
+      const currentTime = new Date().getTime();
+
+      if (isTrial && school.trialExpiry) {
+        daysRemaining = Math.ceil((new Date(school.trialExpiry).getTime() - currentTime) / (1000 * 60 * 60 * 24));
+      } else if (school.subscriptionStatus === 'active' && school.subscriptionExpiry) {
+        daysRemaining = Math.ceil((new Date(school.subscriptionExpiry).getTime() - currentTime) / (1000 * 60 * 60 * 24));
+      }
+
+      if (daysRemaining === null) return;
+
+      let shouldNotify = false;
+      let message = '';
+      let notificationKey = '';
+
+      if (isTrial && daysRemaining <= 2 && daysRemaining > 0) {
+        shouldNotify = true;
+        message = `Your 7-day trial will expire in ${daysRemaining} day(s). Please renew your package to maintain smooth operation.`;
+        notificationKey = 'trial_expiry_notice_sent';
+      } else if (!isTrial && daysRemaining <= 7 && daysRemaining > 0) {
+        shouldNotify = true;
+        message = `Your plan will expire in ${daysRemaining} day(s). Please renew your package to maintain smooth operation.`;
+        notificationKey = 'plan_expiry_notice_sent';
+      }
+
+      const schoolAny = school as any;
+      if (shouldNotify && !schoolAny[notificationKey]) {
+        try {
+          await addDoc(collection(db, 'schools', school.id, 'inbox'), {
+            type: 'alert',
+            title: 'Action Required: Plan Expiry Notice',
+            message: message,
+            date: new Date().toISOString(),
+            status: 'unread'
+          });
+          await updateDoc(doc(db, 'schools', school.id), {
+            [notificationKey]: true
+          });
+        } catch (error) {
+          console.error('Failed to send expiry notice:', error);
+        }
+      }
+    };
+
+    checkAndNotifyExpiry();
+  }, [school, profile.role]);
+
+  // Auto-deactivate if expired
   useEffect(() => {
     const checkAndDeactivate = async () => {
       if (school && isDeactivated && school.subscriptionStatus !== 'expired') {
@@ -509,28 +559,49 @@ export default function SchoolDashboard({ profile }: { profile: UserProfile }) {
 
         <div className="flex-1 overflow-y-auto p-4 lg:p-8 bg-gray-50 dark:bg-gray-950">
           <Routes>
-            <Route path="/" element={<SchoolOverview school={school} />} />
-            <Route path="/inbox" element={<Inbox school={school} defaultTab="inbox" />} />
-            <Route path="/parents" element={<Parents schoolId={profile.schoolId!} />} />
-            <Route path="/students" element={<Students schoolId={profile.schoolId!} school={school} />} />
-            <Route path="/employees" element={<Employees school={school} />} />
-            <Route path="/attendance" element={<Attendance school={school} />} />
-            <Route path="/invoices" element={<Invoices schoolId={profile.schoolId!} school={school} />} />
-            <Route path="/payments" element={<Payments schoolId={profile.schoolId!} school={school} />} />
-            <Route path="/receipts" element={<Receipts schoolId={profile.schoolId!} school={school} />} />
-            <Route path="/expenses" element={<Expenses schoolId={profile.schoolId!} school={school} />} />
-            <Route path="/reports" element={<Reports schoolId={profile.schoolId!} school={school} />} />
-            <Route path="/classes" element={<Classes schoolId={profile.schoolId!} />} />
-            <Route path="/subjects" element={<Subjects school={school} />} />
-            <Route path="/streams" element={<Streams schoolId={profile.schoolId!} />} />
-            <Route path="/exams/*" element={<ExamsPortal schoolId={profile.schoolId!} school={school} />} />
-            <Route path="/fee-types" element={<FeeTypes schoolId={profile.schoolId!} school={school} />} />
-            <Route path="/users" element={<UsersPage schoolId={profile.schoolId!} school={school} />} />
-            <Route path="/branches" element={<Branches schoolId={profile.schoolId!} school={school} />} />
-            <Route path="/payroll/*" element={<PayrollModule schoolId={profile.schoolId!} school={school} />} />
-            <Route path="/website" element={<Website school={school} />} />
-            <Route path="/settings" element={<SettingsPage school={school} />} />
             <Route path="/billing" element={<Billing school={school} />} />
+            {isDeactivated ? (
+              <Route path="*" element={
+                <div className="flex flex-col items-center justify-center h-full p-8 text-center min-h-[60vh]">
+                  <div className="bg-red-50 dark:bg-red-900/20 p-4 rounded-full mb-4">
+                    <AlertCircle className="h-12 w-12 text-red-500" />
+                  </div>
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Dashboard Deactivated</h2>
+                  <p className="text-gray-500 dark:text-gray-400 max-w-md">
+                    Your subscription has expired. Please {['owner', 'admin'].includes(profile.role) ? 'renew your plan' : 'contact your school administrator'} to restore access.
+                  </p>
+                  {['owner', 'admin'].includes(profile.role) && (
+                    <Link to="/dashboard/billing" className="mt-6 px-6 py-3 bg-school-gradient text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+                      Go to Billing & Plan
+                    </Link>
+                  )}
+                </div>
+              } />
+            ) : (
+              <>
+                <Route path="/" element={<SchoolOverview school={school} />} />
+                <Route path="/inbox" element={<Inbox school={school} defaultTab="inbox" />} />
+                <Route path="/parents" element={<Parents schoolId={profile.schoolId!} />} />
+                <Route path="/students" element={<Students schoolId={profile.schoolId!} school={school} />} />
+                <Route path="/employees" element={<Employees school={school} />} />
+                <Route path="/attendance" element={<Attendance school={school} />} />
+                <Route path="/invoices" element={<Invoices schoolId={profile.schoolId!} school={school} />} />
+                <Route path="/payments" element={<Payments schoolId={profile.schoolId!} school={school} />} />
+                <Route path="/receipts" element={<Receipts schoolId={profile.schoolId!} school={school} />} />
+                <Route path="/expenses" element={<Expenses schoolId={profile.schoolId!} school={school} />} />
+                <Route path="/reports" element={<Reports schoolId={profile.schoolId!} school={school} />} />
+                <Route path="/classes" element={<Classes schoolId={profile.schoolId!} />} />
+                <Route path="/subjects" element={<Subjects school={school} />} />
+                <Route path="/streams" element={<Streams schoolId={profile.schoolId!} />} />
+                <Route path="/exams/*" element={<ExamsPortal schoolId={profile.schoolId!} school={school} />} />
+                <Route path="/fee-types" element={<FeeTypes schoolId={profile.schoolId!} school={school} />} />
+                <Route path="/users" element={<UsersPage schoolId={profile.schoolId!} school={school} />} />
+                <Route path="/branches" element={<Branches schoolId={profile.schoolId!} school={school} />} />
+                <Route path="/payroll/*" element={<PayrollModule schoolId={profile.schoolId!} school={school} />} />
+                <Route path="/website" element={<Website school={school} />} />
+                <Route path="/settings" element={<SettingsPage school={school} />} />
+              </>
+            )}
           </Routes>
         </div>
       </main>

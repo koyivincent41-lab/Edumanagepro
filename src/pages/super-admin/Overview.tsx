@@ -54,9 +54,9 @@ export default function Overview() {
         const schools = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
         
         const calculateRevenue = () => {
-          // Calculate total revenue from active subscriptions based on package prices in USD
+          // Calculate total revenue from active schools based on package prices in USD
           const totalRevenueUSD = schools.reduce((sum: number, s: any) => {
-            if (s.subscriptionStatus === 'active' && s.packageId) {
+            if (s.status === 'active' && s.packageId) {
               const pkg = packages.find((p: any) => p.id === s.packageId);
               if (pkg) {
                 const billingCycle = s.billingCycle || 'monthly';
