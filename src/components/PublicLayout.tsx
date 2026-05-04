@@ -258,9 +258,6 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
                 your administration and fee invoicing.
               </p>
               <div className="space-y-3">
-                <p className="text-sm text-gray-300 flex items-center gap-2">
-                  <span className="font-bold text-white">Email:</span> support@edumanagepro.com
-                </p>
                 <div className="text-sm text-gray-300">
                   <p className="font-bold text-white mb-1">Phone:</p>
                   <p>USA Office: +1(719) 351-3094</p>

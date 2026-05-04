@@ -211,12 +211,6 @@ export default function PublicSchoolWebsite() {
                     <span className="text-gray-400">{school.phone}</span>
                   </li>
                 )}
-                {school.email && (
-                  <li className="flex items-center">
-                    <Mail className="w-5 h-5 text-gray-400 mr-3" />
-                    <span className="text-gray-400">{school.email}</span>
-                  </li>
-                )}
               </ul>
             </div>
           </div>
