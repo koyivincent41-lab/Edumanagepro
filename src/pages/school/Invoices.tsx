@@ -15,7 +15,9 @@ import {
   X,
   CheckSquare,
   Square,
-  Mail
+  Mail,
+  Edit2,
+  Trash2
 } from 'lucide-react';
 import { collection, onSnapshot, doc, addDoc, updateDoc, deleteDoc, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase';
@@ -54,6 +56,7 @@ export default function Invoices({ schoolId, school }: { schoolId: string; schoo
   const [selectedBulkFees, setSelectedBulkFees] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
+  const [editingInvoice, setEditingInvoice] = useState<Invoice | null>(null);
   const [isSendingEmail, setIsSendingEmail] = useState(false);
   const [selectedInvoices, setSelectedInvoices] = useState<string[]>([]);
 
@@ -240,6 +243,35 @@ export default function Invoices({ schoolId, school }: { schoolId: string; schoo
       if (!student) return;
 
       const totalAmount = data.items.reduce((sum, item) => sum + item.amount, 0);
+
+      if (editingInvoice) {
+        // Find existing payments to adjust the balance due correctly
+        const amountPaid = editingInvoice.totalAmount - editingInvoice.balanceDue;
+        const newBalanceDue = totalAmount - amountPaid;
+        const newStatus = newBalanceDue <= 0 ? 'paid' : (amountPaid > 0 ? 'partial' : 'sent');
+
+        await updateDoc(doc(db, 'schools', schoolId, 'invoices', editingInvoice.id), {
+          studentId: data.studentId,
+          studentName: student.fullName,
+          admissionNumber: student.admissionNumber,
+          parentId: student.parentId,
+          totalAmount,
+          balanceDue: newBalanceDue,
+          status: newStatus,
+          dueDate: data.dueDate,
+          notes: data.notes || '',
+          term: data.term,
+          academicYear: school?.academicYear,
+          items: data.items,
+          updatedAt: new Date().toISOString()
+        });
+        toast.success('Invoice updated successfully');
+        setIsModalOpen(false);
+        setEditingInvoice(null);
+        reset();
+        return;
+      }
+
       const invoiceNumber = `INV-${Date.now().toString().slice(-6)}`;
 
       await addDoc(collection(db, 'schools', schoolId, 'invoices'), {
@@ -280,6 +312,28 @@ export default function Invoices({ schoolId, school }: { schoolId: string; schoo
     } catch (error) {
       console.error('Error creating invoice:', error);
       toast.error('Failed to create invoice');
+    }
+  };
+
+  const handleEdit = (invoice: Invoice) => {
+    setEditingInvoice(invoice);
+    setValue('studentId', invoice.studentId);
+    setValue('dueDate', invoice.dueDate);
+    setValue('term', invoice.term || 'Term 1');
+    setValue('items', invoice.items);
+    setValue('notes', invoice.notes || '');
+    setIsModalOpen(true);
+  };
+
+  const handleDelete = async (invoiceId: string) => {
+    if (window.confirm('Are you sure you want to delete this invoice? This action cannot be undone.')) {
+      try {
+        await deleteDoc(doc(db, 'schools', schoolId, 'invoices', invoiceId));
+        toast.success('Invoice deleted successfully');
+      } catch (error) {
+        console.error('Error deleting invoice:', error);
+        toast.error('Failed to delete invoice');
+      }
     }
   };
 
@@ -379,7 +433,7 @@ export default function Invoices({ schoolId, school }: { schoolId: string; schoo
               Bulk Print ({selectedInvoices.length})
             </button>
             <button 
-              onClick={() => setIsModalOpen(true)}
+              onClick={() => { setEditingInvoice(null); reset(); setIsModalOpen(true); }}
               className="px-6 py-2.5 bg-white text-maroon font-black uppercase tracking-widest text-[10px] rounded-xl shadow-xl hover:scale-105 transition-all flex items-center gap-2"
             >
               <Plus className="h-4 w-4" />
@@ -476,6 +530,20 @@ export default function Invoices({ schoolId, school }: { schoolId: string; schoo
                           title="Download PDF"
                         >
                           <Download className="h-5 w-5" />
+                        </button>
+                        <button 
+                          onClick={() => handleEdit(invoice)}
+                          className="p-2 text-gray-400 hover:bg-gray-100 hover:text-primary rounded-lg transition-colors" 
+                          title="Edit"
+                        >
+                          <Edit2 className="h-5 w-5" />
+                        </button>
+                        <button 
+                          onClick={() => handleDelete(invoice.id)}
+                          className="p-2 text-gray-400 hover:bg-red-50 hover:text-red-500 rounded-lg transition-colors" 
+                          title="Delete"
+                        >
+                          <Trash2 className="h-5 w-5" />
                         </button>
                         <button className="p-2 text-gray-400 hover:bg-gray-100 rounded-lg transition-colors" title="Print">
                           <Printer className="h-5 w-5" />
@@ -656,8 +724,8 @@ export default function Invoices({ schoolId, school }: { schoolId: string; schoo
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="p-8 border-b border-gray-100 flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-gray-900">Create New Invoice</h2>
-              <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-gray-100 rounded-xl transition-colors">
+              <h2 className="text-2xl font-bold text-gray-900">{editingInvoice ? 'Edit Invoice' : 'Create New Invoice'}</h2>
+              <button onClick={() => { setIsModalOpen(false); setEditingInvoice(null); reset(); }} className="p-2 hover:bg-gray-100 rounded-xl transition-colors">
                 <X className="h-6 w-6" />
               </button>
             </div>
@@ -760,7 +828,7 @@ export default function Invoices({ schoolId, school }: { schoolId: string; schoo
               <div className="pt-4 flex gap-4">
                 <button
                   type="button"
-                  onClick={() => setIsModalOpen(false)}
+                  onClick={() => { setIsModalOpen(false); setEditingInvoice(null); reset(); }}
                   className="flex-1 py-4 bg-gray-100 text-gray-600 font-bold rounded-2xl hover:bg-gray-200 transition-all"
                 >
                   Cancel
@@ -768,10 +836,10 @@ export default function Invoices({ schoolId, school }: { schoolId: string; schoo
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex-1 py-4 bg-school-gradient text-white font-bold rounded-2xl shadow-xl shadow-primary/20 hover:scale-105 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="flex-1 py-4 bg-school-gradient text-white font-bold rounded-2xl shadow-xl shadow-primary/20 hover:scale-[1.02] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {isSubmitting && <Loader2 className="h-5 w-5 animate-spin" />}
-                  Create Invoice
+                  {editingInvoice ? 'Update Invoice' : 'Create Invoice'}
                 </button>
               </div>
             </form>
