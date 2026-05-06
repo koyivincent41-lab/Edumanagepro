@@ -15,6 +15,7 @@ import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { toast } from 'sonner';
 import { Loader2, ShieldAlert, ArrowRight, Mail, Lock, Users, KeyRound } from 'lucide-react';
 import { handleFirestoreError, OperationType } from '../../lib/firebase-utils';
+import ThemeToggle from '../../components/ThemeToggle';
 
 import { UserProfile } from '../../types';
 
@@ -221,6 +222,10 @@ export default function SuperAdminLogin({ profile }: { profile: UserProfile | nu
         <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-maroon/10 blur-[150px] animate-pulse" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-gray-400/10 blur-[150px] animate-pulse delay-700" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.4)_0%,transparent_100%)]" />
+      </div>
+
+      <div className="absolute top-4 right-4 z-20">
+        <ThemeToggle />
       </div>
 
       <div className="max-w-md w-full relative z-10">

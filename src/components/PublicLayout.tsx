@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, School, GraduationCap, LayoutDashboard, ChevronDown, User, Users, ShieldCheck, FileText } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import ThemeToggle from './ThemeToggle';
+import DigitalClock from './DigitalClock';
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -64,6 +65,9 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
               ))}
               
               <div className="flex items-center gap-4 ml-4">
+                <div className="hidden xl:block">
+                  <DigitalClock />
+                </div>
                 <ThemeToggle />
                 
                 {/* Login Dropdown */}

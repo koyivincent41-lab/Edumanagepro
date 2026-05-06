@@ -4,6 +4,8 @@ import { GraduationCap, LogOut, School as SchoolIcon, Calendar, Edit3, FileText,
 import MarksEntry from './MarksEntry';
 import ExamRecordsBrowser from '../../components/ExamRecordsBrowser';
 import ReportFormBrowser from '../../components/ReportFormBrowser';
+import DigitalClock from '../../components/DigitalClock';
+import ThemeToggle from '../../components/ThemeToggle';
 
 import LearnerAttendanceTeacher from './LearnerAttendanceTeacher';
 
@@ -64,6 +66,10 @@ export default function Dashboard() {
             </div>
 
             <div className="flex items-center gap-4">
+              <div className="hidden lg:block">
+                <DigitalClock />
+              </div>
+              <ThemeToggle />
               <div className="text-right hidden sm:block">
                 <p className="text-sm font-bold text-gray-900">{teacher.fullName}</p>
                 <p className="text-xs text-gray-400 font-medium">ID: {teacher.staffNumber}</p>

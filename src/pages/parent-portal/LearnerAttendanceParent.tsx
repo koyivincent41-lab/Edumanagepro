@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ParentLayout from '../../components/ParentLayout';
 import { UserProfile } from '../../types';
 import { db } from '../../firebase';
-import { collection, query, getDocs, where, doc, getDoc } from 'firebase/firestore';
+import { collection, query, getDocs, where, doc, getDoc, onSnapshot } from 'firebase/firestore';
 import { Loader2, Calendar, FileText, CheckCircle2, AlertCircle } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 
@@ -63,70 +63,77 @@ export default function LearnerAttendanceParent({ profile }: { profile: UserProf
   useEffect(() => {
      if (!selectedChild || !profile.schoolId) return;
 
-     const fetchAttendance = async () => {
-         setLoading(true);
-         try {
-             // Fetch all attendance for child
-             const q = query(
-                 collection(db, 'schools', profile.schoolId!, 'learner_attendance'),
-                 where('studentId', '==', selectedChild)
-             );
-             const snap = await getDocs(q);
-             const records = snap.docs.map(d => d.data());
-             setAttendanceRecords(records);
+      const parseDateSafe = (dateStr: string) => {
+        const [y, m, d] = dateStr.split('-').map(Number);
+        return new Date(y, m - 1, d, 12, 0, 0, 0);
+      };
 
-             // Calculate stats
-             const now = new Date();
-             
-             // Week (last 7 days logic)
-             const weekAgo = new Date(now);
-             weekAgo.setDate(now.getDate() - 7);
-             
-             // Month (last 30 days logic)
-             const monthAgo = new Date(now);
-             monthAgo.setMonth(now.getMonth() - 1);
-             
-             // Term: Usually we need to know current term. Let's assume the term stats are just calculated over the term. For parent we'll just consider all records of current term. But we can't fetch school current term easily without an extra call. Let's just calculate term as "all records fetched for the child" assuming previous terms aren't mixed if they don't have terms, or we fetch school data. Let's fetch school.
+      const fetchAttendance = () => {
+          setLoading(true);
+          const q = query(
+              collection(db, 'schools', profile.schoolId!, 'learner_attendance'),
+              where('studentId', '==', selectedChild)
+          );
+          const unsubscribe = onSnapshot(q, async (snap) => {
+              const records = snap.docs.map(d => d.data());
+              setAttendanceRecords(records);
 
-             const schoolDoc = await getDoc(doc(db, 'schools', profile.schoolId!));
-             const currentTerm = schoolDoc.data()?.currentTerm || 'Term 1';
+              // Calculate stats
+              const now = new Date();
+              
+              // Week (last 7 days logic)
+              const weekAgo = new Date(now);
+              weekAgo.setDate(now.getDate() - 7);
+              
+              // Month (last 30 days logic)
+              const monthAgo = new Date(now);
+              monthAgo.setMonth(now.getMonth() - 1);
 
-             let wPresent = 0, wTotal = 0;
-             let mPresent = 0, mTotal = 0;
-             let tPresent = 0, tTotal = 0;
+              try {
+                  const schoolDoc = await getDoc(doc(db, 'schools', profile.schoolId!));
+                  const currentTerm = schoolDoc.data()?.currentTerm || 'Term 1';
 
-             records.forEach(r => {
-                 const dDate = new Date(r.date);
-                 
-                 // Week
-                 if (dDate >= weekAgo) {
-                     wTotal++;
-                     if (r.status === 'Present') wPresent++;
-                 }
+                  let wPresent = 0, wTotal = 0;
+                  let mPresent = 0, mTotal = 0;
+                  let tPresent = 0, tTotal = 0;
 
-                 // Month
-                 if (dDate >= monthAgo) {
-                     mTotal++;
-                     if (r.status === 'Present') mPresent++;
-                 }
+                  records.forEach(r => {
+                      const dDate = parseDateSafe(r.date);
+                      
+                      // Week
+                      if (dDate >= weekAgo) {
+                          wTotal++;
+                          if (r.status === 'Present') wPresent++;
+                      }
 
-                 // Term
-                 if (r.term === currentTerm) {
-                     tTotal++;
-                     if (r.status === 'Present') tPresent++;
-                 }
-             });
+                      // Month
+                      if (dDate >= monthAgo) {
+                          mTotal++;
+                          if (r.status === 'Present') mPresent++;
+                      }
 
-             setWeeklyPercent(wTotal > 0 ? (wPresent / wTotal) * 100 : 0);
-             setMonthlyPercent(mTotal > 0 ? (mPresent / mTotal) * 100 : 0);
-             setTermPercent(tTotal > 0 ? (tPresent / tTotal) * 100 : 0);
-             
-         } catch(e) {
-             console.error(e);
-         }
-         setLoading(false);
+                      // Term
+                      if (r.term === currentTerm) {
+                          tTotal++;
+                          if (r.status === 'Present') tPresent++;
+                      }
+                  });
+
+                 setWeeklyPercent(wTotal > 0 ? (wPresent / wTotal) * 100 : 0);
+                 setMonthlyPercent(mTotal > 0 ? (mPresent / mTotal) * 100 : 0);
+                 setTermPercent(tTotal > 0 ? (tPresent / tTotal) * 100 : 0);
+             } catch(e) {
+                 console.error(e);
+             }
+             setLoading(false);
+         }, (error) => {
+             console.error('Error fetching parent attendance records:', error);
+             setLoading(false);
+         });
+         return unsubscribe;
      };
-     fetchAttendance();
+     const unsub = fetchAttendance();
+     return () => unsub && unsub();
   }, [selectedChild, profile.schoolId]);
 
   return (
@@ -205,11 +212,18 @@ export default function LearnerAttendanceParent({ profile }: { profile: UserProf
                            <p className="text-gray-500 font-bold">No attendance records found yet</p>
                        </div>
                    ) : (
-                       <div className="space-y-4">
-                           {attendanceRecords.sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 10).map((r, i) => (
+                        <div className="space-y-4">
+                           {attendanceRecords.sort((a,b) => {
+                               const da = a.date.split('-').map(Number);
+                               const db = b.date.split('-').map(Number);
+                               return new Date(db[0], db[1]-1, db[2]).getTime() - new Date(da[0], da[1]-1, da[2]).getTime();
+                           }).slice(0, 10).map((r, i) => {
+                               const [y,m,d] = r.date.split('-').map(Number);
+                               const displayDate = new Date(y, m-1, d).toLocaleDateString();
+                               return (
                                <div key={i} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-800 rounded-2xl">
                                    <div>
-                                       <div className="font-bold text-gray-900 dark:text-white">{r.dayOfWeek}, {new Date(r.date).toLocaleDateString()}</div>
+                                       <div className="font-bold text-gray-900 dark:text-white">{r.dayOfWeek}, {displayDate}</div>
                                        <div className="text-xs text-gray-500 mt-1 uppercase tracking-widest font-black">{r.session} Session</div>
                                    </div>
                                    <div className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-widest ${
@@ -218,7 +232,7 @@ export default function LearnerAttendanceParent({ profile }: { profile: UserProf
                                        {r.status}
                                    </div>
                                </div>
-                           ))}
+                           );})}
                        </div>
                    )}
                </div>

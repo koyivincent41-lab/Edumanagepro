@@ -1,20 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import { School, Student, Class } from '../../types';
 import { db } from '../../firebase';
-import { collection, query, getDocs } from 'firebase/firestore';
-import { Search, Loader2, Calendar } from 'lucide-react';
+import { collection, query, getDocs, onSnapshot, where } from 'firebase/firestore';
+import { Search, Loader2, Calendar, Download } from 'lucide-react';
 import { useBranch } from '../../context/BranchContext';
+import { toast } from 'sonner';
 
 export default function LearnerAttendanceAdmin({ school }: { school: School | null }) {
+  const { currentBranch } = useBranch();
+  const getLocalToday = (timezone?: string) => {
+    try {
+      const options: Intl.DateTimeFormatOptions = {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        timeZone: timezone || undefined
+      };
+      const parts = new Intl.DateTimeFormat('en-GB', options).formatToParts(new Date());
+      const y = parts.find(p => p.type === 'year')?.value;
+      const m = parts.find(p => p.type === 'month')?.value;
+      const d = parts.find(p => p.type === 'day')?.value;
+      return `${y}-${m}-${d}`;
+    } catch (e) {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    }
+  };
+
   const [classes, setClasses] = useState<Class[]>([]);
   const [students, setStudents] = useState<Student[]>([]);
   const [selectedClass, setSelectedClass] = useState('');
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+  const [selectedDate, setSelectedDate] = useState(getLocalToday(currentBranch?.timezone));
   const [selectedTerm, setSelectedTerm] = useState(school?.currentTerm || 'Term 1');
   const [selectedYear, setSelectedYear] = useState(school?.academicYear || new Date().getFullYear().toString());
   const [attendanceRecords, setAttendanceRecords] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-  const { currentBranch } = useBranch();
 
   useEffect(() => {
     if (!school?.id) return;
@@ -36,37 +56,92 @@ export default function LearnerAttendanceAdmin({ school }: { school: School | nu
     fetchData();
   }, [school?.id, currentBranch]);
 
-  const loadAttendance = async () => {
+  useEffect(() => {
     if (!school?.id || !selectedClass) return;
     setLoading(true);
+
+    const [yyyy, mm, dd] = selectedDate.split('-').map(Number);
+    const date = new Date(yyyy, mm - 1, dd, 12, 0, 0, 0);
+    const day = date.getDay() || 7; // 1-7 (Mon-Sun)
     
-    // Calculate the start (Monday) and end (Friday) of the week containing selectedDate
-    const date = new Date(selectedDate);
-    const day = date.getDay() || 7; // Get current day number, converting Sun(0) to 7
-    if (day !== 1) date.setHours(-24 * (day - 1)); // Adjust to monday
+    const mon = new Date(date);
+    mon.setDate(date.getDate() - (day - 1));
     
     const datesOfWeek: string[] = [];
     for(let i=0; i<5; i++) {
-        const d = new Date(date);
-        d.setDate(date.getDate() + i);
-        datesOfWeek.push(d.toISOString().split('T')[0]);
+        const d = new Date(mon);
+        d.setDate(mon.getDate() + i);
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const dayOfMonth = String(d.getDate()).padStart(2, '0');
+        datesOfWeek.push(`${y}-${m}-${dayOfMonth}`);
     }
+
+    const q = query(
+        collection(db, 'schools', school.id, 'learner_attendance'),
+        where('classId', '==', selectedClass)
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+        const allRecords = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
+        const filtered = allRecords.filter(r => 
+          datesOfWeek.includes(r.date) && 
+          r.term === selectedTerm && 
+          String(r.academicYear) === String(selectedYear)
+        );
+        setAttendanceRecords(filtered);
+        setLoading(false);
+    }, (error) => {
+        console.error('Error syncing attendance:', error);
+        setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [school?.id, selectedClass, selectedDate, selectedTerm, selectedYear]);
+
+  const exportToCalendar = () => {
+    if (!selectedClass || attendanceRecords.length === 0) return;
     
-    try {
-      const recordsSnap = await getDocs(collection(db, 'schools', school.id, 'learner_attendance'));
-      const allRecords = recordsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() } as any));
+    const className = classes.find(c => c.id === selectedClass)?.name || 'Class';
+    let icsContent = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//School Management System//Attendance//EN',
+      'CALSCALE:GREGORIAN',
+      'METHOD:PUBLISH'
+    ];
+
+    attendanceRecords.forEach(record => {
+      const student = students.find(s => s.id === record.studentId);
+      if (!student) return;
+
+      const [y, m, d] = record.date.split('-').map(Number);
+      const dateStr = `${y}${String(m).padStart(2,'0')}${String(d).padStart(2,'0')}`;
       
-      const filtered = allRecords.filter(r => 
-        r.classId === selectedClass && 
-        datesOfWeek.includes(r.date) &&
-        r.term === selectedTerm &&
-        r.academicYear === selectedYear
-      );
-      setAttendanceRecords(filtered);
-    } catch (e) {
-      console.error(e);
-    }
-    setLoading(false);
+      const summary = `Attendance: ${student.fullName} (${record.status})`;
+      const description = `Session: ${record.session}\\nClass: ${className}\\nStatus: ${record.status}`;
+
+      icsContent.push('BEGIN:VEVENT');
+      icsContent.push(`DTSTART;VALUE=DATE:${dateStr}`);
+      icsContent.push(`DTEND;VALUE=DATE:${dateStr}`);
+      icsContent.push(`SUMMARY:${summary}`);
+      icsContent.push(`DESCRIPTION:${description}`);
+      icsContent.push('STATUS:CONFIRMED');
+      icsContent.push('TRANSP:TRANSPARENT');
+      icsContent.push('END:VEVENT');
+    });
+
+    icsContent.push('END:VCALENDAR');
+    
+    const blob = new Blob([icsContent.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.setAttribute('download', `Attendance_${className}_${selectedDate}.ics`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    toast.success("Calendar file generated! Import this into Google Calendar to sync.");
   };
 
   const getRecordSymbols = (studentId: string, date: string) => {
@@ -81,18 +156,24 @@ export default function LearnerAttendanceAdmin({ school }: { school: School | nu
   const classStudents = students.filter(s => s.classId === selectedClass);
   
   const getDatesOfWeek = () => {
-      const date = new Date(selectedDate);
-      const day = date.getDay() || 7;
-      if (day !== 1) date.setHours(-24 * (day - 1));
+      const [yyyy, mm, dd] = selectedDate.split('-').map(Number);
+      const date = new Date(yyyy, mm - 1, dd, 12, 0, 0, 0);
+      const day = date.getDay() || 7; // 1-7 (Mon-Sun)
+      
+      const mon = new Date(date);
+      mon.setDate(date.getDate() - (day - 1));
       
       const dates: {dayInfo: string, dateString: string}[] = [];
       const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
       for(let i=0; i<5; i++) {
-          const d = new Date(date);
-          d.setDate(date.getDate() + i);
+          const d = new Date(mon);
+          d.setDate(mon.getDate() + i);
+          const y = d.getFullYear();
+          const m = String(d.getMonth() + 1).padStart(2, '0');
+          const dayOfMonth = String(d.getDate()).padStart(2, '0');
           dates.push({
             dayInfo: dayNames[i],
-            dateString: d.toISOString().split('T')[0]
+            dateString: `${y}-${m}-${dayOfMonth}`
           });
       }
       return dates;
@@ -107,6 +188,14 @@ export default function LearnerAttendanceAdmin({ school }: { school: School | nu
           <h1 className="text-2xl font-black text-gray-900">Learners' Attendance</h1>
           <p className="text-gray-500">Monitor student attendance records (Read-Only)</p>
         </div>
+        <button 
+          onClick={exportToCalendar}
+          disabled={!selectedClass || attendanceRecords.length === 0}
+          className="flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/20 hover:bg-indigo-700 transition-all disabled:opacity-50 disabled:shadow-none"
+        >
+          <Download className="h-4 w-4" />
+          Sync to Google Calendar
+        </button>
       </div>
 
       <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-4">
@@ -126,12 +215,6 @@ export default function LearnerAttendanceAdmin({ school }: { school: School | nu
             <option value="2025">2025</option>
             <option value="2026">2026</option>
           </select>
-        </div>
-        <div className="flex justify-end">
-             <button onClick={loadAttendance} disabled={!selectedClass} className="px-6 py-3 bg-primary text-white font-bold rounded-xl disabled:opacity-50 flex items-center gap-2 hover:bg-primary/90 transition-colors">
-                {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-                View Attendance
-             </button>
         </div>
       </div>
 

@@ -4,6 +4,7 @@ import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firesto
 import { db } from '../../firebase';
 import { School } from '../../types';
 import { MapPin, Phone, Mail, Menu, X, ChevronRight, GraduationCap, BookOpen, Users, Award } from 'lucide-react';
+import ThemeToggle from '../../components/ThemeToggle';
 
 export default function PublicSchoolWebsite() {
   const { slug } = useParams<{ slug: string }>();
@@ -94,6 +95,7 @@ export default function PublicSchoolWebsite() {
             )}
           </div>
           <div className="flex items-center space-x-4">
+            <ThemeToggle />
             <Link to="/login" className="hover:text-gray-300 transition-colors">Portal Login</Link>
           </div>
         </div>

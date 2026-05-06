@@ -6,6 +6,7 @@ import { db } from '../../firebase';
 import { doc, getDoc, addDoc, collection, query, where, getDocs, orderBy, limit } from 'firebase/firestore';
 import { LogOut, MapPin, Clock, ShieldCheck, ArrowLeft } from 'lucide-react';
 import { AttendanceSettings } from '../../types';
+import ThemeToggle from '../../components/ThemeToggle';
 
 // Helper to calculate distance between two points in meters
 function getDistance(lat1: number, lon1: number, lat2: number, lon2: number) {
@@ -32,6 +33,14 @@ export default function AttendanceHome() {
   const employeeName = localStorage.getItem('employeeName');
   const schoolId = localStorage.getItem('schoolId');
 
+  const getLocalTodayString = () => {
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       if (!employeeId || !schoolId) return;
@@ -52,8 +61,8 @@ export default function AttendanceHome() {
         const snap = await getDocs(q);
         if (!snap.empty) {
           const lastRecord = snap.docs[0].data();
-          const today = new Date().toISOString().split('T')[0];
-          const recordDate = lastRecord.timestamp.split('T')[0];
+          const today = getLocalTodayString();
+          const recordDate = lastRecord.date;
           
           if (today === recordDate) {
             if (lastRecord.actionType === 'clock-in') {
@@ -176,13 +185,14 @@ export default function AttendanceHome() {
       }
 
       // 5. Submit
+      const todayStr = getLocalTodayString();
       await addDoc(collection(db, 'attendance'), {
         employeeId,
         employeeName,
         schoolId,
         actionType: action,
         timestamp: now.toISOString(),
-        date: now.toISOString().split('T')[0],
+        date: todayStr,
         latitude,
         longitude,
         verificationMethod: settings?.requireFingerprint ? 'fingerprint' : 'none',
@@ -214,10 +224,14 @@ export default function AttendanceHome() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 lg:p-6 flex flex-col items-center justify-center relative overflow-hidden">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 lg:p-6 flex flex-col items-center justify-center relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute top-0 left-0 w-full h-1/3 bg-blue-600 rounded-b-[2rem] lg:rounded-b-[3rem] z-0" />
       
+      <div className="absolute top-4 right-4 z-20">
+        <ThemeToggle />
+      </div>
+
       <div className="relative z-10 w-full max-w-sm space-y-4 lg:space-y-8">
         <div className="text-center text-white space-y-1 lg:space-y-2">
           <h1 className="text-2xl lg:text-3xl font-black tracking-tight">Staff Attendance</h1>

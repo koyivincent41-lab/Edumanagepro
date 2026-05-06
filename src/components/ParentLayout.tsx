@@ -4,6 +4,7 @@ import { LayoutDashboard, Users, FileText, Receipt, History, Settings, LogOut, G
 import { collection, onSnapshot, query, where, getDocs, getDoc, doc } from 'firebase/firestore';
 import { db } from '../firebase';
 import ThemeToggle from './ThemeToggle';
+import DigitalClock from './DigitalClock';
 import { UserProfile } from '../types';
 
 export default function ParentLayout({ children, profile }: { children: React.ReactNode, profile?: UserProfile }) {
@@ -152,6 +153,9 @@ export default function ParentLayout({ children, profile }: { children: React.Re
           </div>
           
           <div className="flex items-center gap-4">
+            <div className="hidden md:block">
+              <DigitalClock />
+            </div>
             <ThemeToggle />
             {profile && (
               <>

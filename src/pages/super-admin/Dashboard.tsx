@@ -25,6 +25,7 @@ import { toast } from 'sonner';
 import { UserProfile } from '../../types';
 import ThemeToggle from '../../components/ThemeToggle';
 import AnalogClock from '../../components/AnalogClock';
+import DigitalClock from '../../components/DigitalClock';
 
 // Sub-pages
 import Overview from './Overview';
@@ -182,6 +183,9 @@ export default function SuperAdminDashboard({ profile }: SuperAdminDashboardProp
           </button>
           
           <div className="flex items-center gap-4">
+            <div className="hidden md:block">
+              <DigitalClock />
+            </div>
             <ThemeToggle />
             <div className="text-right hidden sm:block">
               <p className="text-sm font-bold text-gray-900 dark:text-white">{profile.fullName}</p>

@@ -1,14 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase';
 import { collection, query, getDocs, setDoc, doc } from 'firebase/firestore';
-import { Loader2, Save } from 'lucide-react';
+import { Loader2, Save, Download } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function LearnerAttendanceTeacher({ teacher }: { teacher: any }) {
+  const getLocalToday = (timezone?: string) => {
+    try {
+      const options: Intl.DateTimeFormatOptions = {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        timeZone: timezone || undefined
+      };
+      const parts = new Intl.DateTimeFormat('en-GB', options).formatToParts(new Date());
+      const y = parts.find(p => p.type === 'year')?.value;
+      const m = parts.find(p => p.type === 'month')?.value;
+      const d = parts.find(p => p.type === 'day')?.value;
+      return `${y}-${m}-${d}`;
+    } catch (e) {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    }
+  };
+
   const [classes, setClasses] = useState<any[]>([]);
   const [students, setStudents] = useState<any[]>([]);
   const [selectedClass, setSelectedClass] = useState('');
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+  const [selectedDate, setSelectedDate] = useState(getLocalToday(teacher?.timezone));
   const [selectedTerm, setSelectedTerm] = useState(teacher.currentTerm || 'Term 1');
   const [selectedYear, setSelectedYear] = useState(teacher.academicYear || new Date().getFullYear().toString());
   const [selectedSession, setSelectedSession] = useState<'Morning'|'Afternoon'>('Morning');
@@ -43,24 +62,75 @@ export default function LearnerAttendanceTeacher({ teacher }: { teacher: any }) 
   }, [teacher]);
 
   const getDatesOfWeek = () => {
-      const date = new Date(selectedDate);
-      const day = date.getDay() || 7;
-      if (day !== 1) date.setHours(-24 * (day - 1));
+      const [yyyy, mm, dd] = selectedDate.split('-').map(Number);
+      const date = new Date(yyyy, mm - 1, dd, 12, 0, 0, 0);
+      const day = date.getDay() || 7; // 1-7 (Mon-Sun)
+      
+      const mon = new Date(date);
+      mon.setDate(date.getDate() - (day - 1));
       
       const dates: {dayInfo: string, dateString: string}[] = [];
       const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
       for(let i=0; i<5; i++) {
-          const d = new Date(date);
-          d.setDate(date.getDate() + i);
+          const d = new Date(mon);
+          d.setDate(mon.getDate() + i);
+          const y = d.getFullYear();
+          const m = String(d.getMonth() + 1).padStart(2, '0');
+          const dayOfMonth = String(d.getDate()).padStart(2, '0');
           dates.push({
             dayInfo: dayNames[i],
-            dateString: d.toISOString().split('T')[0]
+            dateString: `${y}-${m}-${dayOfMonth}`
           });
       }
       return dates;
   };
 
   const weekDates = getDatesOfWeek();
+
+  const exportToCalendar = () => {
+    if (!selectedClass || attendanceRecords.length === 0) return;
+    
+    const className = classes.find(c => c.id === selectedClass)?.name || 'Class';
+    let icsContent = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//School Management System//Attendance//EN',
+      'CALSCALE:GREGORIAN',
+      'METHOD:PUBLISH'
+    ];
+
+    attendanceRecords.forEach(record => {
+      const student = students.find(s => s.id === record.studentId);
+      if (!student) return;
+
+      const [y, m, d] = record.date.split('-').map(Number);
+      const dateStr = `${y}${String(m).padStart(2,'0')}${String(d).padStart(2,'0')}`;
+      
+      const summary = `Attendance: ${student.fullName} (${record.status})`;
+      const description = `Session: ${record.session}\\nClass: ${className}\\nStatus: ${record.status}`;
+
+      icsContent.push('BEGIN:VEVENT');
+      icsContent.push(`DTSTART;VALUE=DATE:${dateStr}`);
+      icsContent.push(`DTEND;VALUE=DATE:${dateStr}`);
+      icsContent.push(`SUMMARY:${summary}`);
+      icsContent.push(`DESCRIPTION:${description}`);
+      icsContent.push('STATUS:CONFIRMED');
+      icsContent.push('TRANSP:TRANSPARENT');
+      icsContent.push('END:VEVENT');
+    });
+
+    icsContent.push('END:VCALENDAR');
+    
+    const blob = new Blob([icsContent.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.setAttribute('download', `Attendance_${className}_${selectedDate}.ics`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    toast.success("Calendar file generated! Import this into Google Calendar to sync.");
+  };
 
   const loadRegister = async () => {
     if (!teacher?.schoolId || !selectedClass) return;
@@ -192,7 +262,15 @@ export default function LearnerAttendanceTeacher({ teacher }: { teacher: any }) 
             <option value="Afternoon">Afternoon</option>
           </select>
         </div>
-        <div className="flex justify-end">
+        <div className="flex justify-end gap-3 flex-wrap">
+             <button 
+               onClick={exportToCalendar}
+               disabled={!selectedClass || attendanceRecords.length === 0}
+               className="px-6 py-3 bg-indigo-600 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/20 hover:bg-indigo-700 transition-all disabled:opacity-50 disabled:shadow-none flex items-center gap-2"
+             >
+               <Download className="h-4 w-4" />
+               Sync to Google Calendar
+             </button>
              <button onClick={loadRegister} disabled={!selectedClass} className="px-6 py-3 bg-maroon text-white font-bold rounded-xl disabled:opacity-50 flex items-center gap-2 hover:bg-maroon/90 transition-colors shadow-lg shadow-maroon/20">
                 {loading && <Loader2 className="h-4 w-4 animate-spin" />}
                 Load Attendance Register
