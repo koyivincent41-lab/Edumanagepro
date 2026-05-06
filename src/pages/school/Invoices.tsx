@@ -157,9 +157,10 @@ export default function Invoices({ schoolId, school }: { schoolId: string; schoo
     };
   }, [schoolId, school?.academicYear, school?.currentTerm, currentBranch]);
 
-  const handleFeeTypeChange = (index: number, feeTypeName: string) => {
-    const feeType = feeTypes.find(f => f.name === feeTypeName);
+  const handleFeeTypeChange = (index: number, feeTypeId: string) => {
+    const feeType = feeTypes.find(f => f.id === feeTypeId);
     if (feeType) {
+      setValue(`items.${index}.name`, feeType.name);
       setValue(`items.${index}.amount`, feeType.amount);
     }
   };
@@ -767,16 +768,13 @@ export default function Invoices({ schoolId, school }: { schoolId: string; schoo
                   <div key={index} className="grid grid-cols-12 gap-4 items-start">
                     <div className="col-span-7">
                       <select
-                        {...register(`items.${index}.name`)}
-                        onChange={(e) => {
-                          register(`items.${index}.name`).onChange(e);
-                          handleFeeTypeChange(index, e.target.value);
-                        }}
-                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary outline-none bg-white"
+                        value={feeTypes.find(f => f.name === items[index].name && f.amount === items[index].amount)?.id || ""}
+                        onChange={(e) => handleFeeTypeChange(index, e.target.value)}
+                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary outline-none bg-white font-bold"
                       >
                         <option value="">Select Fee Type...</option>
                         {feeTypes.map(f => (
-                          <option key={f.id} value={f.name}>{f.name} ({school?.currency} {f.amount.toLocaleString()})</option>
+                          <option key={f.id} value={f.id}>{f.name} ({school?.currency} {f.amount.toLocaleString()})</option>
                         ))}
                       </select>
                     </div>
