@@ -132,7 +132,7 @@ export default function SchoolDashboard({ profile }: { profile: UserProfile }) {
     { name: 'Streams', path: '/dashboard/streams', icon: BookOpen },
     { name: 'Exams Portal', path: '/dashboard/exams', icon: FileText },
     { name: 'Fee Types', path: '/dashboard/fee-types', icon: Tag },
-    { name: 'Our Website', path: 'https://spincardevelopers.netlify.app/', icon: Globe, external: true },
+    { name: 'Our Website', path: 'https://spincardeveloperz.netlify.app/', icon: Globe, external: true },
     { name: 'Settings', path: '/dashboard/settings', icon: Settings },
     ...( ['owner', 'admin'].includes(profile.role) ? [{ name: 'Billing & Plan', path: '/dashboard/billing', icon: CreditCard }] : []),
   ];
