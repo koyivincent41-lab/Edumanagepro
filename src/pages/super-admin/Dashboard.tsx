@@ -24,7 +24,6 @@ import { collection, getDocs, query, where, onSnapshot, orderBy, doc } from 'fir
 import { toast } from 'sonner';
 import { UserProfile } from '../../types';
 import ThemeToggle from '../../components/ThemeToggle';
-import AnalogClock from '../../components/AnalogClock';
 import DigitalClock from '../../components/DigitalClock';
 
 // Sub-pages
@@ -53,7 +52,6 @@ interface SystemSettings {
 
 export default function SuperAdminDashboard({ profile }: SuperAdminDashboardProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const [showClock, setShowClock] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const [pendingPaymentsCount, setPendingPaymentsCount] = useState(0);
   const [systemSettings, setSystemSettings] = useState<SystemSettings | null>(null);
@@ -150,19 +148,7 @@ export default function SuperAdminDashboard({ profile }: SuperAdminDashboardProp
           })}
         </nav>
 
-        {/* Analog Clock in Sidebar */}
-        {isSidebarOpen && (
-          <div className="p-6 flex flex-col items-center gap-4 border-t border-white/10">
-            <button 
-              onClick={() => setShowClock(!showClock)}
-              className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-gray-500 hover:text-white transition-colors"
-            >
-              <Clock className="h-3 w-3" />
-              {showClock ? 'Hide Clock' : 'Show Clock'}
-            </button>
-            {showClock && <AnalogClock />}
-          </div>
-        )}
+        {/* User identification or other sidebar footer elements can go here if needed */}
 
         <div className="p-4 border-t border-white/10">
           <button
