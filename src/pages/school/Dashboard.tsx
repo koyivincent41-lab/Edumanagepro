@@ -32,7 +32,7 @@ import { UserProfile, School, Term } from '../../types';
 import { handleFirestoreError, OperationType } from '../../lib/firestoreErrorHandler';
 import { toast } from 'sonner';
 import ThemeToggle from '../../components/ThemeToggle';
-import AnalogClock from '../../components/AnalogClock';
+import DigitalClock from '../../components/DigitalClock';
 import { subscriptionService } from '../../services/subscriptionService';
 import { useBranch } from '../../context/BranchContext';
 
@@ -64,7 +64,6 @@ import PayrollModule from './Payroll';
 export default function SchoolDashboard({ profile }: { profile: UserProfile }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 1024);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [showClock, setShowClock] = useState(false);
   const [school, setSchool] = useState<School | null>(null);
   const [unreadCount, setUnreadCount] = useState(0);
   const [packageName, setPackageName] = useState<string>('');
@@ -412,19 +411,6 @@ export default function SchoolDashboard({ profile }: { profile: UserProfile }) {
           })}
         </nav>
 
-        {/* Analog Clock in Sidebar */}
-        {isSidebarOpen && (
-          <div className="p-6 flex flex-col items-center gap-4 border-t border-gray-100 dark:border-gray-800">
-            <button 
-              onClick={() => setShowClock(!showClock)}
-              className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-primary transition-colors"
-            >
-              <Clock className="h-3 w-3" />
-              {showClock ? 'Hide Clock' : 'Show Clock'}
-            </button>
-            {showClock && <AnalogClock />}
-          </div>
-        )}
 
         <div className="p-4 border-t border-gray-100 dark:border-gray-800">
           <button
@@ -561,6 +547,9 @@ export default function SchoolDashboard({ profile }: { profile: UserProfile }) {
           </div>
           
           <div className="flex items-center gap-4">
+            <div className="hidden md:block">
+              <DigitalClock />
+            </div>
             <ThemeToggle />
             <div className="text-right hidden sm:block">
               <p className="text-sm font-bold text-gray-900 dark:text-white">{profile.fullName}</p>
