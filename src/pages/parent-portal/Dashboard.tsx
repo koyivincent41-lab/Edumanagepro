@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ParentLayout from '../../components/ParentLayout';
 import { UserProfile } from '../../types';
-import { Users, DollarSign, FileText, Receipt, Lock, ArrowRight, Loader2, History, Bell } from 'lucide-react';
+import { Users, DollarSign, FileText, Receipt, Lock, ArrowRight, Loader2, History, Bell, Calendar } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { db } from '../../firebase';
 import { collection, query, where, getDocs, orderBy, limit, doc, getDoc, onSnapshot } from 'firebase/firestore';
@@ -157,6 +157,7 @@ export default function ParentDashboard({ profile }: { profile: UserProfile }) {
   const quickActions = [
     { name: 'Inbox', path: '/parent-portal/inbox', icon: Bell },
     { name: 'View My Children', path: '/parent-portal/children', icon: Users },
+    { name: 'Learner Attendance', path: '/parent-portal/attendance', icon: Calendar },
     { name: 'View Invoices', path: '/parent-portal/invoices', icon: FileText },
     { name: 'View Receipts', path: '/parent-portal/receipts', icon: Receipt },
     { name: 'Payment History', path: '/parent-portal/payment-history', icon: History },

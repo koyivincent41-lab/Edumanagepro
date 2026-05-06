@@ -5,7 +5,9 @@ import MarksEntry from './MarksEntry';
 import ExamRecordsBrowser from '../../components/ExamRecordsBrowser';
 import ReportFormBrowser from '../../components/ReportFormBrowser';
 
-type TabType = 'marks_entry' | 'opener' | 'midterm' | 'end_term' | 'report_form';
+import LearnerAttendanceTeacher from './LearnerAttendanceTeacher';
+
+type TabType = 'marks_entry' | 'opener' | 'midterm' | 'end_term' | 'report_form' | 'learner_attendance';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -122,6 +124,13 @@ export default function Dashboard() {
           <FileText className="h-4 w-4 md:h-5 md:w-5" />
           Term Report Form
         </button>
+        <button 
+          onClick={() => setActiveTab('learner_attendance')}
+          className={`flex items-center gap-1.5 md:gap-2 px-3 md:px-5 py-2 md:py-3 rounded-lg md:rounded-xl text-xs md:text-sm font-bold transition-all whitespace-nowrap ${activeTab === 'learner_attendance' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/20' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'}`}
+        >
+          <Calendar className="h-4 w-4 md:h-5 md:w-5" />
+          Learners Attendance
+        </button>
       </div>
 
       {activeTab === 'marks_entry' && (
@@ -171,6 +180,16 @@ export default function Dashboard() {
             <p className="text-gray-300">Generate, view, download, and print full end-of-term report forms.</p>
           </div>
           <ReportFormBrowser schoolId={teacher.schoolId} />
+        </>
+      )}
+
+      {activeTab === 'learner_attendance' && (
+        <>
+          <div className="mb-6">
+            <h2 className="text-2xl font-black text-white">Learners' Attendance</h2>
+            <p className="text-gray-300">Mark morning and afternoon attendance for students.</p>
+          </div>
+          <LearnerAttendanceTeacher teacher={teacher} />
         </>
       )}
       </main>

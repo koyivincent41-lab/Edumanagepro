@@ -55,6 +55,7 @@ import Inbox from './Inbox';
 import Website from './Website';
 import Employees from './Employees';
 import Attendance from './Attendance';
+import LearnerAttendanceAdmin from './LearnerAttendanceAdmin';
 import Subjects from './Subjects';
 import Branches from './Branches';
 import ExamsPortal from './ExamsPortal';
@@ -118,6 +119,7 @@ export default function SchoolDashboard({ profile }: { profile: UserProfile }) {
     { name: 'Students', path: '/dashboard/students', icon: GraduationCap },
     { name: 'Employees', path: '/dashboard/employees', icon: Users },
     { name: 'Attendance', path: '/dashboard/attendance', icon: Clock },
+    { name: 'Learners\' Attendance', path: '/dashboard/learners-attendance', icon: Calendar },
     { name: 'Staff & Users', path: '/dashboard/users', icon: Users },
     { name: 'Payroll', path: '/dashboard/payroll', icon: DollarSign },
     { name: 'Invoices', path: '/dashboard/invoices', icon: FileText },
@@ -589,6 +591,7 @@ export default function SchoolDashboard({ profile }: { profile: UserProfile }) {
                 <Route path="/students" element={<Students schoolId={profile.schoolId!} school={school} />} />
                 <Route path="/employees" element={<Employees school={school} />} />
                 <Route path="/attendance" element={<Attendance school={school} />} />
+                <Route path="/learners-attendance" element={<LearnerAttendanceAdmin school={school} />} />
                 <Route path="/invoices" element={<Invoices schoolId={profile.schoolId!} school={school} />} />
                 <Route path="/payments" element={<Payments schoolId={profile.schoolId!} school={school} />} />
                 <Route path="/receipts" element={<Receipts schoolId={profile.schoolId!} school={school} />} />

@@ -37,6 +37,7 @@ import Receipts from './pages/parent-portal/Receipts';
 import ParentInbox from './pages/parent-portal/Inbox';
 import PaymentHistory from './pages/parent-portal/PaymentHistory';
 import AccountSettings from './pages/parent-portal/AccountSettings';
+import LearnerAttendanceParent from './pages/parent-portal/LearnerAttendanceParent';
 import ParentProtectedRoute from './components/ParentProtectedRoute';
 import SuperAdminProtectedRoute from './components/SuperAdminProtectedRoute';
 import SchoolProtectedRoute from './components/SchoolProtectedRoute';
@@ -173,6 +174,14 @@ export default function App() {
           element={
             <ParentProtectedRoute profile={profile} user={user} loading={loading}>
               <MyChildren profile={profile!} />
+            </ParentProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/parent-portal/attendance" 
+          element={
+            <ParentProtectedRoute profile={profile} user={user} loading={loading}>
+              <LearnerAttendanceParent profile={profile!} />
             </ParentProtectedRoute>
           } 
         />

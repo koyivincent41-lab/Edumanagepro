@@ -6,7 +6,7 @@ import { updatePassword, EmailAuthProvider, reauthenticateWithCredential } from 
 import { doc, onSnapshot, setDoc } from 'firebase/firestore';
 import { auth, db } from '../../firebase';
 import { toast } from 'sonner';
-import { Loader2, Lock, ShieldCheck, Mail, Bell, Save, Layers, Globe } from 'lucide-react';
+import { Loader2, Lock, ShieldCheck, Mail, Bell, Save, Layers, Globe, Upload, Trash2 } from 'lucide-react';
 import { COUNTRIES } from '../../constants/countries';
 
 const passwordSchema = z.object({
@@ -165,7 +165,7 @@ export default function Settings() {
     if (!file) return;
 
     if (file.size > 500 * 1024) {
-      toast.error('File size must be less than 500KB');
+      toast.error(`File size must be less than 500KB. Selected: ${(file.size / 1024).toFixed(1)}KB`);
       return;
     }
 
@@ -174,6 +174,9 @@ export default function Settings() {
       setSystemSettings(prev => ({ ...prev, [field]: reader.result as string }));
     };
     reader.readAsDataURL(file);
+    
+    // Clear the input so the same file could be selected if needed
+    e.target.value = '';
   };
 
   if (loading) {
@@ -291,21 +294,28 @@ export default function Settings() {
               <div className="grid grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Official Logo</label>
-                  <div className="relative group aspect-square bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center overflow-hidden">
+                  <div className="relative aspect-square bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center overflow-hidden">
                     {systemSettings.companyLogo ? (
                       <>
-                        <img src={systemSettings.companyLogo} alt="Logo" className="w-full h-full object-contain p-4" />
-                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                          <label className="cursor-pointer p-2 bg-white rounded-full text-primary hover:scale-110 transition-transform">
-                            <Save className="h-5 w-5" />
+                        <img src={systemSettings.companyLogo} alt="Logo" className="w-full h-full object-contain p-4 bg-white" />
+                        <div className="absolute top-2 right-2 flex gap-2">
+                          <label className="cursor-pointer p-2 bg-white border border-gray-100 rounded-full text-blue-600 hover:scale-110 transition-transform shadow-sm">
+                            <Upload className="h-4 w-4" />
                             <input type="file" className="hidden" accept="image/*" onChange={(e) => handleFileUpload(e, 'companyLogo')} />
                           </label>
+                          <button 
+                            type="button"
+                            onClick={() => setSystemSettings(prev => ({ ...prev, companyLogo: '' }))}
+                            className="p-2 bg-white border border-gray-100 rounded-full text-red-600 hover:scale-110 transition-transform shadow-sm"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
                         </div>
                       </>
                     ) : (
-                      <label className="cursor-pointer flex flex-col items-center gap-2 text-gray-400 hover:text-primary transition-colors">
-                        <Save className="h-8 w-8" />
-                        <span className="text-xs font-bold uppercase tracking-wider">Upload Logo</span>
+                      <label className="cursor-pointer w-full h-full flex flex-col items-center justify-center gap-2 text-gray-400 hover:text-primary transition-colors hover:bg-gray-100">
+                        <Upload className="h-8 w-8" />
+                        <span className="text-xs font-bold uppercase tracking-wider text-center px-4">Upload Logo<br/><span className="text-[10px] text-gray-400 normal-case">(Max 500KB)</span></span>
                         <input type="file" className="hidden" accept="image/*" onChange={(e) => handleFileUpload(e, 'companyLogo')} />
                       </label>
                     )}
@@ -313,21 +323,28 @@ export default function Settings() {
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Official Signature</label>
-                  <div className="relative group aspect-square bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center overflow-hidden">
+                  <div className="relative aspect-square bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center overflow-hidden">
                     {systemSettings.companySignature ? (
                       <>
-                        <img src={systemSettings.companySignature} alt="Signature" className="w-full h-full object-contain p-4" />
-                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                          <label className="cursor-pointer p-2 bg-white rounded-full text-primary hover:scale-110 transition-transform">
-                            <Save className="h-5 w-5" />
+                        <img src={systemSettings.companySignature} alt="Signature" className="w-full h-full object-contain p-4 bg-white" />
+                        <div className="absolute top-2 right-2 flex gap-2">
+                          <label className="cursor-pointer p-2 bg-white border border-gray-100 rounded-full text-blue-600 hover:scale-110 transition-transform shadow-sm">
+                            <Upload className="h-4 w-4" />
                             <input type="file" className="hidden" accept="image/*" onChange={(e) => handleFileUpload(e, 'companySignature')} />
                           </label>
+                          <button 
+                            type="button"
+                            onClick={() => setSystemSettings(prev => ({ ...prev, companySignature: '' }))}
+                            className="p-2 bg-white border border-gray-100 rounded-full text-red-600 hover:scale-110 transition-transform shadow-sm"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
                         </div>
                       </>
                     ) : (
-                      <label className="cursor-pointer flex flex-col items-center gap-2 text-gray-400 hover:text-primary transition-colors">
-                        <Save className="h-8 w-8" />
-                        <span className="text-xs font-bold uppercase tracking-wider">Upload Signature</span>
+                      <label className="cursor-pointer w-full h-full flex flex-col items-center justify-center gap-2 text-gray-400 hover:text-primary transition-colors hover:bg-gray-100">
+                        <Upload className="h-8 w-8" />
+                        <span className="text-xs font-bold uppercase tracking-wider text-center px-4">Upload Signature<br/><span className="text-[10px] text-gray-400 normal-case">(Max 500KB)</span></span>
                         <input type="file" className="hidden" accept="image/*" onChange={(e) => handleFileUpload(e, 'companySignature')} />
                       </label>
                     )}
