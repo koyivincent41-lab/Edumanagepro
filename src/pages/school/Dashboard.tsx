@@ -131,7 +131,7 @@ export default function SchoolDashboard({ profile }: { profile: UserProfile }) {
     { name: 'Streams', path: '/dashboard/streams', icon: BookOpen },
     { name: 'Exams Portal', path: '/dashboard/exams', icon: FileText },
     { name: 'Fee Types', path: '/dashboard/fee-types', icon: Tag },
-    { name: 'Our Website', path: '/dashboard/website', icon: Globe },
+    { name: 'Our Website', path: 'https://spincardevelopers.netlify.app/', icon: Globe, external: true },
     { name: 'Settings', path: '/dashboard/settings', icon: Settings },
     ...( ['owner', 'admin'].includes(profile.role) ? [{ name: 'Billing & Plan', path: '/dashboard/billing', icon: CreditCard }] : []),
   ];
@@ -367,23 +367,38 @@ export default function SchoolDashboard({ profile }: { profile: UserProfile }) {
         )}
 
         <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-          {menuItems.map((item) => {
+          {menuItems.map((item: any) => {
             const isActive = location.pathname === item.path;
             const isDisabled = isDeactivated && item.path !== '/dashboard/billing';
+            const isExternal = item.external;
+
+            const linkProps = isExternal ? {
+              href: isDisabled ? '#' : item.path,
+              target: "_blank",
+              rel: "noopener noreferrer",
+              className: `flex items-center gap-3 p-3 rounded-xl transition-all relative ${
+                isDisabled ? 'text-gray-300 dark:text-gray-700 cursor-not-allowed opacity-50' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-primary'
+              }`
+            } : {
+              to: isDisabled ? '#' : item.path,
+              className: `flex items-center gap-3 p-3 rounded-xl transition-all relative ${
+                isActive ? 'bg-school-gradient text-white shadow-lg shadow-primary/20' : 
+                isDisabled ? 'text-gray-300 dark:text-gray-700 cursor-not-allowed opacity-50' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-primary'
+              }`
+            };
+
+            const LinkComponent = isExternal ? 'a' : Link;
+
             return (
-              <Link
+              <LinkComponent
                 key={item.path}
-                to={isDisabled ? '#' : item.path}
-                onClick={(e) => {
+                {...(linkProps as any)}
+                onClick={(e: any) => {
                   if (isDisabled) {
                     e.preventDefault();
                     toast.error('Your subscription has expired. Please complete your payment to reactivate your dashboard.');
                   }
                 }}
-                className={`flex items-center gap-3 p-3 rounded-xl transition-all relative ${
-                  isActive ? 'bg-school-gradient text-white shadow-lg shadow-primary/20' : 
-                  isDisabled ? 'text-gray-300 dark:text-gray-700 cursor-not-allowed opacity-50' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-primary'
-                }`}
               >
                 <item.icon className="h-5 w-5 shrink-0" />
                 {isSidebarOpen && <span className="text-sm font-bold">{item.name}</span>}
@@ -392,7 +407,7 @@ export default function SchoolDashboard({ profile }: { profile: UserProfile }) {
                     {unreadCount}
                   </span>
                 )}
-              </Link>
+              </LinkComponent>
             );
           })}
         </nav>
