@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { GraduationCap, LogOut, School as SchoolIcon, Calendar, Edit3, FileText, LayoutDashboard } from 'lucide-react';
 import MarksEntry from './MarksEntry';
 import ExamRecordsBrowser from '../../components/ExamRecordsBrowser';
@@ -13,8 +13,11 @@ type TabType = 'marks_entry' | 'opener' | 'midterm' | 'end_term' | 'report_form'
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [teacher, setTeacher] = useState<any>(null);
-  const [activeTab, setActiveTab] = useState<TabType>('marks_entry');
+  const [activeTab, setActiveTab] = useState<TabType>(
+    (location.state as any)?.tab || 'marks_entry'
+  );
 
   useEffect(() => {
     const authData = sessionStorage.getItem('teacherExamsAuth');

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, School, GraduationCap, LayoutDashboard, ChevronDown, User, Users, ShieldCheck, FileText } from 'lucide-react';
+import { Menu, X, School, GraduationCap, LayoutDashboard, ChevronDown, User, Users, ShieldCheck, FileText, Calendar } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import ThemeToggle from './ThemeToggle';
 import DigitalClock from './DigitalClock';
@@ -103,9 +103,39 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
                         </Link>
 
                         <Link
+                          to="/login"
+                          state={{ tab: 'exams' }}
+                          onClick={() => setIsLoginDropdownOpen(false)}
+                          className="flex items-center gap-3 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors group border-b border-gray-50 dark:border-gray-800"
+                        >
+                          <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                            <FileText className="w-5 h-5 text-blue-600 group-hover:text-white" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-bold text-gray-900 dark:text-white">Exams Portal</p>
+                            <p className="text-[10px] text-gray-400 uppercase tracking-wider">Teacher Portal</p>
+                          </div>
+                        </Link>
+
+                        <Link
+                          to="/login"
+                          state={{ tab: 'attendance' }}
+                          onClick={() => setIsLoginDropdownOpen(false)}
+                          className="flex items-center gap-3 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors group border-b border-gray-50 dark:border-gray-800"
+                        >
+                          <div className="p-2 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                            <Calendar className="w-5 h-5 text-indigo-600 group-hover:text-white" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-bold text-gray-900 dark:text-white">Learner Attendance</p>
+                            <p className="text-[10px] text-gray-400 uppercase tracking-wider">Mark Attendance</p>
+                          </div>
+                        </Link>
+
+                        <Link
                           to="/payslip"
                           onClick={() => setIsLoginDropdownOpen(false)}
-                          className="flex items-center gap-3 p-4 rounded-xl hover:bg-maroon/5 dark:hover:bg-maroon/10 transition-colors group border-y border-gray-50 dark:border-gray-800"
+                          className="flex items-center gap-3 p-4 rounded-xl hover:bg-maroon/5 dark:hover:bg-maroon/10 transition-colors group border-b border-gray-50 dark:border-gray-800"
                         >
                           <div className="p-2 bg-maroon/10 rounded-lg group-hover:bg-maroon group-hover:text-white transition-colors">
                             <FileText className="w-5 h-5 text-maroon group-hover:text-white" />
@@ -197,6 +227,24 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
                 <div className="space-y-2">
                   <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Login Portals</p>
                   <div className="grid grid-cols-1 gap-2">
+                    <Link
+                      to="/login"
+                      state={{ tab: 'exams' }}
+                      className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <FileText className="w-5 h-5 text-blue-600" />
+                      <span className="text-sm font-bold">Exams Portal</span>
+                    </Link>
+                    <Link
+                      to="/login"
+                      state={{ tab: 'attendance' }}
+                      className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <Calendar className="w-5 h-5 text-indigo-600" />
+                      <span className="text-sm font-bold">Learner Attendance</span>
+                    </Link>
                     <Link
                       to="/login"
                       className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800"

@@ -28,7 +28,8 @@ export default function Login({ profile }: { profile: UserProfile | null }) {
   // Exams Portal State
   const [staffNumber, setStaffNumber] = useState('');
   const [isExamsSubmitting, setIsExamsSubmitting] = useState(false);
-  const [activeTab, setActiveTab] = useState<'admin' | 'exams'>(
+  const [activeTab, setActiveTab] = useState<'admin' | 'exams' | 'attendance'>(
+    (location.state as any)?.tab === 'attendance' ? 'attendance' : 
     (location.state as any)?.tab === 'exams' ? 'exams' : 'admin'
   );
   
@@ -50,12 +51,17 @@ export default function Login({ profile }: { profile: UserProfile | null }) {
           staffNumber: profile.staffNumber,
           classTeacherAssignment: profile.classTeacherAssignment
         }));
-        navigate('/teacher-exams/dashboard');
+        
+        if (activeTab === 'attendance') {
+           navigate('/teacher-exams/dashboard', { state: { tab: 'learner_attendance' } });
+        } else {
+           navigate('/teacher-exams/dashboard');
+        }
       } else {
         navigate('/dashboard');
       }
     }
-  }, [profile, navigate]);
+  }, [profile, navigate, activeTab]);
 
   const {
     register,
@@ -103,7 +109,11 @@ export default function Login({ profile }: { profile: UserProfile | null }) {
       }));
 
       toast.success('Login successful');
-      navigate('/teacher-exams/dashboard');
+      if (activeTab === 'attendance') {
+        navigate('/teacher-exams/dashboard', { state: { tab: 'learner_attendance' } });
+      } else {
+        navigate('/teacher-exams/dashboard');
+      }
     } catch (error: any) {
       console.error('Login error:', error);
       if (error.code === 'auth/operation-not-allowed') {
@@ -219,10 +229,10 @@ export default function Login({ profile }: { profile: UserProfile | null }) {
             <div className="absolute inset-0 border-2 border-transparent bg-gradient-to-br from-maroon/20 via-transparent to-gray-400/20 rounded-[3rem] pointer-events-none opacity-50" />
             
             {/* Tab Switcher */}
-            <div className="flex p-1 bg-gray-100 dark:bg-gray-800 rounded-2xl mb-8 relative z-10">
+            <div className="flex p-1 bg-gray-100 dark:bg-gray-800 rounded-2xl mb-8 relative z-10 overflow-x-auto no-scrollbar">
               <button
                 onClick={() => setActiveTab('admin')}
-                className={`flex-1 py-3 text-xs font-black uppercase tracking-widest rounded-xl transition-all ${
+                className={`flex-1 py-3 px-4 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all whitespace-nowrap ${
                   activeTab === 'admin' 
                     ? 'bg-white dark:bg-gray-700 text-maroon shadow-sm' 
                     : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
@@ -232,13 +242,23 @@ export default function Login({ profile }: { profile: UserProfile | null }) {
               </button>
               <button
                 onClick={() => setActiveTab('exams')}
-                className={`flex-1 py-3 text-xs font-black uppercase tracking-widest rounded-xl transition-all ${
+                className={`flex-1 py-3 px-4 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all whitespace-nowrap ${
                   activeTab === 'exams' 
                     ? 'bg-white dark:bg-gray-700 text-maroon shadow-sm' 
                     : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
                 }`}
               >
                 Exams Portal
+              </button>
+              <button
+                onClick={() => setActiveTab('attendance')}
+                className={`flex-1 py-3 px-4 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all whitespace-nowrap ${
+                  activeTab === 'attendance' 
+                    ? 'bg-white dark:bg-gray-700 text-maroon shadow-sm' 
+                    : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
+                }`}
+              >
+                Learner Attendance
               </button>
             </div>
 
@@ -325,7 +345,9 @@ export default function Login({ profile }: { profile: UserProfile | null }) {
             ) : (
               <div className="space-y-6 relative">
                 <div className="text-center mb-6">
-                  <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Enter your Staff ID to access the exams portal.</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
+                    {activeTab === 'attendance' ? 'Enter your Staff ID to access the attendance module.' : 'Enter your Staff ID to access the exams portal.'}
+                  </p>
                 </div>
                 <form onSubmit={handleExamsLogin} className="space-y-6">
                   <div className="space-y-2">
@@ -354,7 +376,7 @@ export default function Login({ profile }: { profile: UserProfile | null }) {
                         Entering...
                       </>
                     ) : (
-                      'Enter Exams Portal'
+                      activeTab === 'attendance' ? 'Enter Attendance Portal' : 'Enter Exams Portal'
                     )}
                   </button>
                 </form>

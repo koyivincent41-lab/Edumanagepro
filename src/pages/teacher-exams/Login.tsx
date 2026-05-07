@@ -7,6 +7,7 @@ import PublicLayout from '../../components/PublicLayout';
 export default function Login() {
   const [staffNumber, setStaffNumber] = useState('');
   const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState<'exams' | 'attendance'>('exams');
   const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -29,7 +30,11 @@ export default function Login() {
     }));
 
     toast.success(`Welcome back!`);
-    navigate('/teacher-exams/dashboard');
+    if (activeTab === 'attendance') {
+      navigate('/teacher-exams/dashboard', { state: { tab: 'learner_attendance' } });
+    } else {
+      navigate('/teacher-exams/dashboard');
+    }
     setLoading(false);
   };
 
@@ -43,15 +48,39 @@ export default function Login() {
             </div>
           </div>
           <h2 className="mt-6 text-center text-3xl font-black text-gray-900 tracking-tight">
-            Teacher <span className="text-maroon">Exams</span> Portal
+            Teacher <span className="text-maroon">Portal</span>
           </h2>
           <p className="mt-2 text-center text-sm text-gray-500">
-            Enter your Staff ID to access your dashboard
+            {activeTab === 'attendance' ? 'Access the attendance management module' : 'Access the exams management portal'}
           </p>
         </div>
 
-        <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="mt-4 sm:mx-auto sm:w-full sm:max-w-md">
           <div className="bg-white py-8 px-4 shadow-2xl shadow-gray-200/50 sm:rounded-3xl sm:px-10 border border-gray-100">
+            {/* Tab Switcher */}
+            <div className="flex p-1 bg-gray-100 dark:bg-gray-800 rounded-2xl mb-8 relative z-10">
+              <button
+                onClick={() => setActiveTab('exams')}
+                className={`flex-1 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all ${
+                  activeTab === 'exams' 
+                    ? 'bg-white dark:bg-gray-700 text-maroon shadow-sm' 
+                    : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
+                }`}
+              >
+                Exams Portal
+              </button>
+              <button
+                onClick={() => setActiveTab('attendance')}
+                className={`flex-1 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all ${
+                  activeTab === 'attendance' 
+                    ? 'bg-white dark:bg-gray-700 text-maroon shadow-sm' 
+                    : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
+                }`}
+              >
+                Learner Attendance
+              </button>
+            </div>
+
             <form className="space-y-6" onSubmit={handleLogin}>
               <div>
                 <label htmlFor="staffId" className="block text-sm font-bold text-gray-700 mb-2">
