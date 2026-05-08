@@ -99,55 +99,81 @@ export default function LearnerAttendanceAdmin({ school }: { school: School | nu
     return () => unsubscribe();
   }, [school?.id, selectedClass, selectedDate, selectedTerm, selectedYear]);
 
-  const exportToCalendar = () => {
-    if (!selectedClass || attendanceRecords.length === 0) return;
+  const exportClassCSV = () => {
+    if (!selectedClass || attendanceRecords.length === 0) {
+      toast.error("No attendance records to export for this class.");
+      return;
+    }
     
     const className = classes.find(c => c.id === selectedClass)?.name || 'Class';
-    let icsContent = [
-      'BEGIN:VCALENDAR',
-      'VERSION:2.0',
-      'PRODID:-//School Management System//Attendance//EN',
-      'CALSCALE:GREGORIAN',
-      'METHOD:PUBLISH'
-    ];
-
+    
+    let csvContent = "Student Name,Date,Session,Status\n";
     attendanceRecords.forEach(record => {
       const student = students.find(s => s.id === record.studentId);
-      if (!student) return;
-
-      const [y, m, d] = record.date.split('-').map(Number);
-      const dateStr = `${y}${String(m).padStart(2,'0')}${String(d).padStart(2,'0')}`;
-      
-      const summary = `Attendance: ${student.fullName} (${record.status})`;
-      const description = `Session: ${record.session}\\nClass: ${className}\\nStatus: ${record.status}`;
-
-      icsContent.push('BEGIN:VEVENT');
-      icsContent.push(`DTSTART;VALUE=DATE:${dateStr}`);
-      icsContent.push(`DTEND;VALUE=DATE:${dateStr}`);
-      icsContent.push(`SUMMARY:${summary}`);
-      icsContent.push(`DESCRIPTION:${description}`);
-      icsContent.push('STATUS:CONFIRMED');
-      icsContent.push('TRANSP:TRANSPARENT');
-      icsContent.push('END:VEVENT');
+      if (student) {
+        csvContent += `"${student.fullName}","${record.date}","${record.session}","${record.status}"\n`;
+      }
     });
 
-    icsContent.push('END:VCALENDAR');
-    
-    const blob = new Blob([icsContent.join('\r\n')], { type: 'text/calendar;charset=utf-8' });
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     link.href = window.URL.createObjectURL(blob);
-    link.setAttribute('download', `Attendance_${className}_${selectedDate}.ics`);
+    link.setAttribute('download', `Attendance_${className}_${selectedDate}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    
-    toast.success("Calendar file generated! Import this into Google Calendar to sync.");
+  };
+
+  const exportSchoolCSV = async () => {
+    if (!school?.id) return;
+    setLoading(true);
+    try {
+      const q = query(
+        collection(db, 'schools', school.id, 'learner_attendance'),
+        where('term', '==', selectedTerm),
+        where('academicYear', '==', selectedYear)
+      );
+      const snap = await getDocs(q);
+      const allRecords = snap.docs.map(doc => doc.data() as any);
+      
+      const filtered = allRecords.filter(r => r.date === selectedDate);
+      
+      if (filtered.length === 0) {
+        toast.error("No attendance records to export for this date.");
+        setLoading(false);
+        return;
+      }
+
+      let csvContent = "Class,Student Name,Date,Session,Status\n";
+      filtered.forEach(record => {
+        const student = students.find(s => s.id === record.studentId);
+        const cls = classes.find(c => c.id === record.classId);
+        if (student && cls) {
+          csvContent += `"${cls.name}","${student.fullName}","${record.date}","${record.session}","${record.status}"\n`;
+        }
+      });
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.setAttribute('download', `School_Attendance_${selectedDate}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to export school attendance.");
+    }
+    setLoading(false);
   };
 
   const getRecordSymbols = (studentId: string, date: string) => {
     const morning = attendanceRecords.find(r => r.studentId === studentId && r.date === date && r.session === 'Morning');
     const afternoon = attendanceRecords.find(r => r.studentId === studentId && r.date === date && r.session === 'Afternoon');
     
+    // If neither session is marked, return an empty string to show nothing.
+    if (!morning && !afternoon) return '';
+
     let mSymbol = morning ? (morning.status === 'Present' ? '✔' : '○') : '-';
     let aSymbol = afternoon ? (afternoon.status === 'Present' ? '✔' : '○') : '-';
     return `${mSymbol}${aSymbol}`;
@@ -188,14 +214,24 @@ export default function LearnerAttendanceAdmin({ school }: { school: School | nu
           <h1 className="text-2xl font-black text-gray-900">Learners' Attendance</h1>
           <p className="text-gray-500">Monitor student attendance records (Read-Only)</p>
         </div>
-        <button 
-          onClick={exportToCalendar}
-          disabled={!selectedClass || attendanceRecords.length === 0}
-          className="flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/20 hover:bg-indigo-700 transition-all disabled:opacity-50 disabled:shadow-none"
-        >
-          <Download className="h-4 w-4" />
-          Sync to Google Calendar
-        </button>
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={exportSchoolCSV}
+            disabled={loading}
+            className="flex items-center gap-2 px-6 py-3 bg-gray-900 text-white font-bold rounded-xl shadow-lg hover:bg-gray-800 transition-all disabled:opacity-50 disabled:shadow-none"
+          >
+            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+            Download School CSV
+          </button>
+          <button 
+            onClick={exportClassCSV}
+            disabled={!selectedClass || attendanceRecords.length === 0}
+            className="flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/20 hover:bg-indigo-700 transition-all disabled:opacity-50 disabled:shadow-none"
+          >
+            <Download className="h-4 w-4" />
+            Download Class CSV
+          </button>
+        </div>
       </div>
 
       <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-4">
@@ -247,12 +283,12 @@ export default function LearnerAttendanceAdmin({ school }: { school: School | nu
               </tbody>
             </table>
           </div>
-          <div className="p-4 border-t border-gray-100 bg-gray-50 text-xs text-gray-500 flex gap-4 justify-center">
+          <div className="p-4 border-t border-gray-100 bg-gray-50 text-xs text-gray-500 flex flex-wrap gap-4 justify-center">
             <div className="flex items-center gap-1"><span>✔✔</span> = Present All Day</div>
             <div className="flex items-center gap-1"><span>○○</span> = Absent All Day</div>
             <div className="flex items-center gap-1"><span>✔○</span> = Present Morning Only</div>
             <div className="flex items-center gap-1"><span>○✔</span> = Present Afternoon Only</div>
-            <div className="flex items-center gap-1"><span>-</span> = Not Marked</div>
+            <div className="flex items-center gap-1"><span className="text-gray-300">Blank</span> = Not Marked</div>
           </div>
         </div>
       )}
