@@ -149,6 +149,49 @@ export interface Vehicle {
   updatedAt: string;
 }
 
+export interface Hostel {
+  id: string;
+  schoolId: string;
+  branchId?: string;
+  name: string;
+  type: 'Boys' | 'Girls' | 'Mixed';
+  block?: string;
+  wardenName?: string;
+  wardenPhone?: string;
+  capacity?: number;
+  description?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface HostelRoom {
+  id: string;
+  schoolId: string;
+  branchId?: string;
+  hostelId: string;
+  roomNumber: string;
+  type: string;
+  capacity: number;
+  costPerTerm?: number;
+  description?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface HostelAllocation {
+  id: string;
+  schoolId: string;
+  branchId?: string;
+  studentId: string;
+  hostelId: string;
+  roomId: string;
+  status: 'allocated' | 'vacated';
+  allocatedDate: string;
+  vacatedDate?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Route {
   id: string;
   schoolId: string;
