@@ -59,7 +59,6 @@ import Employees from './Employees';
 import Attendance from './Attendance';
 import LearnerAttendanceAdmin from './LearnerAttendanceAdmin';
 import Subjects from './Subjects';
-import Branches from './Branches';
 import ExamsPortal from './ExamsPortal';
 import TransportModule from './Transport';
 import HostelModule from './Hostel';
@@ -117,7 +116,6 @@ export default function SchoolDashboard({ profile }: { profile: UserProfile }) {
 
   const menuItems = [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-    ...( ['owner', 'admin'].includes(profile.role) ? [{ name: 'Manage Branches', path: '/dashboard/branches', icon: GitBranch }] : []),
     { name: 'Inbox', path: '/dashboard/inbox', icon: Mail },
     { name: 'Parents', path: '/dashboard/parents', icon: Users },
     { name: 'Students', path: '/dashboard/students', icon: GraduationCap },
@@ -611,7 +609,6 @@ export default function SchoolDashboard({ profile }: { profile: UserProfile }) {
                 <Route path="/exams/*" element={<ExamsPortal schoolId={profile.schoolId!} school={school} />} />
                 <Route path="/fee-types" element={<FeeTypes schoolId={profile.schoolId!} school={school} />} />
                 <Route path="/users" element={<UsersPage schoolId={profile.schoolId!} school={school} />} />
-                <Route path="/branches" element={<Branches schoolId={profile.schoolId!} school={school} />} />
                 <Route path="/payroll/*" element={<PayrollModule schoolId={profile.schoolId!} school={school} />} />
                 <Route path="/website" element={<Website school={school} />} />
                 <Route path="/settings" element={<SettingsPage school={school} />} />
