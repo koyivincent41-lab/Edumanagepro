@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 import { collection, onSnapshot, doc, addDoc, updateDoc, deleteDoc, query, where, getDoc, getDocs, writeBatch, setDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
-import { Student, Parent, Class, Stream, School, Package } from '../../types';
+import { Student, Parent, Class, Stream, School, Package, Vehicle, Route } from '../../types';
 import { toast } from 'sonner';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -37,6 +37,9 @@ const studentSchema = z.object({
   streamId: z.string().min(1, 'Please select a stream'),
   parentId: z.string().min(1, 'Please link a parent'),
   arrears: z.number().min(0, 'Arrears must be positive'),
+  usesTransport: z.boolean().optional(),
+  vehicleId: z.string().optional(),
+  routeId: z.string().optional(),
 });
 
 type StudentForm = z.infer<typeof studentSchema>;
@@ -48,6 +51,8 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
   const [parents, setParents] = useState<Parent[]>([]);
   const [classes, setClasses] = useState<Class[]>([]);
   const [streams, setStreams] = useState<Stream[]>([]);
+  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [routes, setRoutes] = useState<Route[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
@@ -76,10 +81,14 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
       streamId: '',
       parentId: '',
       arrears: 0,
+      usesTransport: false,
+      vehicleId: '',
+      routeId: '',
     }
   });
 
   const selectedClassId = watch('classId');
+  const usesTransportValue = watch('usesTransport');
 
   useEffect(() => {
     if (!schoolId) return;
@@ -135,12 +144,26 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
       }
     );
 
+    let vehiclesQuery = query(collection(db, 'schools', schoolId, 'vehicles'));
+    if (currentBranch) vehiclesQuery = query(vehiclesQuery, where('branchId', '==', currentBranch.id));
+    const unsubVehicles = onSnapshot(vehiclesQuery, (snap) => {
+      setVehicles(snap.docs.map(d => ({ id: d.id, ...d.data() } as Vehicle)));
+    });
+
+    let routesQuery = query(collection(db, 'schools', schoolId, 'routes'));
+    if (currentBranch) routesQuery = query(routesQuery, where('branchId', '==', currentBranch.id));
+    const unsubRoutes = onSnapshot(routesQuery, (snap) => {
+      setRoutes(snap.docs.map(d => ({ id: d.id, ...d.data() } as Route)));
+    });
+
     return () => {
       unsubStudents();
       unsubParents();
       unsubClasses();
       unsubStreams();
       unsubInvoices();
+      unsubVehicles();
+      unsubRoutes();
     };
   }, [schoolId]);
 
@@ -155,6 +178,9 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
         streamId: editingStudent.streamId,
         parentId: editingStudent.parentId,
         arrears: editingStudent.arrears || 0,
+        usesTransport: editingStudent.usesTransport || false,
+        vehicleId: editingStudent.vehicleId || '',
+        routeId: editingStudent.routeId || '',
       });
     } else {
       reset({
@@ -166,6 +192,9 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
         streamId: '',
         parentId: '',
         arrears: 0,
+        usesTransport: false,
+        vehicleId: '',
+        routeId: '',
       });
     }
   }, [editingStudent, reset]);
@@ -567,14 +596,14 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
       {/* Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="p-8 border-b border-gray-100 flex items-center justify-between">
+          <div className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden max-h-[90vh] flex flex-col animate-in zoom-in-95 duration-200">
+            <div className="p-8 border-b border-gray-100 flex items-center justify-between shrink-0">
               <h2 className="text-2xl font-bold text-gray-900">{editingStudent ? 'Edit Student' : 'Add New Student'}</h2>
               <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-gray-100 rounded-xl transition-colors">
                 <X className="h-6 w-6" />
               </button>
             </div>
-            <form onSubmit={handleSubmit(onSubmit)} className="p-8 space-y-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="p-8 space-y-6 overflow-y-auto">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {editingStudent && (
                   <div>
@@ -671,7 +700,56 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
                 </div>
               </div>
 
-              <div className="pt-4 flex gap-4">
+              {/* Transport Module Section */}
+              <div className="border-t border-gray-100 pt-6">
+                <h3 className="text-lg font-bold text-gray-900 mb-4">Transport Information</h3>
+                
+                <div className="space-y-4">
+                  <label className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border border-gray-200 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      {...register('usesTransport')}
+                      className="w-5 h-5 text-primary rounded border-gray-300 focus:ring-primary"
+                    />
+                    <div>
+                      <p className="font-bold text-gray-900">Student Uses School Transport</p>
+                      <p className="text-xs text-gray-500">Enable this to assign the student to a transport route.</p>
+                    </div>
+                  </label>
+
+                  {usesTransportValue && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">Transport Route</label>
+                        <select
+                          {...register('routeId')}
+                          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/10 outline-none"
+                        >
+                          <option value="">Select Route</option>
+                          {routes.map(r => (
+                            <option key={r.id} value={r.id}>{r.name} - {school?.currency} {r.termlyFee}</option>
+                          ))}
+                        </select>
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">Assigned Vehicle</label>
+                        <select
+                          {...register('vehicleId')}
+                          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/10 outline-none"
+                        >
+                          <option value="">Select Vehicle</option>
+                          {vehicles.map(v => (
+                            <option key={v.id} value={v.id}>{v.registrationNumber} ({v.make} {v.model})</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="pt-4 flex gap-4 mt-6 shrink-0 sticky -bottom-8 bg-white pb-8 z-10 w-[calc(100%+4rem)] -ml-8 px-8 border-t border-gray-100">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
@@ -682,7 +760,7 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex-1 py-4 bg-school-gradient text-white font-bold rounded-2xl shadow-xl shadow-primary/20 hover:scale-105 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="flex-1 py-4 bg-school-gradient text-white font-bold rounded-2xl shadow-xl shadow-primary/20 hover:scale-[1.02] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {isSubmitting && <Loader2 className="h-5 w-5 animate-spin" />}
                   {editingStudent ? 'Update Student' : 'Save Student'}

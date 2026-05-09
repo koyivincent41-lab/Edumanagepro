@@ -100,6 +100,9 @@ export default function LearnerAttendanceParent({ profile }: { profile: UserProf
                   records.forEach(r => {
                       const dDate = parseDateSafe(r.date);
                       
+                      // Ignore weekends (0 = Sunday, 6 = Saturday)
+                      if (dDate.getDay() === 0 || dDate.getDay() === 6) return;
+
                       // Week
                       if (dDate >= weekAgo) {
                           wTotal++;
@@ -213,7 +216,11 @@ export default function LearnerAttendanceParent({ profile }: { profile: UserProf
                        </div>
                    ) : (
                         <div className="space-y-4">
-                           {attendanceRecords.sort((a,b) => {
+                           {attendanceRecords.filter((r) => {
+                               const [y,m,d] = r.date.split('-').map(Number);
+                               const dateObj = new Date(y, m-1, d);
+                               return dateObj.getDay() !== 0 && dateObj.getDay() !== 6;
+                           }).sort((a,b) => {
                                const da = a.date.split('-').map(Number);
                                const db = b.date.split('-').map(Number);
                                return new Date(db[0], db[1]-1, db[2]).getTime() - new Date(da[0], da[1]-1, da[2]).getTime();

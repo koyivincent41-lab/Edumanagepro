@@ -133,6 +133,36 @@ export interface UserProfile {
   classTeacherAssignment?: string | null;
 }
 
+export interface Vehicle {
+  id: string;
+  schoolId: string;
+  branchId?: string;
+  registrationNumber: string;
+  make: string;
+  model: string;
+  capacity: number;
+  driverName: string;
+  driverPhone: string;
+  trackingId: string;
+  status: 'active' | 'maintenance' | 'inactive';
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Route {
+  id: string;
+  schoolId: string;
+  branchId?: string;
+  name: string;
+  description?: string;
+  vehicleId?: string;
+  stops: { name: string; time: string; fee: number }[];
+  termlyFee: number;
+  status: 'active' | 'inactive';
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Student {
   id: string;
   schoolId: string;
@@ -148,6 +178,9 @@ export interface Student {
   term?: Term;
   arrears: number;
   status: 'active' | 'inactive' | 'graduated' | 'transferred';
+  usesTransport?: boolean;
+  vehicleId?: string;
+  routeId?: string;
   createdAt: string;
 }
 

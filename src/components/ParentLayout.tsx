@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Users, FileText, Receipt, History, Settings, LogOut, GraduationCap, Menu, X, Bell } from 'lucide-react';
+import { LayoutDashboard, Users, FileText, Receipt, History, Settings, LogOut, GraduationCap, Menu, X, Bell, Bus } from 'lucide-react';
 import { collection, onSnapshot, query, where, getDocs, getDoc, doc } from 'firebase/firestore';
 import { db } from '../firebase';
 import ThemeToggle from './ThemeToggle';
@@ -72,6 +72,7 @@ export default function ParentLayout({ children, profile }: { children: React.Re
     { name: 'Dashboard', path: '/parent-portal/dashboard', icon: LayoutDashboard },
     { name: 'Inbox', path: '/parent-portal/inbox', icon: Bell },
     { name: 'My Children', path: '/parent-portal/children', icon: Users },
+    { name: 'Transport Info', path: '/parent-portal/transport', icon: Bus },
     { name: 'Invoices', path: '/parent-portal/invoices', icon: FileText },
     { name: 'Receipts', path: '/parent-portal/receipts', icon: Receipt },
     { name: 'Payment History', path: '/parent-portal/payment-history', icon: History },

@@ -24,7 +24,8 @@ import {
   Clock,
   Send,
   Globe,
-  GitBranch
+  GitBranch,
+  Bus
 } from 'lucide-react';
 import { auth, db } from '../../firebase';
 import { doc, getDoc, onSnapshot, collection, updateDoc, query, where, setDoc, addDoc } from 'firebase/firestore';
@@ -59,6 +60,7 @@ import LearnerAttendanceAdmin from './LearnerAttendanceAdmin';
 import Subjects from './Subjects';
 import Branches from './Branches';
 import ExamsPortal from './ExamsPortal';
+import TransportModule from './Transport';
 
 import PayrollModule from './Payroll';
 
@@ -130,6 +132,7 @@ export default function SchoolDashboard({ profile }: { profile: UserProfile }) {
     { name: 'Classes', path: '/dashboard/classes', icon: Layers },
     { name: 'Subjects', path: '/dashboard/subjects', icon: BookOpen },
     { name: 'Streams', path: '/dashboard/streams', icon: BookOpen },
+    { name: 'Transport', path: '/dashboard/transport', icon: Bus },
     { name: 'Exams Portal', path: '/dashboard/exams', icon: FileText },
     { name: 'Fee Types', path: '/dashboard/fee-types', icon: Tag },
     { name: 'Our Website', path: 'https://spincardeveloperz.netlify.app/', icon: Globe, external: true },
@@ -600,6 +603,7 @@ export default function SchoolDashboard({ profile }: { profile: UserProfile }) {
                 <Route path="/classes" element={<Classes schoolId={profile.schoolId!} />} />
                 <Route path="/subjects" element={<Subjects school={school} />} />
                 <Route path="/streams" element={<Streams schoolId={profile.schoolId!} />} />
+                <Route path="/transport/*" element={<TransportModule schoolId={profile.schoolId!} school={school} />} />
                 <Route path="/exams/*" element={<ExamsPortal schoolId={profile.schoolId!} school={school} />} />
                 <Route path="/fee-types" element={<FeeTypes schoolId={profile.schoolId!} school={school} />} />
                 <Route path="/users" element={<UsersPage schoolId={profile.schoolId!} school={school} />} />
