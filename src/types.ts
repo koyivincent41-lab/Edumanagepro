@@ -206,6 +206,29 @@ export interface Route {
   updatedAt: string;
 }
 
+export interface SMSTemplate {
+  id: string;
+  schoolId: string;
+  branchId?: string;
+  title: string;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SMSMessage {
+  id: string;
+  schoolId: string;
+  branchId?: string;
+  sentBy: string;
+  senderName: string;
+  recipientsCount: number;
+  content: string;
+  status: 'sent' | 'failed' | 'pending';
+  deliveryReport?: any;
+  createdAt: string;
+}
+
 export interface Student {
   id: string;
   schoolId: string;

@@ -127,6 +127,45 @@ async function startServer() {
     }
   });
 
+  app.post("/api/send-sms", async (req, res) => {
+    const { to, message } = req.body;
+    
+    if (!to || !message) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    try {
+      const apiKey = process.env.AT_API_KEY;
+      const username = process.env.AT_USERNAME || "sandbox";
+      
+      if (!apiKey) {
+        console.warn("AT_API_KEY is not set. Simulating SMS sending.");
+        console.log(`[SIMULATED SMS] To: ${to.join(',')} Message: ${message}`);
+        return res.status(200).json({
+          SMSMessageData: {
+            Message: "Sent to the void (Simulation mode)",
+            Recipients: to.map((num: string) => ({ statusCode: 101, number: num, status: "Success", cost: "0" }))
+          }
+        });
+      }
+
+      // We dynamically import to avoid loading it if not needed or causing issues with esm depending on how it's bundled
+      const africastalking = (await import('africastalking')).default;
+      const AT = africastalking({ apiKey, username });
+      
+      const result = await AT.SMS.send({
+        to,
+        message,
+        // from: process.env.AT_SENDER_ID // optional
+      });
+      
+      res.status(200).json(result);
+    } catch (error) {
+      console.error("SMS sending error:", error);
+      res.status(500).json({ error: "Failed to send SMS" });
+    }
+  });
+
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
