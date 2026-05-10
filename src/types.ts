@@ -240,6 +240,7 @@ export interface Student {
   classId: string;
   streamId: string;
   parentId: string;
+  photoUrl?: string;
   academicYear: string;
   term?: Term;
   arrears: number;
@@ -399,6 +400,7 @@ export interface Employee {
   branchId?: string;
   fullName: string;
   staffNumber: string;
+  profilePhoto?: string;
   designation: string;
   department: string;
   jobTitle: string;

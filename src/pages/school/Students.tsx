@@ -16,7 +16,8 @@ import {
   Upload,
   Download,
   FileSpreadsheet,
-  CreditCard
+  CreditCard,
+  IdCard
 } from 'lucide-react';
 import { collection, onSnapshot, doc, addDoc, updateDoc, deleteDoc, query, where, getDoc, getDocs, writeBatch, setDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
@@ -27,6 +28,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import Papa from 'papaparse';
 import { useBranch } from '../../context/BranchContext';
+import IDCardModal from '../../components/IDCardModal';
 
 const studentSchema = z.object({
   admissionNumber: z.string().optional(),
@@ -40,6 +42,7 @@ const studentSchema = z.object({
   usesTransport: z.boolean().optional(),
   vehicleId: z.string().optional(),
   routeId: z.string().optional(),
+  photoUrl: z.string().optional(),
 });
 
 type StudentForm = z.infer<typeof studentSchema>;
@@ -60,6 +63,7 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [studentToDelete, setStudentToDelete] = useState<Student | null>(null);
   const [editingStudent, setEditingStudent] = useState<Student | null>(null);
+  const [viewingIdStudent, setViewingIdStudent] = useState<Student | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [activePackage, setActivePackage] = useState<Package | null>(null);
   const [invoices, setInvoices] = useState<any[]>([]);
@@ -69,6 +73,7 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
     handleSubmit,
     reset,
     watch,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<StudentForm>({
     resolver: zodResolver(studentSchema),
@@ -181,6 +186,7 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
         usesTransport: editingStudent.usesTransport || false,
         vehicleId: editingStudent.vehicleId || '',
         routeId: editingStudent.routeId || '',
+        photoUrl: editingStudent.photoUrl || '',
       });
     } else {
       reset({
@@ -195,6 +201,7 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
         usesTransport: false,
         vehicleId: '',
         routeId: '',
+        photoUrl: '',
       });
     }
   }, [editingStudent, reset]);
@@ -558,6 +565,14 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button 
+                          onClick={() => setViewingIdStudent(student)}
+                          className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors flex items-center gap-1"
+                          title="View ID Card"
+                        >
+                          <IdCard className="h-5 w-5" />
+                          <span className="text-[10px] font-bold uppercase">ID</span>
+                        </button>
+                        <button 
                           onClick={() => navigate(`/dashboard/payments?studentId=${student.id}`)}
                           className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors flex items-center gap-1"
                           title="Receive Payment"
@@ -624,6 +639,32 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
                     placeholder="Student's full name"
                   />
                   {errors.fullName && <p className="mt-1 text-xs text-red-500">{errors.fullName.message}</p>}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Student Photo</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                          setValue('photoUrl', reader.result as string);
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/10 outline-none transition-all"
+                  />
+                  {watch('photoUrl') && (
+                    <div className="mt-2">
+                       <img src={watch('photoUrl')} alt="Student Preview" className="w-24 h-24 object-cover rounded-xl border border-gray-200 shadow-sm" />
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -885,6 +926,15 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
             </div>
           </div>
         </div>
+      )}
+
+      {viewingIdStudent && school && (
+        <IDCardModal
+          school={school}
+          type="student"
+          person={viewingIdStudent}
+          onClose={() => setViewingIdStudent(null)}
+        />
       )}
     </div>
   );

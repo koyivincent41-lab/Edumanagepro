@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase';
 import { collection, onSnapshot, query, where, deleteDoc, doc, getDocs, writeBatch } from 'firebase/firestore';
 import { School } from '../../types';
-import { Loader2, Plus, Shield, Trash2, UserCog, AlertTriangle, X, RefreshCw, Edit2 } from 'lucide-react';
+import { Loader2, Plus, Shield, Trash2, UserCog, AlertTriangle, X, RefreshCw, Edit2, IdCard } from 'lucide-react';
 import EmployeeRegistrationForm from '../../components/EmployeeRegistrationForm';
 import EmployeeAccessModal from '../../components/EmployeeAccessModal';
+import IDCardModal from '../../components/IDCardModal';
 import { toast } from 'sonner';
 import { handleFirestoreError, OperationType } from '../../lib/firestoreErrorHandler';
 import { useBranch } from '../../context/BranchContext';
@@ -18,6 +19,7 @@ export default function Employees({ school }: { school: School | null }) {
   const [selectedEmployee, setSelectedEmployee] = useState<any | null>(null);
   const [employeeToDelete, setEmployeeToDelete] = useState<any | null>(null);
   const [employeeToEdit, setEmployeeToEdit] = useState<any | null>(null);
+  const [viewingIdEmployee, setViewingIdEmployee] = useState<any | null>(null);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
   const [isBackfilling, setIsBackfilling] = useState(false);
 
@@ -265,6 +267,13 @@ export default function Employees({ school }: { school: School | null }) {
                     </td>
                     <td className="p-3 lg:p-4 text-right space-x-2">
                       <button 
+                        onClick={() => setViewingIdEmployee(emp)}
+                        className="inline-flex items-center gap-1 px-2 lg:px-3 py-1 lg:py-1.5 text-[10px] lg:text-xs font-bold text-purple-600 hover:bg-purple-50 rounded-lg transition-colors border border-purple-200"
+                        title="View ID Card"
+                      >
+                        <IdCard className="w-3 h-3" /> ID
+                      </button>
+                      <button 
                         onClick={() => setEmployeeToEdit(emp)}
                         className="inline-flex items-center gap-1 px-2 lg:px-3 py-1 lg:py-1.5 text-[10px] lg:text-xs font-bold text-blue-600 hover:bg-blue-50 rounded-lg transition-colors border border-blue-200"
                       >
@@ -291,6 +300,15 @@ export default function Employees({ school }: { school: School | null }) {
             </table>
           </div>
         </div>
+      )}
+
+      {viewingIdEmployee && school && (
+        <IDCardModal
+          school={school}
+          type="employee"
+          person={viewingIdEmployee}
+          onClose={() => setViewingIdEmployee(null)}
+        />
       )}
     </div>
   );

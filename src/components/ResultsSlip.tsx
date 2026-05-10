@@ -252,6 +252,13 @@ export default function ResultsSlip({ student, examSessionId, schoolId, initialA
               <p><span className="font-bold text-gray-600">Term:</span> {examSession?.term}</p>
               <p><span className="font-bold text-gray-600">Academic Year:</span> {examSession?.academicYear}</p>
             </div>
+
+            {student.photoUrl && (
+              <div className="flex-shrink-0 mx-4 border-2 border-gray-200 rounded-md overflow-hidden bg-gray-50 flex items-center justify-center w-24 h-28">
+                <img src={student.photoUrl} alt="Student" className="w-full h-full object-cover" />
+              </div>
+            )}
+
             <div className="space-y-2 text-right flex-1 pl-4">
               <p className="break-words"><span className="font-bold text-gray-600">Learner Name:</span> <span className="font-bold text-lg">{student.fullName}</span></p>
               <p className="break-words"><span className="font-bold text-gray-600">Admission Number:</span> {student.admissionNumber}</p>
