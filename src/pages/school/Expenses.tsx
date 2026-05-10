@@ -7,9 +7,11 @@ import {
   Calendar,
   X,
   Tag,
-  FileText
+  FileText,
+  Edit,
+  Trash2
 } from 'lucide-react';
-import { collection, onSnapshot, addDoc, doc, deleteDoc, query, where } from 'firebase/firestore';
+import { collection, onSnapshot, addDoc, doc, deleteDoc, updateDoc, query, where } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { School } from '../../types';
 import { toast } from 'sonner';
@@ -33,6 +35,7 @@ export default function Expenses({ schoolId, school }: { schoolId: string; schoo
   const [expenses, setExpenses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingExpense, setEditingExpense] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState('');
 
   const {
@@ -68,19 +71,62 @@ export default function Expenses({ schoolId, school }: { schoolId: string; schoo
 
   const onSubmit = async (data: ExpenseForm) => {
     try {
-      await addDoc(collection(db, 'schools', schoolId, 'expenses'), {
-        ...data,
-        academicYear: school?.academicYear || '',
-        ...(currentBranch ? { branchId: currentBranch.id } : {}),
-        createdAt: new Date().toISOString(),
-      });
-      toast.success('Expense recorded successfully');
-      setIsModalOpen(false);
-      reset();
+      if (editingExpense) {
+        await updateDoc(doc(db, 'schools', schoolId, 'expenses', editingExpense.id), {
+          ...data,
+          updatedAt: new Date().toISOString(),
+        });
+        toast.success('Expense updated successfully');
+      } else {
+        await addDoc(collection(db, 'schools', schoolId, 'expenses'), {
+          ...data,
+          academicYear: school?.academicYear || '',
+          ...(currentBranch ? { branchId: currentBranch.id } : {}),
+          createdAt: new Date().toISOString(),
+        });
+        toast.success('Expense recorded successfully');
+      }
+      handleCloseModal();
     } catch (error) {
       console.error('Error recording expense:', error);
-      toast.error('Failed to record expense');
+      toast.error('Failed to save expense');
     }
+  };
+
+  const handleEdit = (expense: any) => {
+    setEditingExpense(expense);
+    reset({
+      title: expense.title,
+      amount: expense.amount,
+      category: expense.category,
+      date: expense.date,
+      description: expense.description || '',
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (window.confirm('Are you sure you want to delete this expense?')) {
+      try {
+        await deleteDoc(doc(db, 'schools', schoolId, 'expenses', id));
+        toast.success('Expense deleted successfully');
+      } catch (error) {
+        console.error('Error deleting expense:', error);
+        toast.error('Failed to delete expense');
+      }
+    }
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setEditingExpense(null);
+    reset({
+      title: '',
+      amount: 0,
+      category: '',
+      date: new Date().toISOString().split('T')[0],
+      description: '',
+    });
   };
 
   if (loading) {
@@ -107,7 +153,17 @@ export default function Expenses({ schoolId, school }: { schoolId: string; schoo
               />
             </div>
             <button 
-              onClick={() => setIsModalOpen(true)}
+              onClick={() => {
+                setEditingExpense(null);
+                reset({
+                  title: '',
+                  amount: 0,
+                  category: '',
+                  date: new Date().toISOString().split('T')[0],
+                  description: '',
+                });
+                setIsModalOpen(true);
+              }}
               className="px-6 py-2.5 bg-white text-maroon font-black uppercase tracking-widest text-[10px] rounded-xl shadow-xl hover:scale-105 transition-all flex items-center gap-2"
             >
               <Plus className="h-4 w-4" />
@@ -152,9 +208,22 @@ export default function Expenses({ schoolId, school }: { schoolId: string; schoo
                     </div>
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <button className="p-2 text-gray-400 hover:text-red-500 transition-colors">
-                      <X className="h-5 w-5" />
-                    </button>
+                    <div className="flex justify-end gap-2">
+                      <button 
+                        onClick={() => handleEdit(expense)}
+                        className="p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-colors"
+                        title="Edit expense"
+                      >
+                        <Edit className="h-4 w-4" />
+                      </button>
+                      <button 
+                        onClick={() => handleDelete(expense.id)}
+                        className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                        title="Delete expense"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -177,8 +246,8 @@ export default function Expenses({ schoolId, school }: { schoolId: string; schoo
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="bg-white w-full max-w-xl rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="p-8 border-b border-gray-100 flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-gray-900">Record Expense</h2>
-              <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-gray-100 rounded-xl transition-colors">
+              <h2 className="text-2xl font-bold text-gray-900">{editingExpense ? 'Edit Expense' : 'Record Expense'}</h2>
+              <button onClick={handleCloseModal} className="p-2 hover:bg-gray-100 rounded-xl transition-colors">
                 <X className="h-6 w-6" />
               </button>
             </div>
@@ -250,7 +319,7 @@ export default function Expenses({ schoolId, school }: { schoolId: string; schoo
               <div className="pt-4 flex gap-4">
                 <button
                   type="button"
-                  onClick={() => setIsModalOpen(false)}
+                  onClick={handleCloseModal}
                   className="flex-1 py-4 bg-gray-100 text-gray-600 font-bold rounded-2xl hover:bg-gray-200 transition-all"
                 >
                   Cancel
@@ -261,7 +330,7 @@ export default function Expenses({ schoolId, school }: { schoolId: string; schoo
                   className="flex-1 py-4 bg-school-gradient text-white font-bold rounded-2xl shadow-xl shadow-primary/20 hover:scale-105 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {isSubmitting && <Loader2 className="h-5 w-5 animate-spin" />}
-                  Record Expense
+                  {editingExpense ? 'Update Expense' : 'Record Expense'}
                 </button>
               </div>
             </form>
