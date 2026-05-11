@@ -517,36 +517,36 @@ export default function Invoices({ schoolId, school }: { schoolId: string; schoo
                       </div>
                     </td>
                     <td className="px-4 md:px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="flex items-center justify-end gap-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
                         <button 
                           onClick={() => setSelectedInvoice(invoice)}
-                          className="p-2 text-gray-400 hover:bg-gray-100 rounded-lg transition-colors" 
+                          className="p-2 text-black md:text-gray-400 hover:bg-gray-100 rounded-lg transition-colors" 
                           title="View Invoice"
                         >
                           <FileText className="h-5 w-5" />
                         </button>
                         <button 
                           onClick={() => handleExportPDF(invoice)}
-                          className="p-2 text-gray-400 hover:bg-gray-100 rounded-lg transition-colors" 
+                          className="p-2 text-black md:text-gray-400 hover:bg-gray-100 rounded-lg transition-colors" 
                           title="Download PDF"
                         >
                           <Download className="h-5 w-5" />
                         </button>
                         <button 
                           onClick={() => handleEdit(invoice)}
-                          className="p-2 text-gray-400 hover:bg-gray-100 hover:text-primary rounded-lg transition-colors" 
+                          className="p-2 text-black md:text-gray-400 hover:bg-gray-100 hover:text-primary rounded-lg transition-colors" 
                           title="Edit"
                         >
                           <Edit2 className="h-5 w-5" />
                         </button>
                         <button 
                           onClick={() => handleDelete(invoice.id)}
-                          className="p-2 text-gray-400 hover:bg-red-50 hover:text-red-500 rounded-lg transition-colors" 
+                          className="p-2 text-black md:text-gray-400 hover:bg-red-50 hover:text-red-500 rounded-lg transition-colors" 
                           title="Delete"
                         >
                           <Trash2 className="h-5 w-5" />
                         </button>
-                        <button className="p-2 text-gray-400 hover:bg-gray-100 rounded-lg transition-colors" title="Print">
+                        <button className="p-2 text-black md:text-gray-400 hover:bg-gray-100 rounded-lg transition-colors" title="Print">
                           <Printer className="h-5 w-5" />
                         </button>
                       </div>
