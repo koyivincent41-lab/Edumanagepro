@@ -157,10 +157,10 @@ export default function Classes({ schoolId }: { schoolId: string }) {
 
   return (
     <div className="space-y-6">
-      <div className="bg-school-gradient p-6 rounded-[2.5rem] shadow-lg shadow-maroon/20">
+      <div className="bg-school-gradient p-4 md:p-6 rounded-[2.5rem] shadow-lg shadow-maroon/20">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-black text-white">Classes Management</h1>
+            <h1 className="text-xl md:text-2xl font-black text-white">Classes Management</h1>
             <p className="text-sm text-white/80 font-medium tracking-wide">Manage school classes and levels.</p>
           </div>
           <div className="flex items-center gap-3">
@@ -179,7 +179,7 @@ export default function Classes({ schoolId }: { schoolId: string }) {
                 setEditingClass(null);
                 setIsModalOpen(true);
               }}
-              className="px-6 py-2.5 bg-white text-maroon font-black uppercase tracking-widest text-[10px] rounded-xl shadow-xl hover:scale-105 transition-all flex items-center gap-2"
+              className="px-4 md:px-6 py-2.5 bg-white text-maroon font-black uppercase tracking-widest text-[10px] rounded-xl shadow-xl hover:scale-105 transition-all flex items-center gap-2"
             >
               <Plus className="h-4 w-4" />
               Add Class
@@ -188,11 +188,11 @@ export default function Classes({ schoolId }: { schoolId: string }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
         {filteredClasses.map((cls) => {
           const classStreams = streams.filter(s => s.classId === cls.id);
           return (
-            <div key={cls.id} className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-md transition-all group">
+            <div key={cls.id} className="bg-white p-4 md:p-6 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-md transition-all group">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 bg-school-gradient/10 rounded-2xl flex items-center justify-center text-primary font-bold text-lg">
@@ -229,7 +229,7 @@ export default function Classes({ schoolId }: { schoolId: string }) {
               </div>
               
               <div className="mt-4 pt-4 border-t border-gray-50">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
                   <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Class Teacher</span>
                   {cls.classTeacherName || getClassTeacher(cls.id)?.fullName ? (
                     <span className="text-xs font-bold text-gray-900">{cls.classTeacherName || getClassTeacher(cls.id)?.fullName}</span>
@@ -246,14 +246,14 @@ export default function Classes({ schoolId }: { schoolId: string }) {
       {/* Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="p-8 border-b border-gray-100 flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-gray-900">{editingClass ? 'Edit Class' : 'Add New Class'}</h2>
+          <div className="bg-white w-[calc(100%-2rem)] md:w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="p-4 md:p-8 border-b border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
+              <h2 className="text-xl md:text-2xl font-bold text-gray-900">{editingClass ? 'Edit Class' : 'Add New Class'}</h2>
               <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-gray-100 rounded-xl transition-colors">
                 <X className="h-6 w-6" />
               </button>
             </div>
-            <form onSubmit={handleSubmit(onSubmit)} className="p-8 space-y-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="p-4 md:p-8 space-y-6">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Class Name</label>
                 <input
@@ -288,8 +288,8 @@ export default function Classes({ schoolId }: { schoolId: string }) {
       {/* Delete Confirmation Modal */}
       {isDeleteConfirmOpen && classToDelete && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[70] flex items-center justify-center p-4">
-          <div className="bg-white rounded-[2rem] w-full max-w-md overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
-            <div className="p-8 text-center">
+          <div className="bg-white rounded-[2rem] w-[calc(100%-2rem)] md:w-full max-w-md overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
+            <div className="p-4 md:p-8 text-center">
               <div className="w-16 h-16 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <AlertCircle className="h-8 w-8" />
               </div>

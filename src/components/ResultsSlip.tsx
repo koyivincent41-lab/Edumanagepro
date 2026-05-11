@@ -176,7 +176,7 @@ export default function ResultsSlip({ student, examSessionId, schoolId, initialA
     }
   }, [loading, initialAction]);
 
-  if (loading) return <div className="p-8 text-center flex items-center justify-center h-full"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div></div>;
+  if (loading) return <div className="p-4 md:p-8 text-center flex items-center justify-center h-full"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div></div>;
 
   return (
     <>
@@ -214,7 +214,7 @@ export default function ResultsSlip({ student, examSessionId, schoolId, initialA
         `}
       </style>
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm print:p-0 print:bg-white print:block print:relative print:inset-auto">
-        <div className="bg-white rounded-3xl shadow-2xl w-full max-w-3xl p-8 max-h-[90vh] overflow-y-auto print:shadow-none print:max-w-none print:max-h-none print:p-0 print:overflow-visible">
+        <div className="bg-white rounded-3xl shadow-2xl w-[calc(100%-2rem)] md:w-full max-w-3xl p-4 md:p-8 max-h-[90vh] overflow-y-auto print:shadow-none print:max-w-none print:max-h-none print:p-0 print:overflow-visible">
           <div className="flex justify-between items-center mb-6 print:hidden">
           <h2 className="text-xl font-black">Results Slip Preview</h2>
           <div className="flex gap-2">
@@ -235,14 +235,14 @@ export default function ResultsSlip({ student, examSessionId, schoolId, initialA
           {school && (
             <div className="text-center mb-8">
               {school.logo && <img src={school.logo} alt="School Logo" className="h-16 mx-auto mb-4 object-contain" />}
-              <h1 className="text-3xl font-black" style={{ color: school.primaryColor || '#000000' }}>{school.name}</h1>
+              <h1 className="text-xl md:text-3xl font-black" style={{ color: school.primaryColor || '#000000' }}>{school.name}</h1>
               <p className="text-gray-600 mt-1">{school.address}</p>
               <p className="text-gray-600">{school.email} | {school.phone}</p>
             </div>
           )}
 
           <div className="border-b-2 border-gray-800 pb-4 mb-6">
-            <h2 className="text-2xl font-black text-center tracking-widest">RESULTS SLIP</h2>
+            <h2 className="text-xl md:text-2xl font-black text-center tracking-widest">RESULTS SLIP</h2>
           </div>
           
           <div className="flex justify-between items-start mb-8 text-sm">
@@ -267,7 +267,7 @@ export default function ResultsSlip({ student, examSessionId, schoolId, initialA
             </div>
           </div>
 
-          <table className="w-full mb-8 border-collapse">
+          <table className="min-w-[700px] w-full mb-8 border-collapse">
             <thead>
               <tr style={{ backgroundColor: school?.primaryColor ? `${school.primaryColor}20` : '#f3f4f6' }}>
                 <th className="p-3 text-left border-b-2 border-gray-300 font-bold">Subject</th>
@@ -293,21 +293,21 @@ export default function ResultsSlip({ student, examSessionId, schoolId, initialA
           </table>
 
           {results.length > 0 && (
-            <div className="flex items-center justify-between gap-6">
-              <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 relative z-10 flex-1">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 gap-4 md:gap-6">
+              <div className="bg-gray-50 p-4 md:p-6 rounded-xl border border-gray-200 relative z-10 flex-1">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 text-center">
                   <div>
                     <p className="text-gray-500 font-medium mb-1">Total Score</p>
-                    <p className="text-2xl font-black">{totalScore} <span className="text-lg text-gray-400 font-normal">/ {totalMax}</span></p>
+                    <p className="text-xl md:text-2xl font-black">{totalScore} <span className="text-lg text-gray-400 font-normal">/ {totalMax}</span></p>
                   </div>
                   <div>
                     <p className="text-gray-500 font-medium mb-1">Average / Mean</p>
-                    <p className="text-2xl font-black">{average.toFixed(2)}%</p>
+                    <p className="text-xl md:text-2xl font-black">{average.toFixed(2)}%</p>
                   </div>
                   {finalGrade && (
                     <div>
                       <p className="text-gray-500 font-medium mb-1">Final Grade</p>
-                      <p className="text-2xl font-black" style={{ color: school?.primaryColor || '#000000' }}>{finalGrade}</p>
+                      <p className="text-xl md:text-2xl font-black" style={{ color: school?.primaryColor || '#000000' }}>{finalGrade}</p>
                     </div>
                   )}
                 </div>

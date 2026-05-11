@@ -46,7 +46,7 @@ export default function ConfirmationModal({
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden relative"
+          className="bg-white rounded-3xl shadow-2xl w-[calc(100%-2rem)] md:w-full max-w-md overflow-hidden relative"
         >
           <button
             onClick={onClose}
@@ -56,12 +56,12 @@ export default function ConfirmationModal({
             <X className="w-5 h-5" />
           </button>
 
-          <div className="p-8">
+          <div className="p-4 md:p-8">
             <div className={`w-14 h-14 rounded-2xl ${iconColors[variant]} flex items-center justify-center mb-6`}>
               <AlertTriangle className="w-8 h-8" />
             </div>
 
-            <h3 className="text-2xl font-black text-gray-900 mb-2">{title}</h3>
+            <h3 className="text-xl md:text-2xl font-black text-gray-900 mb-2">{title}</h3>
             <p className="text-gray-600 font-medium leading-relaxed">
               {message}
             </p>
@@ -70,7 +70,7 @@ export default function ConfirmationModal({
               <button
                 onClick={onClose}
                 disabled={isLoading}
-                className="flex-1 px-6 py-3 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 px-4 md:px-6 py-3 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {cancelText}
               </button>

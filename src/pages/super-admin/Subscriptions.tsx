@@ -303,10 +303,10 @@ export default function Subscriptions() {
 
   return (
     <div className="space-y-6">
-      <div className="bg-school-gradient p-6 rounded-[2.5rem] shadow-lg shadow-maroon/20">
+      <div className="bg-school-gradient p-4 md:p-6 rounded-[2.5rem] shadow-lg shadow-maroon/20">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-black text-white">Subscription Management</h1>
+            <h1 className="text-xl md:text-2xl font-black text-white">Subscription Management</h1>
             <p className="text-sm text-white/80 font-medium tracking-wide">Manage school subscription plans, extensions, and billing status.</p>
           </div>
           <div className="flex items-center gap-3">
@@ -341,35 +341,35 @@ export default function Subscriptions() {
       </div>
 
       <div className="bg-white rounded-[2rem] border border-gray-100 shadow-sm overflow-hidden">
-        <div className="p-6 border-b border-gray-100">
+        <div className="p-4 md:p-6 border-b border-gray-100">
           <h2 className="text-lg font-bold text-gray-900">Pending Payment Approvals</h2>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-left">
+          <table className="min-w-[700px] w-full text-left">
             <thead>
               <tr className="bg-gray-50">
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">School</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Package</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Amount</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Code</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Actions</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">School</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Package</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Amount</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Code</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {payments.filter(p => p.paymentStatus === 'Pending Approval').map((payment) => (
                 <tr key={payment.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-6 py-4">
+                  <td className="px-4 md:px-6 py-4">
                     <p className="text-sm font-bold text-gray-900">{payment.schoolName}</p>
                     <p className="text-xs text-gray-500">{payment.schoolEmail}</p>
                     {payment.phoneNumber && <p className="text-xs text-gray-500">{payment.phoneNumber}</p>}
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 md:px-6 py-4">
                     <p className="text-sm font-bold text-gray-900">{payment.selectedPackageName}</p>
                     <p className="text-xs text-gray-500 capitalize">{payment.billingCycle}</p>
                   </td>
-                  <td className="px-6 py-4 text-sm font-bold text-gray-900">KES {payment.payableAmountKES.toLocaleString()}</td>
-                  <td className="px-6 py-4 text-sm font-mono text-gray-600">{payment.mpesaConfirmationCode}</td>
-                  <td className="px-6 py-4 text-right">
+                  <td className="px-4 md:px-6 py-4 text-sm font-bold text-gray-900">KES {payment.payableAmountKES.toLocaleString()}</td>
+                  <td className="px-4 md:px-6 py-4 text-sm font-mono text-gray-600">{payment.mpesaConfirmationCode}</td>
+                  <td className="px-4 md:px-6 py-4 text-right">
                     <button 
                       onClick={() => {
                         setSelectedPayment(payment);
@@ -389,29 +389,29 @@ export default function Subscriptions() {
 
       <div className="bg-white rounded-[2rem] border border-gray-100 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left">
+          <table className="min-w-[700px] w-full text-left">
             <thead>
               <tr className="bg-gray-50">
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">School</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Plan</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Expiry Date</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Actions</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">School</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Plan</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Status</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Expiry Date</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {filteredSchools.map((school) => (
                 <tr key={school.id} className="hover:bg-gray-50 transition-colors group">
-                  <td className="px-6 py-4">
+                  <td className="px-4 md:px-6 py-4">
                     <p className="text-sm font-bold text-gray-900">{school.name}</p>
                     <p className="text-xs text-gray-500">{school.ownerName}</p>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 md:px-6 py-4">
                     <span className="px-3 py-1 bg-primary/5 text-primary rounded-full text-xs font-bold uppercase">
                       {packages.find(p => p.id === school.packageId)?.name || school.packageId || 'N/A'}
                     </span>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 md:px-6 py-4">
                     <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${
                       school.subscriptionStatus === 'active' ? 'bg-green-100 text-green-600' : 
                       school.subscriptionStatus === 'pending_approval' ? 'bg-blue-100 text-blue-600' :
@@ -421,7 +421,7 @@ export default function Subscriptions() {
                       {school.subscriptionStatus === 'pending_approval' ? 'Pending Approval' : school.subscriptionStatus || 'N/A'}
                     </span>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 md:px-6 py-4">
                     <div className="flex items-center gap-2 text-sm text-gray-600">
                       <Calendar className="h-4 w-4 text-gray-400" />
                       {school.subscriptionStatus === 'trial' 
@@ -429,7 +429,7 @@ export default function Subscriptions() {
                         : (school.subscriptionExpiry ? new Date(school.subscriptionExpiry).toLocaleDateString() : 'N/A')}
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-right">
+                  <td className="px-4 md:px-6 py-4 text-right">
                     <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button 
                         onClick={() => {
@@ -474,10 +474,10 @@ export default function Subscriptions() {
       {/* Payment Manage Modal */}
       {isPaymentManageModalOpen && selectedPayment && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
-          <div className="bg-white rounded-[2.5rem] w-full max-w-lg overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
-            <div className="p-8 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+          <div className="bg-white rounded-[2.5rem] w-[calc(100%-2rem)] md:w-full max-w-lg overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
+            <div className="p-4 md:p-8 border-b border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 bg-gray-50/50">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">Verify Payment</h2>
+                <h2 className="text-xl md:text-2xl font-bold text-gray-900">Verify Payment</h2>
                 <p className="text-gray-500 font-medium">{selectedPayment.schoolName}</p>
               </div>
               <button onClick={() => setIsPaymentManageModalOpen(false)} className="p-2 hover:bg-gray-200 rounded-full transition-colors">
@@ -485,7 +485,7 @@ export default function Subscriptions() {
               </button>
             </div>
 
-            <div className="p-8 space-y-6">
+            <div className="p-4 md:p-8 space-y-6">
               <div className="p-4 bg-gray-50 rounded-2xl space-y-2">
                 <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Payment Details</p>
                 <p className="text-sm text-gray-900">Package: {selectedPayment.selectedPackageName}</p>
@@ -643,10 +643,10 @@ export default function Subscriptions() {
       {/* Email Modal */}
       {isEmailModalOpen && selectedSchool && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
-          <div className="bg-white rounded-[2.5rem] w-full max-w-xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
-            <div className="p-8 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+          <div className="bg-white rounded-[2.5rem] w-[calc(100%-2rem)] md:w-full max-w-xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
+            <div className="p-4 md:p-8 border-b border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 bg-gray-50/50">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">Send Email</h2>
+                <h2 className="text-xl md:text-2xl font-bold text-gray-900">Send Email</h2>
                 <p className="text-gray-500 font-medium">To: {selectedSchool.ownerName} ({selectedSchool.email})</p>
               </div>
               <button onClick={() => setIsEmailModalOpen(false)} className="p-2 hover:bg-gray-200 rounded-full transition-colors">
@@ -654,7 +654,7 @@ export default function Subscriptions() {
               </button>
             </div>
 
-            <div className="p-8 space-y-6">
+            <div className="p-4 md:p-8 space-y-6">
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider">Subject</label>
                 <input 
@@ -698,10 +698,10 @@ export default function Subscriptions() {
       {/* Manage Subscription Modal */}
       {isManageModalOpen && selectedSchool && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-[2.5rem] w-full max-w-xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
-            <div className="p-8 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+          <div className="bg-white rounded-[2.5rem] w-[calc(100%-2rem)] md:w-full max-w-xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
+            <div className="p-4 md:p-8 border-b border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 bg-gray-50/50">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">Manage Subscription</h2>
+                <h2 className="text-xl md:text-2xl font-bold text-gray-900">Manage Subscription</h2>
                 <p className="text-gray-500 font-medium">{selectedSchool.name}</p>
               </div>
               <button onClick={() => setIsManageModalOpen(false)} className="p-2 hover:bg-gray-200 rounded-full transition-colors">
@@ -709,8 +709,8 @@ export default function Subscriptions() {
               </button>
             </div>
 
-            <div className="p-8 space-y-6">
-              <div className="grid grid-cols-2 gap-4">
+            <div className="p-4 md:p-8 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="p-4 bg-gray-50 rounded-2xl">
                   <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Current Plan</p>
                   <p className="text-lg font-bold text-primary">
@@ -758,7 +758,7 @@ export default function Subscriptions() {
 
               <div className="space-y-4">
                 <h4 className="text-sm font-bold text-gray-900">Quick Actions</h4>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <button 
                     onClick={() => handleAction('extend', { days: 30 })}
                     className="flex items-center gap-2 p-3 rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all text-xs font-bold"
@@ -832,10 +832,10 @@ export default function Subscriptions() {
       {/* History Modal */}
       {isHistoryModalOpen && selectedSchool && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-[2.5rem] w-full max-w-2xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
-            <div className="p-8 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+          <div className="bg-white rounded-[2.5rem] w-[calc(100%-2rem)] md:w-full max-w-2xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
+            <div className="p-4 md:p-8 border-b border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 bg-gray-50/50">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">Subscription History</h2>
+                <h2 className="text-xl md:text-2xl font-bold text-gray-900">Subscription History</h2>
                 <p className="text-gray-500 font-medium">{selectedSchool.name}</p>
               </div>
               <button onClick={() => setIsHistoryModalOpen(false)} className="p-2 hover:bg-gray-200 rounded-full transition-colors">
@@ -843,7 +843,7 @@ export default function Subscriptions() {
               </button>
             </div>
 
-            <div className="p-8 overflow-y-auto max-h-[60vh]">
+            <div className="p-4 md:p-8 overflow-y-auto max-h-[60vh]">
               <div className="space-y-6">
                 {history.length === 0 ? (
                   <div className="text-center py-12 text-gray-400">
@@ -869,7 +869,7 @@ export default function Subscriptions() {
                         </div>
                       </div>
                       <div className="flex-1">
-                        <div className="flex items-center justify-between mb-1">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 mb-1">
                           <p className="text-sm font-bold text-gray-900 capitalize">{record.action}</p>
                           <p className="text-xs text-gray-400">{new Date(record.createdAt).toLocaleString()}</p>
                         </div>
@@ -887,8 +887,8 @@ export default function Subscriptions() {
       {/* Delete Confirmation Modal */}
       {isDeleteConfirmOpen && selectedSchool && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
-          <div className="bg-white rounded-[2rem] w-full max-w-md overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
-            <div className="p-8 text-center">
+          <div className="bg-white rounded-[2rem] w-[calc(100%-2rem)] md:w-full max-w-md overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
+            <div className="p-4 md:p-8 text-center">
               <div className="w-16 h-16 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <AlertCircle className="h-8 w-8" />
               </div>

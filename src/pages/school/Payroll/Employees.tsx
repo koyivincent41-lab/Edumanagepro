@@ -213,45 +213,45 @@ export default function Employees({ schoolId, school }: Props) {
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-full text-sm text-left">
+        <table className="min-w-[700px] w-full text-sm text-left">
           <thead className="text-xs text-gray-500 uppercase bg-gray-50">
             <tr>
-              <th className="px-6 py-3 rounded-tl-xl">Staff ID</th>
-              <th className="px-6 py-3">Name</th>
-              <th className="px-6 py-3">Department</th>
-              <th className="px-6 py-3">Designation</th>
-              <th className="px-6 py-3">Structure</th>
-              <th className="px-6 py-3">Basic Salary</th>
-              <th className="px-6 py-3">Status</th>
-              <th className="px-6 py-3 rounded-tr-xl text-right">Actions</th>
+              <th className="px-4 md:px-6 py-3 rounded-tl-xl">Staff ID</th>
+              <th className="px-4 md:px-6 py-3">Name</th>
+              <th className="px-4 md:px-6 py-3">Department</th>
+              <th className="px-4 md:px-6 py-3">Designation</th>
+              <th className="px-4 md:px-6 py-3">Structure</th>
+              <th className="px-4 md:px-6 py-3">Basic Salary</th>
+              <th className="px-4 md:px-6 py-3">Status</th>
+              <th className="px-4 md:px-6 py-3 rounded-tr-xl text-right">Actions</th>
             </tr>
           </thead>
           <tbody>
             {filteredEmployees.length === 0 ? (
               <tr>
-                <td colSpan={8} className="px-6 py-8 text-center text-gray-500">
+                <td colSpan={8} className="px-4 md:px-6 py-4 md:py-8 text-center text-gray-500">
                   No employees found.
                 </td>
               </tr>
             ) : (
               filteredEmployees.map((emp) => (
                 <tr key={emp.id} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
-                  <td className="px-6 py-4 font-medium text-gray-900">{emp.staffNumber}</td>
-                  <td className="px-6 py-4 font-bold text-gray-900">{emp.fullName}</td>
-                  <td className="px-6 py-4 text-gray-600">{emp.department}</td>
-                  <td className="px-6 py-4 text-gray-600">{emp.designation}</td>
-                  <td className="px-6 py-4 text-gray-600">
+                  <td className="px-4 md:px-6 py-4 font-medium text-gray-900">{emp.staffNumber}</td>
+                  <td className="px-4 md:px-6 py-4 font-bold text-gray-900">{emp.fullName}</td>
+                  <td className="px-4 md:px-6 py-4 text-gray-600">{emp.department}</td>
+                  <td className="px-4 md:px-6 py-4 text-gray-600">{emp.designation}</td>
+                  <td className="px-4 md:px-6 py-4 text-gray-600">
                     {structures.find(s => s.id === emp.salaryStructureId)?.name || 'Manual'}
                   </td>
-                  <td className="px-6 py-4 font-medium text-gray-900">{school?.currency} {(emp.basicSalary || 0).toLocaleString()}</td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 md:px-6 py-4 font-medium text-gray-900">{school?.currency} {(emp.basicSalary || 0).toLocaleString()}</td>
+                  <td className="px-4 md:px-6 py-4">
                     <span className={`px-2.5 py-1 text-xs font-bold rounded-full ${
                       emp.payrollStatus === 'active' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
                     }`}>
                       {(emp.payrollStatus || 'inactive').toUpperCase()}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-right">
+                  <td className="px-4 md:px-6 py-4 text-right">
                     <div className="flex items-center justify-end gap-2">
                       <button onClick={() => editEmployee(emp)} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
                         <Edit2 className="h-4 w-4" />
@@ -270,8 +270,8 @@ export default function Employees({ schoolId, school }: Props) {
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between p-6 border-b border-gray-100 sticky top-0 bg-white z-10">
+          <div className="bg-white rounded-2xl shadow-xl w-[calc(100%-2rem)] md:w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 p-4 md:p-6 border-b border-gray-100 sticky top-0 bg-white z-10">
               <h2 className="text-xl font-black text-gray-900">
                 Edit Payroll Details
               </h2>
@@ -280,8 +280,8 @@ export default function Employees({ schoolId, school }: Props) {
               </button>
             </div>
             
-            <form onSubmit={handleSubmit} className="p-6 space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <form onSubmit={handleSubmit} className="p-4 md:p-6 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-1">Full Name</label>
                   <input
@@ -437,13 +437,13 @@ export default function Employees({ schoolId, school }: Props) {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-6 py-2 border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 font-bold transition-colors"
+                  className="px-4 md:px-6 py-2 border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 font-bold transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2 bg-school-gradient text-white rounded-xl hover:shadow-lg hover:shadow-primary/20 font-bold transition-all"
+                  className="px-4 md:px-6 py-2 bg-school-gradient text-white rounded-xl hover:shadow-lg hover:shadow-primary/20 font-bold transition-all"
                 >
                   {editingId ? 'Update Employee' : 'Save Employee'}
                 </button>

@@ -53,7 +53,7 @@ export default function MobileLogin() {
 
   return (
     <PublicLayout>
-      <div className="min-h-screen relative flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 overflow-hidden">
+      <div className="min-h-screen relative flex items-center justify-center py-12 px-4 sm:px-4 md:px-6 lg:px-4 md:px-8 overflow-hidden">
         {/* Animated Background Gradients */}
         <div className="absolute inset-0 z-0 overflow-hidden">
           <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] rounded-full bg-blue-500/10 dark:bg-blue-500/20 blur-[120px] animate-pulse" />
@@ -66,7 +66,7 @@ export default function MobileLogin() {
             <div className="inline-flex p-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-[2rem] shadow-2xl shadow-blue-500/10 mb-6 border border-white/50 dark:border-gray-800">
               <Users className="h-10 w-10 text-blue-600" />
             </div>
-            <h1 className="text-4xl font-black text-gray-900 dark:text-white mb-3 tracking-tight">
+            <h1 className="text-3xl md:text-4xl font-black text-gray-900 dark:text-white mb-3 tracking-tight">
               Employee <span className="text-blue-600">Portal</span>
             </h1>
             <p className="text-gray-500 dark:text-gray-400 font-medium">Sign in using your Employee Unique ID.</p>
@@ -122,7 +122,7 @@ export default function MobileLogin() {
                 <div className="w-full border-t border-gray-100 dark:border-gray-800"></div>
               </div>
               <div className="relative flex justify-center text-[10px] font-black uppercase tracking-[0.2em]">
-                <span className="px-6 bg-white/0 backdrop-blur-md text-gray-400 dark:text-gray-500">Secure Access</span>
+                <span className="px-4 md:px-6 bg-white/0 backdrop-blur-md text-gray-400 dark:text-gray-500">Secure Access</span>
               </div>
             </div>
 

@@ -233,7 +233,7 @@ export default function SuperAdminLogin({ profile }: { profile: UserProfile | nu
           <div className="inline-flex p-4 bg-white/5 backdrop-blur-2xl rounded-[2rem] shadow-2xl shadow-maroon/20 mb-6 border border-white/10">
             <ShieldAlert className="h-10 w-10 text-maroon" />
           </div>
-          <h1 className="text-4xl font-black text-white mb-3 tracking-tight uppercase">
+          <h1 className="text-3xl md:text-4xl font-black text-white mb-3 tracking-tight uppercase">
             Super <span className="text-maroon">Admin</span>
           </h1>
           <p className="text-gray-500 font-medium tracking-widest uppercase text-[10px]">Restricted Area • Authorized Personnel Only</p>
@@ -275,7 +275,7 @@ export default function SuperAdminLogin({ profile }: { profile: UserProfile | nu
             </div>
 
             <div className="space-y-2">
-              <div className="flex items-center justify-between ml-1">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 ml-1">
                 <label className="block text-xs font-black uppercase tracking-widest text-gray-500">Password</label>
                 {!isRegistering && (
                   <button
@@ -337,7 +337,7 @@ export default function SuperAdminLogin({ profile }: { profile: UserProfile | nu
               <div className="w-full border-t border-white/5"></div>
             </div>
             <div className="relative flex justify-center text-[10px] font-black uppercase tracking-[0.2em]">
-              <span className="px-6 bg-transparent text-gray-600">Secure Gateway</span>
+              <span className="px-4 md:px-6 bg-transparent text-gray-600">Secure Gateway</span>
             </div>
           </div>
 

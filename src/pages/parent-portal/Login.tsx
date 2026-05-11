@@ -70,13 +70,13 @@ export default function ParentLogin({ profile }: { profile: UserProfile | null }
         <ThemeToggle />
       </div>
 
-      <div className="w-full max-w-md bg-white/70 dark:bg-gray-900/70 backdrop-blur-3xl p-10 rounded-[3rem] shadow-[0_32px_64px_-15px_rgba(0,0,0,0.1)] dark:shadow-[0_32px_64px_-15px_rgba(0,0,0,0.5)] border border-white/50 dark:border-gray-800 relative z-10">
+      <div className="w-[calc(100%-2rem)] md:w-full max-w-md bg-white/70 dark:bg-gray-900/70 backdrop-blur-3xl p-10 rounded-[3rem] shadow-[0_32px_64px_-15px_rgba(0,0,0,0.1)] dark:shadow-[0_32px_64px_-15px_rgba(0,0,0,0.5)] border border-white/50 dark:border-gray-800 relative z-10">
         <div className="flex items-center gap-2 mb-8 justify-center">
           <div className="p-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-[2rem] shadow-2xl shadow-primary/10 border border-white/50 dark:border-gray-800">
             <GraduationCap className="h-10 w-10 text-primary" />
           </div>
         </div>
-        <h2 className="text-4xl font-black text-center text-gray-900 dark:text-white mb-3 tracking-tight">Parent Portal</h2>
+        <h2 className="text-3xl md:text-4xl font-black text-center text-gray-900 dark:text-white mb-3 tracking-tight">Parent Portal</h2>
         <p className="text-center text-gray-500 dark:text-gray-400 mb-10 font-medium">Log in with your Parent ID.</p>
         
         <form onSubmit={handleLogin} className="space-y-6">

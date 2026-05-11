@@ -134,7 +134,7 @@ export default function Overview() {
 
   if (loading) {
     return <div className="animate-pulse space-y-8">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6">
         {[1,2,3,4].map(i => <div key={i} className="h-32 bg-gray-200 rounded-3xl"></div>)}
       </div>
       <div className="h-96 bg-gray-200 rounded-3xl"></div>
@@ -143,7 +143,7 @@ export default function Overview() {
 
   return (
     <div className="space-y-8">
-      <div className="bg-school-gradient p-6 rounded-[2.5rem] shadow-lg shadow-maroon/20">
+      <div className="bg-school-gradient p-4 md:p-6 rounded-[2.5rem] shadow-lg shadow-maroon/20">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center overflow-hidden p-1 shrink-0">
@@ -154,7 +154,7 @@ export default function Overview() {
               )}
             </div>
             <div>
-              <h1 className="text-2xl font-black text-white">System Overview</h1>
+              <h1 className="text-xl md:text-2xl font-black text-white">System Overview</h1>
               <p className="text-sm text-white/80 font-medium tracking-wide">Monitor and manage the entire EduManagePro network.</p>
             </div>
           </div>
@@ -165,51 +165,51 @@ export default function Overview() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         {cards.map((card) => (
-          <div key={card.name} className="bg-white dark:bg-gray-900 p-6 rounded-[2rem] border border-gray-100 dark:border-gray-800 shadow-sm">
-            <div className="flex items-center justify-between mb-4">
+          <div key={card.name} className="bg-white dark:bg-gray-900 p-4 md:p-6 rounded-[2rem] border border-gray-100 dark:border-gray-800 shadow-sm">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 mb-4">
               <div className={`p-3 ${card.color} rounded-2xl`}>
                 <card.icon className="h-6 w-6 text-white" />
               </div>
               <TrendingUp className="h-5 w-5 text-green-500" />
             </div>
             <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">{card.name}</p>
-            <p className="text-2xl font-extrabold text-gray-900 dark:text-white">{card.value}</p>
+            <p className="text-xl md:text-2xl font-extrabold text-gray-900 dark:text-white">{card.value}</p>
           </div>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8">
         <div className="lg:col-span-2 bg-white dark:bg-gray-900 rounded-[2rem] border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden">
-          <div className="bg-school-gradient px-8 py-4 flex items-center justify-between">
+          <div className="bg-school-gradient px-4 md:px-8 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
             <h3 className="font-black text-white uppercase tracking-[0.2em] text-xs">Recent School Signups</h3>
             <button className="text-[10px] font-black text-white/80 hover:text-white uppercase tracking-widest transition-colors">View All</button>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full text-left">
+            <table className="min-w-[700px] w-full text-left">
               <thead>
                 <tr className="bg-gray-50 dark:bg-gray-800/50">
-                  <th className="px-6 py-4 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">School</th>
-                  <th className="px-6 py-4 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Owner</th>
-                  <th className="px-6 py-4 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Package</th>
-                  <th className="px-6 py-4 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Status</th>
+                  <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">School</th>
+                  <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Owner</th>
+                  <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Package</th>
+                  <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Status</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
                 {stats.recentSignups.map((school) => (
                   <tr key={school.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-                    <td className="px-6 py-4">
+                    <td className="px-4 md:px-6 py-4">
                       <p className="text-sm font-bold text-gray-900 dark:text-white">{school.name}</p>
                       <p className="text-xs text-gray-500 dark:text-gray-400">{new Date(school.createdAt).toLocaleDateString()}</p>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">{school.ownerName}</td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 md:px-6 py-4 text-sm text-gray-600 dark:text-gray-400">{school.ownerName}</td>
+                    <td className="px-4 md:px-6 py-4">
                       <span className="px-3 py-1 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 rounded-full text-xs font-bold uppercase">
                         {school.packageId}
                       </span>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 md:px-6 py-4">
                       <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${
                         school.status === 'active' ? 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400' : 
                         school.status === 'pending' ? 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400' : 
@@ -226,10 +226,10 @@ export default function Overview() {
         </div>
 
         <div className="bg-white dark:bg-gray-900 rounded-[2rem] border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden">
-          <div className="bg-school-gradient px-8 py-4">
+          <div className="bg-school-gradient px-4 md:px-8 py-4">
             <h3 className="font-black text-white uppercase tracking-[0.2em] text-xs">Recent Plan Changes</h3>
           </div>
-          <div className="p-6 space-y-4">
+          <div className="p-4 md:p-6 space-y-4">
             {stats.recentPlanChanges.map((change) => (
               <div key={change.id} className="flex items-center gap-4">
                 <div className={`p-2 rounded-lg ${
@@ -256,10 +256,10 @@ export default function Overview() {
         </div>
 
         <div className="bg-white dark:bg-gray-900 rounded-[2rem] border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden">
-          <div className="bg-school-gradient px-8 py-4">
+          <div className="bg-school-gradient px-4 md:px-8 py-4">
             <h3 className="font-black text-white uppercase tracking-[0.2em] text-xs">Quick Actions</h3>
           </div>
-          <div className="p-6 space-y-4">
+          <div className="p-4 md:p-6 space-y-4">
             {[
               { name: 'Add New Package', icon: Package, color: 'text-blue-500 bg-blue-50 dark:bg-blue-900/30' },
               { name: 'Review Pending Schools', icon: Clock, color: 'text-yellow-500 bg-yellow-50 dark:bg-yellow-900/30' },

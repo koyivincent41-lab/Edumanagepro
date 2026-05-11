@@ -27,7 +27,6 @@ export default function IDCardModal({ school, type, person, onClose }: IDCardMod
       const canvas = await htmlToImage.toCanvas(cardRef.current, { 
         quality: 1, 
         pixelRatio: scale,
-        useCORS: true,
         backgroundColor: '#ffffff'
       });
       const imgData = canvas.toDataURL('image/png');
@@ -55,14 +54,14 @@ export default function IDCardModal({ school, type, person, onClose }: IDCardMod
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm flex flex-col overflow-hidden">
-        <div className="p-4 border-b border-gray-100 flex items-center justify-between">
+        <div className="p-4 border-b border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
           <h2 className="text-lg font-bold text-gray-900">View ID Card</h2>
           <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-xl transition-colors">
             <X className="h-5 w-5" />
           </button>
         </div>
         
-        <div className="p-8 flex items-center justify-center bg-gray-50">
+        <div className="p-4 md:p-8 flex items-center justify-center bg-gray-50">
           {/* ID Card actual element - using fixed px for consistent htmlToImage export */}
           <div 
             ref={cardRef} 
@@ -141,7 +140,7 @@ export default function IDCardModal({ school, type, person, onClose }: IDCardMod
             )}
 
             {/* Footer */}
-            <div className="mt-auto h-6 flex items-center justify-between px-3 z-10 shrink-0" style={{ backgroundColor: `${themeColor}10` }}>
+            <div className="mt-auto h-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 px-3 z-10 shrink-0" style={{ backgroundColor: `${themeColor}10` }}>
                <p className="text-[6px] text-gray-600 font-semibold ml-1">If found, return to: <span className="font-bold text-gray-900">{school.name}</span></p>
                <p className="text-[6px] text-gray-800 font-bold tracking-wider mr-1">{school.phone || school.email}</p>
             </div>
@@ -155,7 +154,7 @@ export default function IDCardModal({ school, type, person, onClose }: IDCardMod
           <button 
             onClick={handleDownloadPDF}
             className="w-full py-2.5 text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:opacity-90 transition-all shadow-lg"
-            style={{ backgroundColor: themeColor, shadowColor: `${themeColor}40` }}
+            style={{ backgroundColor: themeColor }}
           >
             <Download className="w-4 h-4" />
             Download PDF

@@ -184,7 +184,7 @@ const RegistrationComplete = () => {
                     <div className="absolute inset-0 bg-maroon/20 blur-2xl rounded-full animate-pulse" />
                     <Loader2 className="h-20 w-20 text-maroon animate-spin relative z-10" />
                   </div>
-                  <h2 className="text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tight mb-4">Initializing Workspace</h2>
+                  <h2 className="text-xl md:text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tight mb-4">Initializing Workspace</h2>
                   <p className="text-gray-500 dark:text-gray-400 font-medium leading-relaxed">Please wait while we set up your school account and prepare your dashboard.</p>
                 </div>
               )}
@@ -198,7 +198,7 @@ const RegistrationComplete = () => {
                   </div>
                   
                   <div className="space-y-6">
-                    <h2 className="text-4xl font-black text-gray-900 dark:text-white tracking-tight">
+                    <h2 className="text-3xl md:text-4xl font-black text-gray-900 dark:text-white tracking-tight">
                       Registration <span className="text-maroon">Complete!</span>
                     </h2>
                     <p className="text-lg text-gray-600 dark:text-gray-400 font-medium leading-relaxed">
@@ -232,7 +232,7 @@ const RegistrationComplete = () => {
                   </div>
                   
                   <div className="space-y-6">
-                    <h2 className="text-4xl font-black text-gray-900 dark:text-white tracking-tight">
+                    <h2 className="text-3xl md:text-4xl font-black text-gray-900 dark:text-white tracking-tight">
                       Registration <span className="text-red-600">Failed</span>
                     </h2>
                     <p className="text-lg text-gray-600 dark:text-gray-400 font-medium leading-relaxed">

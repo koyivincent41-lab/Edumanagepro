@@ -29,7 +29,7 @@ const DigitalClock: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center gap-4 px-6 py-2 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm transition-all duration-300">
+    <div className="flex items-center gap-4 px-4 md:px-6 py-2 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm transition-all duration-300">
       <div className="flex items-center gap-2">
         <Clock className="h-4 w-4 text-primary animate-pulse" />
         <div className="text-xl font-black font-mono tracking-wider text-primary dark:text-white">

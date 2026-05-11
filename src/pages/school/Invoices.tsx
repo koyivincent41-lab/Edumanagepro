@@ -354,10 +354,10 @@ export default function Invoices({ schoolId, school }: { schoolId: string; schoo
 
   return (
     <div className="space-y-6">
-      <div className="bg-school-gradient p-6 rounded-[2.5rem] shadow-lg shadow-maroon/20">
+      <div className="bg-school-gradient p-4 md:p-6 rounded-[2.5rem] shadow-lg shadow-maroon/20">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-black text-white">Fee Invoices</h1>
+            <h1 className="text-xl md:text-2xl font-black text-white">Fee Invoices</h1>
             <p className="text-sm text-white/80 font-medium tracking-wide">Manage school fee billing and tracking.</p>
           </div>
           <div className="flex flex-wrap items-center gap-3">
@@ -435,7 +435,7 @@ export default function Invoices({ schoolId, school }: { schoolId: string; schoo
             </button>
             <button 
               onClick={() => { setEditingInvoice(null); reset(); setIsModalOpen(true); }}
-              className="px-6 py-2.5 bg-white text-maroon font-black uppercase tracking-widest text-[10px] rounded-xl shadow-xl hover:scale-105 transition-all flex items-center gap-2"
+              className="px-4 md:px-6 py-2.5 bg-white text-maroon font-black uppercase tracking-widest text-[10px] rounded-xl shadow-xl hover:scale-105 transition-all flex items-center gap-2"
             >
               <Plus className="h-4 w-4" />
               Create Invoice
@@ -446,10 +446,10 @@ export default function Invoices({ schoolId, school }: { schoolId: string; schoo
 
       <div className="bg-white rounded-[2rem] border border-gray-100 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left">
+          <table className="min-w-[700px] w-full text-left">
             <thead>
               <tr className="bg-gray-50">
-                <th className="px-6 py-4">
+                <th className="px-4 md:px-6 py-4">
                   <input 
                     type="checkbox" 
                     className="rounded border-gray-300 text-primary focus:ring-primary"
@@ -463,12 +463,12 @@ export default function Invoices({ schoolId, school }: { schoolId: string; schoo
                     }}
                   />
                 </th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Invoice</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Student / Parent</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Amount</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Due Date</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Actions</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Invoice</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Student / Parent</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Amount</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Status</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Due Date</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -477,7 +477,7 @@ export default function Invoices({ schoolId, school }: { schoolId: string; schoo
                 const parent = parents.find(p => p.id === invoice.parentId);
                 return (
                   <tr key={invoice.id} className="hover:bg-gray-50 transition-colors group">
-                    <td className="px-6 py-4">
+                    <td className="px-4 md:px-6 py-4">
                       <input 
                         type="checkbox" 
                         className="rounded border-gray-300 text-primary focus:ring-primary"
@@ -485,7 +485,7 @@ export default function Invoices({ schoolId, school }: { schoolId: string; schoo
                         onChange={() => toggleInvoiceSelection(invoice.id)}
                       />
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 md:px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-school-gradient/10 rounded-xl flex items-center justify-center text-primary">
                           <FileText className="h-5 w-5" />
@@ -496,27 +496,27 @@ export default function Invoices({ schoolId, school }: { schoolId: string; schoo
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 md:px-6 py-4">
                       <p className="text-sm font-bold text-gray-900">{student?.fullName || 'N/A'}</p>
                       <p className="text-xs text-gray-500">{parent?.fullName || 'N/A'}</p>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 md:px-6 py-4">
                       <p className="text-sm font-extrabold text-gray-900">{school?.currency} {invoice.totalAmount.toLocaleString()}</p>
                       <p className="text-xs text-red-500 font-medium">Bal: {school?.currency} {invoice.balanceDue.toLocaleString()}</p>
                       <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{invoice.term}</p>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 md:px-6 py-4">
                       <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase ${getStatusColor(invoice.status)}`}>
                         {invoice.status.replace('_', ' ')}
                       </span>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 md:px-6 py-4">
                       <div className="flex items-center gap-2 text-sm text-gray-600">
                         <Calendar className="h-4 w-4 text-gray-400" />
                         {new Date(invoice.dueDate).toLocaleDateString()}
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-right">
+                    <td className="px-4 md:px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button 
                           onClick={() => setSelectedInvoice(invoice)}
@@ -562,8 +562,8 @@ export default function Invoices({ schoolId, school }: { schoolId: string; schoo
       {/* Preview Modal */}
       {selectedInvoice && (
         <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-300">
-          <div className="bg-white w-full max-w-4xl rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 flex flex-col max-h-[90vh]">
-            <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+          <div className="bg-white w-[calc(100%-2rem)] md:w-full max-w-4xl rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 flex flex-col max-h-[90vh]">
+            <div className="p-4 md:p-6 border-b border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 bg-gray-50/50">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-school-gradient/10 rounded-xl text-primary">
                   <FileText className="h-5 w-5" />
@@ -594,37 +594,37 @@ export default function Invoices({ schoolId, school }: { schoolId: string; schoo
               </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-12 bg-white print:p-0" id="printable-invoice">
+            <div className="flex-1 overflow-y-auto p-4 sm:p-8 md:p-12 bg-white print:p-0" id="printable-invoice">
               {/* Letterhead */}
-              <div className="flex justify-between items-start mb-12 border-b-4 pb-8" style={{ borderColor: primaryColor }}>
-                <div className="flex items-center gap-6">
+              <div className="flex flex-col sm:flex-row justify-between items-center sm:items-start mb-8 sm:mb-12 border-b-4 pb-6 sm:pb-8 gap-6 sm:gap-0" style={{ borderColor: primaryColor }}>
+                <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-4 sm:gap-6">
                   {school?.logo ? (
-                    <img src={school.logo || undefined} alt="Logo" className="h-24 w-24 object-contain rounded-2xl shadow-sm" referrerPolicy="no-referrer" />
+                    <img src={school.logo || undefined} alt="Logo" className="h-16 w-16 md:h-24 md:w-24 object-contain rounded-2xl shadow-sm shrink-0" referrerPolicy="no-referrer" />
                   ) : (
-                    <div className="h-24 w-24 bg-primary rounded-2xl flex items-center justify-center text-white font-bold text-4xl shadow-lg">
+                    <div className="h-16 w-16 md:h-24 md:w-24 bg-primary rounded-2xl flex items-center justify-center text-white font-bold text-2xl md:text-4xl shadow-lg shrink-0">
                       {school?.name.charAt(0)}
                     </div>
                   )}
                   <div>
-                    <h1 className="text-3xl font-black tracking-tighter text-gray-900 uppercase">{school?.name}</h1>
+                    <h1 className="text-xl md:text-3xl font-black tracking-tighter text-gray-900 dark:text-white uppercase break-words px-2 sm:px-0">{school?.name}</h1>
                     <p className="text-primary font-bold italic text-lg">{school?.motto}</p>
-                    <div className="mt-3 text-sm text-gray-500 space-y-0.5 font-medium">
+                    <div className="mt-2 md:mt-3 text-xs md:text-sm text-gray-500 space-y-0.5 font-medium break-words px-2 sm:px-0">
                       <p>{school?.address}</p>
-                      <p>Tel: {school?.phone} | Email: {school?.email}</p>
+                      <p className="break-words">Tel: {school?.phone} | Email: {school?.email}</p>
                     </div>
                   </div>
                 </div>
-                <div className="text-right">
-                  <div className="inline-block px-6 py-2 rounded-full text-white font-black text-sm uppercase tracking-widest mb-4" style={{ backgroundColor: primaryColor }}>
+                <div className="text-center sm:text-right w-full sm:w-auto mt-4 sm:mt-0">
+                  <div className="inline-block px-4 md:px-6 py-2 rounded-full text-white font-black text-sm uppercase tracking-widest mb-4" style={{ backgroundColor: primaryColor }}>
                     Invoice
                   </div>
-                  <p className="text-4xl font-black text-gray-900 tracking-tighter">{selectedInvoice.invoiceNumber}</p>
+                  <p className="text-2xl md:text-4xl font-black text-gray-900 tracking-tighter">{selectedInvoice.invoiceNumber}</p>
                   <p className="text-sm font-bold text-gray-400 mt-1 uppercase tracking-widest">Date: {new Date(selectedInvoice.createdAt).toLocaleDateString()}</p>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-12 mb-12">
-                <div className="bg-gray-50 p-8 rounded-[2rem] border border-gray-100">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-12 mb-8 md:mb-12">
+                <div className="bg-gray-50 dark:bg-gray-800/50 p-5 md:p-8 rounded-2xl md:rounded-[2rem] border border-gray-100 dark:border-gray-800">
                   <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4">Bill To:</p>
                   <div className="space-y-1">
                     <p className="text-xl font-black text-gray-900">{students.find(s => s.id === selectedInvoice.studentId)?.fullName}</p>
@@ -632,7 +632,7 @@ export default function Invoices({ schoolId, school }: { schoolId: string; schoo
                     <p className="text-sm font-medium text-gray-500 mt-2">Parent: {parents.find(p => p.id === selectedInvoice.parentId)?.fullName}</p>
                   </div>
                 </div>
-                <div className="bg-gray-50 p-8 rounded-[2rem] border border-gray-100 flex flex-col justify-center">
+                <div className="bg-gray-50 dark:bg-gray-800/50 p-5 md:p-8 rounded-2xl md:rounded-[2rem] border border-gray-100 dark:border-gray-800 flex flex-col justify-center">
                   <div className="flex justify-between items-center mb-4">
                     <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Due Date:</span>
                     <span className="text-sm font-black text-red-600">{new Date(selectedInvoice.dueDate).toLocaleDateString()}</span>
@@ -646,7 +646,7 @@ export default function Invoices({ schoolId, school }: { schoolId: string; schoo
                 </div>
               </div>
 
-              <div className="mb-12">
+              <div className="mb-8 md:mb-12 overflow-x-auto">
                 <table className="w-full">
                   <thead>
                     <tr className="border-b-2 border-gray-100">
@@ -664,8 +664,8 @@ export default function Invoices({ schoolId, school }: { schoolId: string; schoo
                   </tbody>
                   <tfoot>
                     <tr className="border-t-2 border-gray-900">
-                      <td className="py-6 text-lg font-black text-gray-900 uppercase tracking-tighter">Total Amount</td>
-                      <td className="py-6 text-right text-2xl font-black text-gray-900" style={{ color: primaryColor }}>
+                      <td className="py-4 md:py-6 text-sm md:text-lg font-black text-gray-900 uppercase tracking-tighter">Total Amount</td>
+                      <td className="py-4 md:py-6 text-right text-lg md:text-2xl font-black text-gray-900" style={{ color: primaryColor }}>
                         {school?.currency} {selectedInvoice.totalAmount.toLocaleString()}
                       </td>
                     </tr>
@@ -680,7 +680,7 @@ export default function Invoices({ schoolId, school }: { schoolId: string; schoo
               </div>
 
               {selectedInvoice.notes && (
-                <div className="mb-12 p-6 bg-yellow-50/50 rounded-2xl border border-yellow-100">
+                <div className="mb-12 p-4 md:p-6 bg-yellow-50/50 rounded-2xl border border-yellow-100">
                   <p className="text-[10px] font-black text-yellow-700 uppercase tracking-widest mb-2">Notes:</p>
                   <p className="text-sm text-yellow-800 font-medium italic">{selectedInvoice.notes}</p>
                 </div>
@@ -692,7 +692,7 @@ export default function Invoices({ schoolId, school }: { schoolId: string; schoo
                   <div className="mt-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
                     For technical support, contact: support@edumanagepro.com
                   </div>
-                  <div className="mt-6 flex justify-center gap-8 text-[10px] font-black text-gray-300 uppercase tracking-[0.3em]">
+                  <div className="mt-6 flex justify-center gap-4 md:gap-8 text-[10px] font-black text-gray-300 uppercase tracking-[0.3em]">
                     <span>Official Document</span>
                     <span>•</span>
                     <span>{school?.name}</span>
@@ -723,14 +723,14 @@ export default function Invoices({ schoolId, school }: { schoolId: string; schoo
       {/* Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="p-8 border-b border-gray-100 flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-gray-900">{editingInvoice ? 'Edit Invoice' : 'Create New Invoice'}</h2>
+          <div className="bg-white w-[calc(100%-2rem)] md:w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="p-4 md:p-8 border-b border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
+              <h2 className="text-xl md:text-2xl font-bold text-gray-900">{editingInvoice ? 'Edit Invoice' : 'Create New Invoice'}</h2>
               <button onClick={() => { setIsModalOpen(false); setEditingInvoice(null); reset(); }} className="p-2 hover:bg-gray-100 rounded-xl transition-colors">
                 <X className="h-6 w-6" />
               </button>
             </div>
-            <form onSubmit={handleSubmit(onSubmit)} className="p-8 space-y-6 max-h-[70vh] overflow-y-auto">
+            <form onSubmit={handleSubmit(onSubmit)} className="p-4 md:p-8 space-y-6 max-h-[70vh] overflow-y-auto">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Select Student</label>
                 <select
@@ -744,7 +744,7 @@ export default function Invoices({ schoolId, school }: { schoolId: string; schoo
               </div>
 
               <div className="space-y-4">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
                   <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider">Fee Items</h3>
                   <div className="flex gap-4">
                     <button 
@@ -801,7 +801,7 @@ export default function Invoices({ schoolId, school }: { schoolId: string; schoo
                 ))}
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Term</label>
                   <select
@@ -847,16 +847,16 @@ export default function Invoices({ schoolId, school }: { schoolId: string; schoo
       {/* Bulk Add Modal */}
       {isBulkModalOpen && (
         <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="p-6 border-b border-gray-100 flex items-center justify-between">
+          <div className="bg-white w-[calc(100%-2rem)] md:w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="p-4 md:p-6 border-b border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
               <h2 className="text-xl font-bold text-gray-900">Bulk Add Fees</h2>
               <button onClick={() => setIsBulkModalOpen(false)} className="p-2 hover:bg-gray-100 rounded-xl transition-colors">
                 <X className="h-5 w-5" />
               </button>
             </div>
-            <div className="p-6 space-y-4 max-h-[60vh] overflow-y-auto">
+            <div className="p-4 md:p-6 space-y-4 max-h-[60vh] overflow-y-auto">
               {feeTypes.length === 0 ? (
-                <p className="text-center text-gray-500 py-8">No fee types found. Please create some first.</p>
+                <p className="text-center text-gray-500 py-4 md:py-8">No fee types found. Please create some first.</p>
               ) : (
                 feeTypes.map(fee => (
                   <button
@@ -890,7 +890,7 @@ export default function Invoices({ schoolId, school }: { schoolId: string; schoo
                 ))
               )}
             </div>
-            <div className="p-6 bg-gray-50 flex gap-3">
+            <div className="p-4 md:p-6 bg-gray-50 flex gap-3">
               <button
                 onClick={() => setIsBulkModalOpen(false)}
                 className="flex-1 py-3 bg-white text-gray-600 font-bold rounded-xl border border-gray-200 hover:bg-gray-50 transition-all"

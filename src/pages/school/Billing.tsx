@@ -338,17 +338,17 @@ export default function Billing({ school }: { school: School | null }) {
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
-      <div className="bg-school-gradient p-6 rounded-[2.5rem] shadow-lg shadow-maroon/20">
+      <div className="bg-school-gradient p-4 md:p-6 rounded-[2.5rem] shadow-lg shadow-maroon/20">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-black text-white">Billing & Subscription</h1>
+            <h1 className="text-xl md:text-2xl font-black text-white">Billing & Subscription</h1>
             <p className="text-sm text-white/80 font-medium tracking-wide">Manage your school's subscription plan and payment details.</p>
           </div>
         </div>
       </div>
 
       {isExpired && (
-        <div className="bg-red-50 border border-red-200 rounded-2xl p-6 flex items-start gap-4">
+        <div className="bg-red-50 border border-red-200 rounded-2xl p-4 md:p-6 flex items-start gap-4">
           <AlertCircle className="h-6 w-6 text-red-600 shrink-0 mt-1" />
           <div>
             <h3 className="text-lg font-bold text-red-900">
@@ -372,7 +372,7 @@ export default function Billing({ school }: { school: School | null }) {
       )}
 
       {selectingPlan ? (
-        <div className="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-300">
+        <div className="bg-white rounded-[2.5rem] p-4 md:p-8 border border-gray-100 shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-300">
           <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
             <div>
               <h2 className="text-xl font-bold text-gray-900">Select a Subscription Plan</h2>
@@ -409,7 +409,7 @@ export default function Billing({ school }: { school: School | null }) {
               </button>
             )}
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
             {packages.map((p) => {
               const displayPrice = selectedBillingCycle === 'yearly' 
                 ? Math.round((p.monthlyPrice * 12) * 0.7) 
@@ -431,7 +431,7 @@ export default function Billing({ school }: { school: School | null }) {
                   <h3 className="text-lg font-bold text-gray-900 mb-1">{p.name}</h3>
                   <p className="text-xs text-gray-500 mb-4">{p.description}</p>
                   <div className="flex items-baseline gap-1 mb-4">
-                    <span className="text-2xl font-black text-gray-900">${displayPrice}</span>
+                    <span className="text-xl md:text-2xl font-black text-gray-900">${displayPrice}</span>
                     <span className="text-xs text-gray-400 font-bold uppercase tracking-widest">{subLabel}</span>
                   </div>
                   <ul className="space-y-2 mb-6">
@@ -454,15 +454,15 @@ export default function Billing({ school }: { school: School | null }) {
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
         {/* Current Plan Details */}
-        <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm p-8">
+        <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm p-4 md:p-8">
           <h3 className="text-lg font-bold text-gray-900 mb-6 border-b border-gray-100 pb-4">Current Plan</h3>
           
           <div className="space-y-6">
             <div>
               <p className="text-sm text-gray-500 mb-1">Selected Package</p>
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
                 <p className="text-xl font-bold text-primary">{pkg?.name || 'Unknown Plan'}</p>
                 <button 
                   onClick={() => setSelectingPlan(true)}
@@ -474,7 +474,7 @@ export default function Billing({ school }: { school: School | null }) {
             </div>
 
             <div className="flex flex-col gap-4 py-4 border-y border-gray-100">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
                 <div>
                   <p className="text-xs text-gray-400 font-black uppercase tracking-widest mb-1">Billing Cycle</p>
                   <p className="font-semibold text-gray-900 capitalize">
@@ -494,7 +494,7 @@ export default function Billing({ school }: { school: School | null }) {
               </div>
 
               {/* Quick Cycle Switcher */}
-              <div className="flex items-center justify-between gap-1 p-1 bg-gray-50 rounded-xl">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 gap-1 p-1 bg-gray-50 rounded-xl">
                 {[
                   { id: 'monthly', label: 'Mon' },
                   { id: 'six-months', label: '6M' },
@@ -570,12 +570,12 @@ export default function Billing({ school }: { school: School | null }) {
         </div>
 
         {/* Payment Action */}
-        <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm p-8 flex flex-col items-center text-center">
+        <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm p-4 md:p-8 flex flex-col items-center text-center">
           <div className="w-16 h-16 bg-green-50 rounded-[2rem] flex items-center justify-center mb-6">
             <CreditCard className="h-8 w-8 text-green-600" />
           </div>
           
-          <h3 className="text-2xl font-black text-gray-900 mb-2">Secure Payment</h3>
+          <h3 className="text-xl md:text-2xl font-black text-gray-900 mb-2">Secure Payment</h3>
           <p className="text-gray-500 text-sm mb-8 max-w-sm mx-auto">
             Activate your {pkg?.name || 'subscription'} plan instantly via M-PESA manual verification.
           </p>
@@ -607,7 +607,7 @@ export default function Billing({ school }: { school: School | null }) {
           </div>
 
           {/* Support Links */}
-          <div className="mt-8 flex items-center justify-center gap-6">
+          <div className="mt-8 flex items-center justify-center gap-4 md:gap-6">
             <a href="tel:+254700000000" className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest hover:text-primary transition-colors">
               <Phone className="h-3 w-3" /> Call Support
             </a>
@@ -619,8 +619,8 @@ export default function Billing({ school }: { school: School | null }) {
           {/* M-PESA Payment Modal */}
           {showMpesaModal && (
             <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-300">
-              <div className="bg-white w-full max-w-lg rounded-[3rem] shadow-2xl overflow-hidden relative border border-white/20 animate-in zoom-in-95 duration-300">
-                <div className="p-8 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+              <div className="bg-white w-[calc(100%-2rem)] md:w-full max-w-lg rounded-[3rem] shadow-2xl overflow-hidden relative border border-white/20 animate-in zoom-in-95 duration-300">
+                <div className="p-4 md:p-8 border-b border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 bg-gray-50/50">
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 bg-green-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-green-200">
                       <CreditCard className="h-6 w-6" />
@@ -635,9 +635,9 @@ export default function Billing({ school }: { school: School | null }) {
                   </button>
                 </div>
 
-                <div className="p-8 overflow-y-auto max-h-[70vh] custom-scrollbar">
+                <div className="p-4 md:p-8 overflow-y-auto max-h-[70vh] custom-scrollbar">
                   {/* Instructions */}
-                  <div className="bg-green-50/50 rounded-3xl p-8 mb-8 border border-green-100/50 relative overflow-hidden group">
+                  <div className="bg-green-50/50 rounded-3xl p-4 md:p-8 mb-8 border border-green-100/50 relative overflow-hidden group">
                     <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
                       <CreditCard className="w-24 h-24 rotate-12" />
                     </div>
@@ -672,7 +672,7 @@ export default function Billing({ school }: { school: School | null }) {
 
                   {/* Submission Form */}
                   <form onSubmit={handleSubmitMpesa} className="space-y-6">
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 px-1">Selected Plan</label>
                         <input
@@ -758,7 +758,7 @@ export default function Billing({ school }: { school: School | null }) {
         </div>
       </div>
 
-      <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm p-8 mt-8">
+      <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm p-4 md:p-8 mt-8">
         <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
           <Clock className="h-5 w-5 text-primary" />
           Recent Payment Submissions
@@ -766,7 +766,7 @@ export default function Billing({ school }: { school: School | null }) {
         
         {submissions.length > 0 ? (
           <div className="overflow-x-auto">
-            <table className="w-full text-left">
+            <table className="min-w-[700px] w-full text-left">
               <thead>
                 <tr className="text-[10px] font-black text-gray-400 uppercase tracking-widest border-b border-gray-50">
                   <th className="px-4 py-3">Date</th>
@@ -817,7 +817,7 @@ export default function Billing({ school }: { school: School | null }) {
             </table>
           </div>
         ) : (
-          <div className="text-center py-8 text-gray-400">
+          <div className="text-center py-4 md:py-8 text-gray-400">
             <p className="text-sm font-medium">No previous payment submissions found.</p>
           </div>
         )}
@@ -827,8 +827,8 @@ export default function Billing({ school }: { school: School | null }) {
 
     {viewReceipt && (
       <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200 cursor-auto">
-        <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
-          <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+        <div className="bg-white rounded-[2.5rem] shadow-2xl w-[calc(100%-2rem)] md:w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
+          <div className="p-4 md:p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
             <div>
               <h2 className="text-xl font-black text-gray-900">Payment Receipt</h2>
               <p className="text-xs text-gray-500 uppercase tracking-widest font-bold mt-1">RCT-{viewReceipt.mpesaConfirmationCode}</p>
@@ -852,7 +852,7 @@ export default function Billing({ school }: { school: School | null }) {
           
           <div className="p-10 overflow-y-auto">
             {/* Modal Receipt Content */}
-            <div className="border border-gray-100 rounded-2xl p-8 bg-white shadow-sm">
+            <div className="border border-gray-100 rounded-2xl p-4 md:p-8 bg-white shadow-sm">
               <div className="flex justify-between items-start mb-8 pb-8 border-b border-gray-100">
                 <div className="flex items-center gap-4">
                   {systemBranding?.logo ? (
@@ -869,13 +869,13 @@ export default function Billing({ school }: { school: School | null }) {
                   </div>
                 </div>
                 <div className="text-right">
-                  <h3 className="text-2xl font-black text-maroon uppercase tracking-tight">Receipt</h3>
+                  <h3 className="text-xl md:text-2xl font-black text-maroon uppercase tracking-tight">Receipt</h3>
                   <p className="text-sm font-bold text-gray-900 mt-2">Date: {new Date(viewReceipt.submittedAt).toLocaleDateString()}</p>
                   <p className="text-sm font-bold text-green-600 uppercase tracking-widest">Paid</p>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-8 mb-8 pb-8 border-b border-gray-100">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 mb-8 pb-8 border-b border-gray-100">
                 <div>
                   <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Billed To</h4>
                   <p className="text-sm font-bold text-gray-900">{school?.name}</p>
@@ -890,7 +890,7 @@ export default function Billing({ school }: { school: School | null }) {
                 </div>
               </div>
 
-              <table className="w-full text-left mb-8">
+              <table className="min-w-[700px] w-full text-left mb-8">
                 <thead>
                   <tr className="border-b border-gray-100">
                     <th className="py-3 text-[10px] font-black text-gray-400 uppercase tracking-widest">Description</th>

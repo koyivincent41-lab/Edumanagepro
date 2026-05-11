@@ -133,7 +133,7 @@ export default function Employees({ school }: { school: School | null }) {
   return (
     <div className="space-y-4 lg:space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-        <h1 className="text-xl lg:text-2xl font-bold text-gray-900">Employees</h1>
+        <h1 className="text-xl lg:text-xl md:text-2xl font-bold text-gray-900">Employees</h1>
         <div className="flex flex-wrap gap-2 w-full sm:w-auto">
           <button 
             onClick={handleBackfillStaffIds}
@@ -181,8 +181,8 @@ export default function Employees({ school }: { school: School | null }) {
       {/* Delete Confirmation Modal */}
       {employeeToDelete && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200">
-            <div className="p-6 text-center">
+          <div className="bg-white rounded-3xl shadow-2xl w-[calc(100%-2rem)] md:w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div className="p-4 md:p-6 text-center">
               <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
                 <AlertTriangle className="w-8 h-8 text-red-600" />
               </div>
@@ -219,7 +219,7 @@ export default function Employees({ school }: { school: School | null }) {
       )}
       
       {loading ? (
-        <div className="flex justify-center p-8"><Loader2 className="animate-spin" /></div>
+        <div className="flex justify-center p-4 md:p-8"><Loader2 className="animate-spin" /></div>
       ) : (
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
           <div className="overflow-x-auto">

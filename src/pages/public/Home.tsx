@@ -120,7 +120,7 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-b from-white via-white/90 to-white dark:from-gray-950 dark:via-gray-950/90 dark:to-gray-950"></div>
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-4 md:px-6 lg:px-4 md:px-8 text-center relative">
           {/* Scrolling Text Section */}
           <div className="max-w-5xl mx-auto mb-8 overflow-hidden rounded-full bg-gradient-to-r from-gray-900 via-[#800000] to-gray-900 py-3 shadow-2xl border border-white/10 relative flex items-center">
             <div className="animate-scroll flex whitespace-nowrap">
@@ -143,7 +143,7 @@ export default function Home() {
             <Zap className="h-4 w-4" />
             <span>The #1 School Management SaaS</span>
           </div>
-          <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-gray-900 dark:text-white mb-6 leading-[1.1]">
+          <h1 className="text-3xl md:text-4xl md:text-6xl font-black tracking-tighter text-gray-900 dark:text-white mb-6 leading-[1.1]">
             Manage Your School <br />
             <span className="text-primary">With Confidence.</span>
           </h1>
@@ -151,7 +151,7 @@ export default function Home() {
             EduManagePro is the modern, stable, and scalable platform for schools to manage 
             operations, fee invoicing, and student records in one place.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6">
             <Link
               to="/register"
               className="w-full sm:w-auto px-10 py-5 bg-primary text-white font-black rounded-2xl shadow-2xl shadow-primary/40 hover:scale-105 transition-all flex items-center justify-center gap-3 uppercase tracking-wider text-sm"
@@ -171,12 +171,12 @@ export default function Home() {
 
       {/* Widgets Section */}
       <section className="py-16 bg-gray-50 dark:bg-gray-950 border-b border-gray-100 dark:border-gray-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-4 md:px-6 lg:px-4 md:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8">
             {/* Left Column: Clock, Date, Weather */}
             <div className="lg:col-span-1 space-y-8">
                {/* Clock & Date Card */}
-               <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col items-center justify-center text-center hover:shadow-xl transition-shadow duration-300">
+               <div className="bg-white dark:bg-gray-900 p-4 md:p-8 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col items-center justify-center text-center hover:shadow-xl transition-shadow duration-300">
                   <Clock className="h-8 w-8 text-[#800000] mb-4" />
                   <div className="text-5xl font-black text-gray-900 dark:text-white tracking-tighter mb-2">
                     {time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
@@ -187,12 +187,12 @@ export default function Home() {
                </div>
                
                {/* Weather Card */}
-               <div className="bg-gradient-to-br from-gray-900 to-gray-800 p-8 rounded-3xl shadow-sm text-white hover:shadow-xl transition-shadow duration-300">
+               <div className="bg-gradient-to-br from-gray-900 to-gray-800 p-4 md:p-8 rounded-3xl shadow-sm text-white hover:shadow-xl transition-shadow duration-300">
                   <h3 className="text-lg font-bold mb-4 flex items-center gap-2 text-gray-300">
                     <Cloud className="h-5 w-5" /> Local Weather
                   </h3>
                   {weather ? (
-                     <div className="flex items-center justify-between">
+                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
                         <div>
                            <div className="text-5xl font-black tracking-tighter">{Math.round(weather.current.temperature_2m)}°C</div>
                            <div className="text-gray-400 text-sm mt-1 font-medium">Current Temperature</div>
@@ -229,11 +229,11 @@ export default function Home() {
 
       {/* Clients Section */}
       <section className="py-16 bg-white dark:bg-gray-950 border-b border-gray-100 dark:border-gray-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-4 md:px-6 lg:px-4 md:px-8">
           <p className="text-center text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-8">
             Trusted by Leading Schools
           </p>
-          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 transition-all duration-500">
+          <div className="flex flex-wrap justify-center items-center gap-4 md:gap-8 md:gap-16 transition-all duration-500">
             {['Lakewood Junior Academy', 'Pharo', 'Riviera', 'Green Hills', 'Crown Hill'].map((client, i) => (
               <div key={i} className="flex items-center gap-2">
                 <ShieldCheck className="h-6 w-6 text-gray-400 dark:text-gray-600" />
@@ -247,9 +247,9 @@ export default function Home() {
       {/* Features Section */}
       <section className="py-32 bg-gray-50 dark:bg-gray-900 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-1 bg-striped-primary opacity-20"></div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-4 md:px-6 lg:px-4 md:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-black text-gray-900 dark:text-white mb-4 tracking-tight">Everything You Need to Run Your School</h2>
+            <h2 className="text-xl md:text-3xl font-black text-gray-900 dark:text-white mb-4 tracking-tight">Everything You Need to Run Your School</h2>
             <p className="text-sm text-gray-500 dark:text-gray-400 max-w-xl mx-auto font-medium">Powerful features designed to simplify administration and improve efficiency.</p>
           </div>
 
@@ -275,7 +275,7 @@ export default function Home() {
                 <div className="w-16 h-16 bg-primary/10 rounded-3xl flex items-center justify-center mb-8 group-hover:bg-primary group-hover:rotate-12 transition-all duration-500">
                   <feature.icon className="h-8 w-8 text-primary group-hover:text-white transition-colors" />
                 </div>
-                <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-4 tracking-tight">{feature.title}</h3>
+                <h3 className="text-xl md:text-2xl font-black text-gray-900 dark:text-white mb-4 tracking-tight">{feature.title}</h3>
                 <p className="text-gray-500 dark:text-gray-400 leading-relaxed font-medium">{feature.desc}</p>
               </div>
             ))}
@@ -285,9 +285,9 @@ export default function Home() {
 
       {/* FAQ Section */}
       <section className="py-32 bg-white dark:bg-gray-950 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-4 md:px-6 lg:px-4 md:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-black text-gray-900 dark:text-white mb-4 tracking-tight">Frequently Asked Questions</h2>
+            <h2 className="text-xl md:text-3xl font-black text-gray-900 dark:text-white mb-4 tracking-tight">Frequently Asked Questions</h2>
             <p className="text-sm text-gray-500 dark:text-gray-400 max-w-xl mx-auto font-medium">Learn how EduManagePro can transform your school's daily operations.</p>
           </div>
 
@@ -340,7 +340,7 @@ export default function Home() {
               >
                 <button
                   onClick={() => setOpenFaqIndex(openFaqIndex === i ? null : i)}
-                  className="w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none"
+                  className="w-full px-4 md:px-6 py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 text-left focus:outline-none"
                 >
                   <span className="text-lg font-bold text-gray-900 dark:text-white pr-4">{faq.q}</span>
                   <div className={`p-2 rounded-full transition-colors shrink-0 ${openFaqIndex === i ? 'bg-primary text-white' : 'bg-gray-200 dark:bg-gray-800 text-gray-600 dark:text-gray-400'}`}>
@@ -352,7 +352,7 @@ export default function Home() {
                     openFaqIndex === i ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
                   }`}
                 >
-                  <p className="px-6 pb-6 text-gray-600 dark:text-gray-400 leading-relaxed font-medium">
+                  <p className="px-4 md:px-6 pb-6 text-gray-600 dark:text-gray-400 leading-relaxed font-medium">
                     {faq.a}
                   </p>
                 </div>
@@ -364,13 +364,13 @@ export default function Home() {
 
       {/* Testimonials Section */}
       <section className="py-32 bg-gray-50 dark:bg-gray-900 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-4 md:px-6 lg:px-4 md:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-black text-gray-900 dark:text-white mb-4 tracking-tight">What Our Satisfied Customers Say</h2>
+            <h2 className="text-xl md:text-3xl font-black text-gray-900 dark:text-white mb-4 tracking-tight">What Our Satisfied Customers Say</h2>
             <p className="text-sm text-gray-500 dark:text-gray-400 max-w-xl mx-auto font-medium">Hear from the schools that have transformed their operations with EduManagePro.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
             {[
               {
                 name: "Sarah Johnson",
@@ -388,7 +388,7 @@ export default function Home() {
                 text: "Managing payroll and expenses has never been easier. The automated reports save us hours of work every single week.",
               }
             ].map((testimonial, i) => (
-              <div key={i} className="bg-white dark:bg-gray-950 p-8 rounded-[2.5rem] border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-xl transition-all duration-300">
+              <div key={i} className="bg-white dark:bg-gray-950 p-4 md:p-8 rounded-[2.5rem] border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-xl transition-all duration-300">
                 <div className="flex items-center gap-1 mb-6">
                   {[...Array(5)].map((_, i) => (
                     <span key={i} className="text-yellow-400 text-lg">★</span>

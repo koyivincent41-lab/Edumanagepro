@@ -62,16 +62,16 @@ export default function Settings({ schoolId, school }: Props) {
           <SettingsIcon className="h-6 w-6" />
         </div>
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Payroll Settings</h2>
+          <h2 className="text-xl md:text-2xl font-bold text-gray-900">Payroll Settings</h2>
           <p className="text-gray-500">Configure statutory details and payroll preferences</p>
         </div>
       </div>
 
       <form onSubmit={handleSave} className="space-y-8">
-        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-6">
+        <div className="bg-white p-4 md:p-6 rounded-2xl border border-gray-100 shadow-sm space-y-6">
           <h3 className="text-lg font-bold text-gray-900 border-b border-gray-100 pb-4">Statutory Information</h3>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-1">Tax PIN (KRA)</label>
               <input
@@ -103,10 +103,10 @@ export default function Settings({ schoolId, school }: Props) {
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-6">
+        <div className="bg-white p-4 md:p-6 rounded-2xl border border-gray-100 shadow-sm space-y-6">
           <h3 className="text-lg font-bold text-gray-900 border-b border-gray-100 pb-4">Payroll Preferences</h3>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-1">Default Pay Date</label>
               <div className="flex items-center gap-2">
@@ -141,7 +141,7 @@ export default function Settings({ schoolId, school }: Props) {
           <button
             type="submit"
             disabled={saving}
-            className="flex items-center gap-2 px-8 py-3 bg-primary text-white rounded-xl hover:bg-primary/90 transition-colors font-bold"
+            className="flex items-center gap-2 px-4 md:px-8 py-3 bg-primary text-white rounded-xl hover:bg-primary/90 transition-colors font-bold"
           >
             {saving ? (
               <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>

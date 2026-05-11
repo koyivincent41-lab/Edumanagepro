@@ -141,12 +141,12 @@ export default function LearnerAttendanceParent({ profile }: { profile: UserProf
 
   return (
     <ParentLayout profile={profile}>
-      <div className="mb-8 p-6 rounded-[2.5rem] shadow-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
-        <h1 className="text-2xl font-black">Attendance Overview</h1>
+      <div className="mb-8 p-4 md:p-6 rounded-[2.5rem] shadow-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+        <h1 className="text-xl md:text-2xl font-black">Attendance Overview</h1>
         <p className="text-sm text-white/80 font-medium tracking-wide mt-1">Monitor your child's attendance analytics.</p>
       </div>
 
-      <div className="bg-white dark:bg-gray-900 p-6 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm mb-8">
+      <div className="bg-white dark:bg-gray-900 p-4 md:p-6 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm mb-8">
         <h2 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">Select Child</h2>
         <div className="flex flex-wrap gap-4">
             {children.map(child => (
@@ -175,39 +175,39 @@ export default function LearnerAttendanceParent({ profile }: { profile: UserProf
       ) : (
           selectedChild && (
             <div className="space-y-8 animate-in fade-in duration-500">
-               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
                  {/* Weekly */}
-                 <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col items-center justify-center text-center">
+                 <div className="bg-white dark:bg-gray-900 p-4 md:p-8 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col items-center justify-center text-center">
                     <div className="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center mb-4">
                         <Calendar className="h-8 w-8 text-blue-600" />
                     </div>
                     <h3 className="text-sm font-black uppercase tracking-widest text-gray-400 mb-2">Weekly Attendance</h3>
-                    <div className="text-4xl font-black text-gray-900 dark:text-white mb-2">{weeklyPercent.toFixed(1)}%</div>
+                    <div className="text-3xl md:text-4xl font-black text-gray-900 dark:text-white mb-2">{weeklyPercent.toFixed(1)}%</div>
                     <p className="text-xs text-gray-500 font-bold">Based on last 7 days</p>
                  </div>
 
                  {/* Monthly */}
-                 <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col items-center justify-center text-center">
+                 <div className="bg-white dark:bg-gray-900 p-4 md:p-8 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col items-center justify-center text-center">
                     <div className="w-16 h-16 rounded-full bg-indigo-50 flex items-center justify-center mb-4">
                         <FileText className="h-8 w-8 text-indigo-600" />
                     </div>
                     <h3 className="text-sm font-black uppercase tracking-widest text-gray-400 mb-2">Monthly Attendance</h3>
-                    <div className="text-4xl font-black text-gray-900 dark:text-white mb-2">{monthlyPercent.toFixed(1)}%</div>
+                    <div className="text-3xl md:text-4xl font-black text-gray-900 dark:text-white mb-2">{monthlyPercent.toFixed(1)}%</div>
                     <p className="text-xs text-gray-500 font-bold">Based on last 30 days</p>
                  </div>
 
                  {/* Term */}
-                 <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col items-center justify-center text-center">
+                 <div className="bg-white dark:bg-gray-900 p-4 md:p-8 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col items-center justify-center text-center">
                     <div className="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center mb-4">
                         <CheckCircle2 className="h-8 w-8 text-green-600" />
                     </div>
                     <h3 className="text-sm font-black uppercase tracking-widest text-gray-400 mb-2">Term Attendance</h3>
-                    <div className="text-4xl font-black text-gray-900 dark:text-white mb-2">{termPercent.toFixed(1)}%</div>
+                    <div className="text-3xl md:text-4xl font-black text-gray-900 dark:text-white mb-2">{termPercent.toFixed(1)}%</div>
                     <p className="text-xs text-gray-500 font-bold">Current active term</p>
                  </div>
                </div>
 
-               <div className="bg-white dark:bg-gray-900 p-6 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm">
+               <div className="bg-white dark:bg-gray-900 p-4 md:p-6 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm">
                    <h2 className="text-lg font-black text-gray-900 dark:text-white mb-6">Recent Records</h2>
                    {attendanceRecords.length === 0 ? (
                        <div className="flex flex-col items-center justify-center py-12 text-center">
@@ -228,7 +228,7 @@ export default function LearnerAttendanceParent({ profile }: { profile: UserProf
                                const [y,m,d] = r.date.split('-').map(Number);
                                const displayDate = new Date(y, m-1, d).toLocaleDateString();
                                return (
-                               <div key={i} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-800 rounded-2xl">
+                               <div key={i} className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 p-4 bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-800 rounded-2xl">
                                    <div>
                                        <div className="font-bold text-gray-900 dark:text-white">{r.dayOfWeek}, {displayDate}</div>
                                        <div className="text-xs text-gray-500 mt-1 uppercase tracking-widest font-black">{r.session} Session</div>

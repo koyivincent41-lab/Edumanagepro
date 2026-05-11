@@ -100,7 +100,7 @@ export default function Rooms({ schoolId }: { schoolId: string }) {
   const getHostelName = (id: string) => hostels.find(h => h.id === id)?.name || 'Unknown Hostel';
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 md:p-6 space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-lg font-bold text-gray-900">Rooms</h2>
         <button
@@ -176,7 +176,7 @@ export default function Rooms({ schoolId }: { schoolId: string }) {
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md overflow-hidden">
+          <div className="bg-white rounded-2xl w-[calc(100%-2rem)] md:w-full max-w-md overflow-hidden">
             <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
               <h3 className="font-bold text-gray-900">
                 {editingRoom ? 'Edit Room' : 'Add Room'}
@@ -186,7 +186,7 @@ export default function Rooms({ schoolId }: { schoolId: string }) {
               </button>
             </div>
             
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
+            <form onSubmit={handleSubmit} className="p-4 md:p-6 space-y-4">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1">Hostel</label>
                 <select required value={formData.hostelId} onChange={e => setFormData({...formData, hostelId: e.target.value})} className="w-full p-3 border border-gray-200 rounded-xl outline-none focus:border-primary">
@@ -202,7 +202,7 @@ export default function Rooms({ schoolId }: { schoolId: string }) {
                 <input required value={formData.roomNumber} onChange={e => setFormData({...formData, roomNumber: e.target.value})} className="w-full p-3 border border-gray-200 rounded-xl outline-none focus:border-primary" placeholder="e.g. 101, Ground-A" />
               </div>
               
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1">Room Type</label>
                   <input required value={formData.type} onChange={e => setFormData({...formData, type: e.target.value})} className="w-full p-3 border border-gray-200 rounded-xl outline-none focus:border-primary" placeholder="e.g. 2-Seater" />
@@ -233,7 +233,7 @@ export default function Rooms({ schoolId }: { schoolId: string }) {
 
       {roomToDelete && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md overflow-hidden p-6 text-center">
+          <div className="bg-white rounded-2xl w-[calc(100%-2rem)] md:w-full max-w-md overflow-hidden p-4 md:p-6 text-center">
             <div className="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
               <Trash2 className="w-8 h-8" />
             </div>

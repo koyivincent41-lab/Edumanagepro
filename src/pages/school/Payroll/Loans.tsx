@@ -181,22 +181,22 @@ export default function Loans({ schoolId, school }: Props) {
 
       <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
-          <table className="w-full text-sm text-left">
+          <table className="min-w-[700px] w-full text-sm text-left">
             <thead className="text-xs text-gray-500 uppercase bg-gray-50">
               <tr>
-                <th className="px-6 py-4 font-bold">Employee</th>
-                <th className="px-6 py-4 font-bold">Type</th>
-                <th className="px-6 py-4 font-bold">Amount</th>
-                <th className="px-6 py-4 font-bold">Balance</th>
-                <th className="px-6 py-4 font-bold">Monthly Ded.</th>
-                <th className="px-6 py-4 font-bold">Status</th>
-                <th className="px-6 py-4 font-bold text-right">Actions</th>
+                <th className="px-4 md:px-6 py-4 font-bold">Employee</th>
+                <th className="px-4 md:px-6 py-4 font-bold">Type</th>
+                <th className="px-4 md:px-6 py-4 font-bold">Amount</th>
+                <th className="px-4 md:px-6 py-4 font-bold">Balance</th>
+                <th className="px-4 md:px-6 py-4 font-bold">Monthly Ded.</th>
+                <th className="px-4 md:px-6 py-4 font-bold">Status</th>
+                <th className="px-4 md:px-6 py-4 font-bold text-right">Actions</th>
               </tr>
             </thead>
             <tbody>
               {loans.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-8 text-center text-gray-500">
+                  <td colSpan={7} className="px-4 md:px-6 py-4 md:py-8 text-center text-gray-500">
                     No loans or advances found.
                   </td>
                 </tr>
@@ -205,12 +205,12 @@ export default function Loans({ schoolId, school }: Props) {
                   const emp = employees.find(e => e.id === loan.employeeId);
                   return (
                     <tr key={loan.id} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
-                      <td className="px-6 py-4 font-bold text-gray-900">{emp?.fullName || 'Unknown'}</td>
-                      <td className="px-6 py-4 capitalize">{loan.type}</td>
-                      <td className="px-6 py-4 font-medium">{school?.currency} {loan.amount.toLocaleString()}</td>
-                      <td className="px-6 py-4 font-bold text-primary">{school?.currency} {(loan.remainingBalance || 0).toLocaleString()}</td>
-                      <td className="px-6 py-4 text-red-600">-{school?.currency} {loan.monthlyDeduction.toLocaleString()}</td>
-                      <td className="px-6 py-4">
+                      <td className="px-4 md:px-6 py-4 font-bold text-gray-900">{emp?.fullName || 'Unknown'}</td>
+                      <td className="px-4 md:px-6 py-4 capitalize">{loan.type}</td>
+                      <td className="px-4 md:px-6 py-4 font-medium">{school?.currency} {loan.amount.toLocaleString()}</td>
+                      <td className="px-4 md:px-6 py-4 font-bold text-primary">{school?.currency} {(loan.remainingBalance || 0).toLocaleString()}</td>
+                      <td className="px-4 md:px-6 py-4 text-red-600">-{school?.currency} {loan.monthlyDeduction.toLocaleString()}</td>
+                      <td className="px-4 md:px-6 py-4">
                         <span className={`px-2.5 py-1 text-xs font-bold rounded-full ${
                           loan.status === 'approved' ? 'bg-green-100 text-green-700' : 
                           loan.status === 'rejected' ? 'bg-red-100 text-red-700' : 
@@ -220,7 +220,7 @@ export default function Loans({ schoolId, school }: Props) {
                           {(loan.status || 'pending').toUpperCase()}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-right">
+                      <td className="px-4 md:px-6 py-4 text-right">
                         <div className="flex items-center justify-end gap-2">
                           {loan.status === 'pending' && (
                             <>
@@ -261,8 +261,8 @@ export default function Loans({ schoolId, school }: Props) {
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md overflow-hidden shadow-2xl">
-            <div className="flex justify-between items-center p-6 border-b border-gray-100">
+          <div className="bg-white rounded-2xl w-[calc(100%-2rem)] md:w-full max-w-md overflow-hidden shadow-2xl">
+            <div className="flex justify-between items-center p-4 md:p-6 border-b border-gray-100">
               <h2 className="text-xl font-bold text-gray-900">
                 {editingLoan ? 'Edit Request' : 'New Loan/Advance Request'}
               </h2>
@@ -271,7 +271,7 @@ export default function Loans({ schoolId, school }: Props) {
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
+            <form onSubmit={handleSubmit} className="p-4 md:p-6 space-y-4">
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-1">Employee</label>
                 <select
@@ -287,7 +287,7 @@ export default function Loans({ schoolId, school }: Props) {
                 </select>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-1">Type</label>
                   <select
@@ -316,7 +316,7 @@ export default function Loans({ schoolId, school }: Props) {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-1">Amount ({school?.currency})</label>
                   <input
@@ -341,7 +341,7 @@ export default function Loans({ schoolId, school }: Props) {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-1">Repayment Start Month</label>
                   <select
@@ -374,7 +374,7 @@ export default function Loans({ schoolId, school }: Props) {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-1">Repayment Months</label>
                   <input
@@ -407,7 +407,7 @@ export default function Loans({ schoolId, school }: Props) {
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2 bg-primary text-white rounded-xl hover:bg-primary/90 font-bold transition-colors"
+                  className="px-4 md:px-6 py-2 bg-primary text-white rounded-xl hover:bg-primary/90 font-bold transition-colors"
                 >
                   {editingLoan ? 'Update' : 'Save'}
                 </button>

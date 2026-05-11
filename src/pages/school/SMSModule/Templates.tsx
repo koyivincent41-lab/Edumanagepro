@@ -75,7 +75,7 @@ export default function Templates({ schoolId }: { schoolId: string }) {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 md:p-6 space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-lg font-bold text-gray-900">Message Templates</h2>
         <button
@@ -99,7 +99,7 @@ export default function Templates({ schoolId }: { schoolId: string }) {
           <p className="text-gray-500">No templates added yet.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {templates.map(t => (
             <div key={t.id} className="bg-white border text-left border-gray-100 rounded-xl shadow-sm p-4 relative overflow-hidden group">
               <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -130,7 +130,7 @@ export default function Templates({ schoolId }: { schoolId: string }) {
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md overflow-hidden">
+          <div className="bg-white rounded-2xl w-[calc(100%-2rem)] md:w-full max-w-md overflow-hidden">
             <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
               <h3 className="font-bold text-gray-900">
                 {editingTemplate ? 'Edit Template' : 'Add Template'}
@@ -140,7 +140,7 @@ export default function Templates({ schoolId }: { schoolId: string }) {
               </button>
             </div>
             
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
+            <form onSubmit={handleSubmit} className="p-4 md:p-6 space-y-4">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1">Title</label>
                 <input required value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="w-full p-3 border border-gray-200 rounded-xl outline-none focus:border-primary" placeholder="e.g. Fee Reminder" />

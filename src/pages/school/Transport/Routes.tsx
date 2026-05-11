@@ -114,7 +114,7 @@ export default function RoutesPage({ schoolId, school }: { schoolId: string; sch
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 md:p-6 space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-lg font-bold text-gray-900">Transport Routes</h2>
         <button
@@ -138,7 +138,7 @@ export default function RoutesPage({ schoolId, school }: { schoolId: string; sch
           <p className="text-gray-500">No routes added yet.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           {routes.map(r => (
             <div key={r.id} className="bg-white border text-left border-gray-100 rounded-xl shadow-sm overflow-hidden group">
               <div className="p-4 border-b border-gray-50 flex justify-between items-start">
@@ -198,15 +198,15 @@ export default function RoutesPage({ schoolId, school }: { schoolId: string; sch
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-xl overflow-hidden max-h-[90vh] flex flex-col">
-            <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50 shrink-0">
+          <div className="bg-white rounded-2xl w-[calc(100%-2rem)] md:w-full max-w-xl overflow-hidden max-h-[90vh] flex flex-col">
+            <div className="p-4 md:p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50 shrink-0">
               <h2 className="text-lg font-black text-gray-900">{editingRoute ? 'Edit Route' : 'Add Route'}</h2>
               <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600">
                 <span>✕</span>
               </button>
             </div>
             
-            <form onSubmit={handleSubmit} className="p-6 space-y-4 overflow-y-auto">
+            <form onSubmit={handleSubmit} className="p-4 md:p-6 space-y-4 overflow-y-auto">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1">Route Name</label>
                 <input required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full p-3 border border-gray-200 rounded-xl outline-none focus:border-primary" placeholder="e.g. Route A - North" />
@@ -215,7 +215,7 @@ export default function RoutesPage({ schoolId, school }: { schoolId: string; sch
                 <label className="block text-sm font-semibold text-gray-700 mb-1">Description (Optional)</label>
                 <textarea value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full p-3 border border-gray-200 rounded-xl outline-none focus:border-primary" rows={2} />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1">Assign Vehicle</label>
                   <select value={formData.vehicleId} onChange={e => setFormData({...formData, vehicleId: e.target.value})} className="w-full p-3 border border-gray-200 rounded-xl outline-none focus:border-primary">

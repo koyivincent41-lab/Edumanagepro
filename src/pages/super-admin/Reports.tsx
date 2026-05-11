@@ -156,7 +156,7 @@ export default function Reports() {
 
   return (
     <div className="space-y-8 pb-12">
-      <div className="bg-school-gradient p-6 rounded-[2.5rem] shadow-lg shadow-maroon/20">
+      <div className="bg-school-gradient p-4 md:p-6 rounded-[2.5rem] shadow-lg shadow-maroon/20">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             {systemBranding?.companyLogo ? (
@@ -167,7 +167,7 @@ export default function Reports() {
               </div>
             )}
             <div>
-              <h1 className="text-2xl font-black text-white">System Reports</h1>
+              <h1 className="text-xl md:text-2xl font-black text-white">System Reports</h1>
               <p className="text-sm text-white/80 font-medium tracking-wide">Comprehensive analytics and performance metrics.</p>
             </div>
           </div>
@@ -186,30 +186,30 @@ export default function Reports() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         {[
           { label: 'Total Schools', value: stats.totalSchools, icon: School, color: 'text-blue-600', bg: 'bg-blue-50' },
           { label: 'Active Subs', value: stats.activeSubscriptions, icon: CreditCard, color: 'text-green-600', bg: 'bg-green-50' },
           { label: 'Total Revenue', value: `${systemBranding?.currency || 'UGX'} ${stats.totalRevenue.toLocaleString(undefined, { maximumFractionDigits: 0 })}`, icon: TrendingUp, color: 'text-maroon', bg: 'bg-maroon/5' },
           { label: 'New Signups', value: stats.newSignupsThisMonth, icon: Users, color: 'text-purple-600', bg: 'bg-purple-50' },
         ].map((stat, i) => (
-          <div key={i} className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-md transition-all group">
-            <div className="flex items-center justify-between mb-4">
+          <div key={i} className="bg-white p-4 md:p-6 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-md transition-all group">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 mb-4">
               <div className={`p-3 rounded-2xl ${stat.bg} ${stat.color} group-hover:scale-110 transition-transform`}>
                 <stat.icon className="h-6 w-6" />
               </div>
               <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Live</span>
             </div>
             <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">{stat.label}</p>
-            <h3 className="text-2xl font-black text-gray-900">{stat.value}</h3>
+            <h3 className="text-xl md:text-2xl font-black text-gray-900">{stat.value}</h3>
           </div>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8">
         {/* Revenue Chart */}
-        <div className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm">
-          <div className="flex items-center justify-between mb-8">
+        <div className="bg-white p-4 md:p-8 rounded-[2.5rem] border border-gray-100 shadow-sm">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 mb-8">
             <div>
               <h3 className="text-lg font-bold text-gray-900">Revenue Growth</h3>
               <p className="text-xs text-gray-500">Monthly revenue trends for the current year.</p>
@@ -255,8 +255,8 @@ export default function Reports() {
         </div>
 
         {/* Package Distribution */}
-        <div className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm">
-          <div className="flex items-center justify-between mb-8">
+        <div className="bg-white p-4 md:p-8 rounded-[2.5rem] border border-gray-100 shadow-sm">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 mb-8">
             <div>
               <h3 className="text-lg font-bold text-gray-900">Package Distribution</h3>
               <p className="text-xs text-gray-500">Breakdown of schools by subscription plan.</p>
@@ -299,25 +299,25 @@ export default function Reports() {
 
       {/* Recent Activity Table */}
       <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden">
-        <div className="p-8 border-b border-gray-50 flex items-center justify-between">
+        <div className="p-4 md:p-8 border-b border-gray-50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
           <h3 className="text-lg font-bold text-gray-900">Recent Subscription Activity</h3>
           <button className="text-xs font-bold text-primary hover:underline">View All Activity</button>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="min-w-[700px] w-full">
             <thead>
               <tr className="bg-gray-50/50">
-                <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">School</th>
-                <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Action</th>
-                <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Amount</th>
-                <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Date</th>
-                <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Status</th>
+                <th className="px-4 md:px-8 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">School</th>
+                <th className="px-4 md:px-8 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Action</th>
+                <th className="px-4 md:px-8 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Amount</th>
+                <th className="px-4 md:px-8 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Date</th>
+                <th className="px-4 md:px-8 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Status</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
               {recentActivity.map((activity) => (
                 <tr key={activity.id || activity.name} className="hover:bg-gray-50/50 transition-colors">
-                  <td className="px-8 py-4">
+                  <td className="px-4 md:px-8 py-4">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center text-primary font-bold text-xs uppercase">
                         {activity.name?.charAt(0) || 'S'}
@@ -325,8 +325,8 @@ export default function Reports() {
                       <span className="text-sm font-bold text-gray-900">{activity.name}</span>
                     </div>
                   </td>
-                  <td className="px-8 py-4 text-sm text-gray-600 capitalize">Subscription - {activity.packageId || 'N/A'}</td>
-                  <td className="px-8 py-4 text-sm font-black text-gray-900">
+                  <td className="px-4 md:px-8 py-4 text-sm text-gray-600 capitalize">Subscription - {activity.packageId || 'N/A'}</td>
+                  <td className="px-4 md:px-8 py-4 text-sm font-black text-gray-900">
                     {systemBranding?.currency || 'UGX'}{" "}
                     {(() => {
                       const pkg = packages.find((p: any) => p.id === activity.packageId);
@@ -350,8 +350,8 @@ export default function Reports() {
                       return Math.round(priceUSD * targetRate).toLocaleString();
                     })()}
                   </td>
-                  <td className="px-8 py-4 text-sm text-gray-500">{new Date(activity.createdAt).toLocaleDateString()}</td>
-                  <td className="px-8 py-4">
+                  <td className="px-4 md:px-8 py-4 text-sm text-gray-500">{new Date(activity.createdAt).toLocaleDateString()}</td>
+                  <td className="px-4 md:px-8 py-4">
                     <span className={`px-3 py-1 text-[10px] font-black rounded-full uppercase tracking-widest ${
                       activity.subscriptionStatus === 'active' ? 'bg-green-100 text-green-700' :
                       activity.subscriptionStatus === 'trial' ? 'bg-blue-100 text-blue-700' :
@@ -364,7 +364,7 @@ export default function Reports() {
               ))}
               {recentActivity.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="px-8 py-8 text-center text-gray-500 font-medium">No recent subscriptions found.</td>
+                  <td colSpan={5} className="px-4 md:px-8 py-4 md:py-8 text-center text-gray-500 font-medium">No recent subscriptions found.</td>
                 </tr>
               )}
             </tbody>

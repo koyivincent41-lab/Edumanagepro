@@ -350,7 +350,7 @@ export default function EmployeeRegistrationForm({ school, employee, onClose, on
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl p-6 max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-xl w-[calc(100%-2rem)] md:w-full max-w-2xl p-4 md:p-6 max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-bold">Register New Employee</h2>
           <button onClick={onClose}><X className="w-6 h-6" /></button>

@@ -168,7 +168,7 @@ export default function SubjectForm({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+      <div className="bg-white rounded-2xl shadow-xl w-[calc(100%-2rem)] md:w-full max-w-md p-4 md:p-6">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-bold">{subject ? 'Edit' : 'Add'} Subject</h2>
           <button onClick={onClose}><X className="w-6 h-6" /></button>
@@ -259,7 +259,7 @@ export default function SubjectForm({
             <button type="button" onClick={onClose} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">
               Cancel
             </button>
-            <button type="submit" disabled={loading} className="px-6 py-2 bg-primary text-white rounded-lg flex items-center gap-2 disabled:opacity-50">
+            <button type="submit" disabled={loading} className="px-4 md:px-6 py-2 bg-primary text-white rounded-lg flex items-center gap-2 disabled:opacity-50">
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save Subject'}
             </button>
           </div>

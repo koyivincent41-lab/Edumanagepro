@@ -12,7 +12,7 @@ export default function ExamResults({ schoolId, school }: { schoolId: string, sc
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h1 className="text-2xl font-bold text-white">Exam Records & Reports</h1>
+        <h1 className="text-xl md:text-2xl font-bold text-white">Exam Records & Reports</h1>
       </div>
 
       {/* Tabs */}

@@ -422,7 +422,6 @@ export interface Employee {
   status: 'active' | 'inactive' | 'suspended';
   username: string;
   passwordHash: string;
-  profilePhoto?: string;
   createdAt: string;
   updatedAt: string;
 }

@@ -206,15 +206,15 @@ export default function PayrollDashboard({ schoolId, school }: Props) {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+        <div className="bg-white p-4 md:p-6 rounded-2xl border border-gray-100 shadow-sm">
           <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
             <Calendar className="h-5 w-5 text-gray-400" />
             Recent Payroll Periods
           </h3>
           <div className="space-y-4">
             {periods.slice(0, 5).map(period => (
-              <div key={period.id} className="flex items-center justify-between p-4 rounded-xl border border-gray-50 hover:bg-gray-50 transition-colors">
+              <div key={period.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 p-4 rounded-xl border border-gray-50 hover:bg-gray-50 transition-colors">
                 <div>
                   <p className="font-bold text-gray-900">{getMonthName(period.month)} {period.year}</p>
                   <p className="text-sm text-gray-500">
@@ -237,12 +237,12 @@ export default function PayrollDashboard({ schoolId, school }: Props) {
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+        <div className="bg-white p-4 md:p-6 rounded-2xl border border-gray-100 shadow-sm">
           <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
             <FileText className="h-5 w-5 text-gray-400" />
             Quick Actions
           </h3>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <button 
               onClick={() => navigate('/dashboard/employees')}
               className="p-4 rounded-xl border border-gray-100 hover:border-primary/30 hover:bg-primary/5 transition-all text-left group"

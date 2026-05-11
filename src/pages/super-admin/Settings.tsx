@@ -192,19 +192,19 @@ export default function Settings() {
         '--school-gradient': isGradient ? `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})` : primaryColor
       } as React.CSSProperties}
     >
-      <div className="bg-school-gradient p-6 rounded-[2.5rem] shadow-lg shadow-maroon/20">
-        <div className="flex items-center justify-between">
+      <div className="bg-school-gradient p-4 md:p-6 rounded-[2.5rem] shadow-lg shadow-maroon/20">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
           <div>
-            <h1 className="text-2xl font-black text-white">System Settings</h1>
+            <h1 className="text-xl md:text-2xl font-black text-white">System Settings</h1>
             <p className="text-sm text-white/80 font-medium tracking-wide">Manage your super admin account and system-wide configurations.</p>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8">
         {/* Branding & Setup Section */}
         <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden lg:col-span-2">
-          <div className="bg-school-gradient p-6 text-white">
+          <div className="bg-school-gradient p-4 md:p-6 text-white">
             <div className="flex items-center gap-4">
               <div className="p-3 bg-white/20 rounded-2xl text-white">
                 <Layers className="h-6 w-6" />
@@ -216,7 +216,7 @@ export default function Settings() {
             </div>
           </div>
 
-          <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="p-4 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
             <div className="space-y-6">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Company Name</label>
@@ -268,7 +268,7 @@ export default function Settings() {
                 </div>
                 <p className="mt-1 text-[10px] text-gray-400 italic">This currency will be used for all system-wide reports and financial displays.</p>
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Invoice Prefix</label>
                   <input
@@ -291,7 +291,7 @@ export default function Settings() {
             </div>
 
             <div className="space-y-6">
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Official Logo</label>
                   <div className="relative aspect-square bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center overflow-hidden">
@@ -363,10 +363,10 @@ export default function Settings() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:col-span-2">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8 lg:col-span-2">
         {/* Password Section */}
         <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden">
-          <div className="bg-school-gradient p-6 text-white">
+          <div className="bg-school-gradient p-4 md:p-6 text-white">
             <div className="flex items-center gap-4">
               <div className="p-3 bg-white/20 rounded-2xl text-white">
                 <Lock className="h-6 w-6" />
@@ -378,7 +378,7 @@ export default function Settings() {
             </div>
           </div>
 
-          <div className="p-8">
+          <div className="p-4 md:p-8">
             <form onSubmit={handleSubmit(onChangePassword)} className="space-y-6">
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">Current Password</label>
@@ -430,7 +430,7 @@ export default function Settings() {
       {/* System Config Section */}
         <div className="space-y-8">
           <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden">
-            <div className="bg-school-gradient p-6 text-white">
+            <div className="bg-school-gradient p-4 md:p-6 text-white">
               <div className="flex items-center gap-4">
                 <div className="p-3 bg-white/20 rounded-2xl text-white">
                   <Mail className="h-6 w-6" />
@@ -442,7 +442,7 @@ export default function Settings() {
               </div>
             </div>
 
-            <div className="p-8 space-y-6">
+            <div className="p-4 md:p-8 space-y-6">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">System Contact Email</label>
                 <input
@@ -464,7 +464,7 @@ export default function Settings() {
           </div>
 
           <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden">
-            <div className="bg-school-gradient p-6 text-white">
+            <div className="bg-school-gradient p-4 md:p-6 text-white">
               <div className="flex items-center gap-4">
                 <div className="p-3 bg-white/20 rounded-2xl text-white">
                   <Bell className="h-6 w-6" />
@@ -476,13 +476,13 @@ export default function Settings() {
               </div>
             </div>
 
-            <div className="p-8 space-y-4">
+            <div className="p-4 md:p-8 space-y-4">
               {[
                 { key: 'newSignup', label: 'New School Signup' },
                 { key: 'subscriptionExpiry', label: 'Subscription Expiry Alerts' },
                 { key: 'paymentReceived', label: 'Payment Received Notifications' },
               ].map((item) => (
-                <label key={item.key} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors">
+                <label key={item.key} className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 p-4 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors">
                   <span className="text-sm font-bold text-gray-700">{item.label}</span>
                   <input 
                     type="checkbox"
@@ -510,7 +510,7 @@ export default function Settings() {
 
           {/* Theme Settings */}
           <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden">
-            <div className="bg-school-gradient p-6 text-white">
+            <div className="bg-school-gradient p-4 md:p-6 text-white">
               <div className="flex items-center gap-4">
                 <div className="p-3 bg-white/20 rounded-2xl text-white">
                   <ShieldCheck className="h-6 w-6" />
@@ -522,7 +522,7 @@ export default function Settings() {
               </div>
             </div>
 
-            <div className="p-8 space-y-6">
+            <div className="p-4 md:p-8 space-y-6">
               <div className="space-y-2">
                 <p className="text-xs font-medium text-gray-500">Solid Colors</p>
                 <div className="flex flex-wrap gap-2">
@@ -555,7 +555,7 @@ export default function Settings() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4 pt-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
                 <div>
                   <label className="block text-xs font-medium text-gray-500 mb-1">Primary Color</label>
                   <div className="flex items-center gap-2">

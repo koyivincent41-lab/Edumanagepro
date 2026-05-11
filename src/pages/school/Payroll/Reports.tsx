@@ -121,14 +121,14 @@ export default function Reports({ schoolId, school }: Props) {
         <div className="flex gap-2">
           <button
             onClick={exportToCSV}
-            className="flex items-center gap-2 px-6 py-2 bg-white border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 transition-all font-bold text-sm"
+            className="flex items-center gap-2 px-4 md:px-6 py-2 bg-white border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 transition-all font-bold text-sm"
           >
             <Download className="h-4 w-4" />
             Export CSV
           </button>
           <button
             onClick={exportToPDF}
-            className="flex items-center gap-2 px-6 py-2 bg-primary text-white rounded-xl hover:bg-primary/90 transition-colors font-bold text-sm"
+            className="flex items-center gap-2 px-4 md:px-6 py-2 bg-primary text-white rounded-xl hover:bg-primary/90 transition-colors font-bold text-sm"
           >
             <FileText className="h-4 w-4" />
             Export PDF
@@ -137,44 +137,44 @@ export default function Reports({ schoolId, school }: Props) {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="p-6 rounded-2xl border border-gray-100 bg-white shadow-sm">
+        <div className="p-4 md:p-6 rounded-2xl border border-gray-100 bg-white shadow-sm">
           <div className="flex items-center gap-3 mb-2">
             <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
               <FileText className="h-5 w-5" />
             </div>
             <p className="text-sm font-bold text-gray-500 uppercase tracking-wider">Total Basic</p>
           </div>
-          <p className="text-2xl font-black text-gray-900">{school?.currency} {totalBasic.toLocaleString()}</p>
+          <p className="text-xl md:text-2xl font-black text-gray-900">{school?.currency} {totalBasic.toLocaleString()}</p>
         </div>
         
-        <div className="p-6 rounded-2xl border border-gray-100 bg-white shadow-sm">
+        <div className="p-4 md:p-6 rounded-2xl border border-gray-100 bg-white shadow-sm">
           <div className="flex items-center gap-3 mb-2">
             <div className="p-2 bg-green-50 text-green-600 rounded-lg">
               <BarChart3 className="h-5 w-5" />
             </div>
             <p className="text-sm font-bold text-gray-500 uppercase tracking-wider">Total Allowances</p>
           </div>
-          <p className="text-2xl font-black text-green-600">+{school?.currency} {totalAllowances.toLocaleString()}</p>
+          <p className="text-xl md:text-2xl font-black text-green-600">+{school?.currency} {totalAllowances.toLocaleString()}</p>
         </div>
 
-        <div className="p-6 rounded-2xl border border-gray-100 bg-white shadow-sm">
+        <div className="p-4 md:p-6 rounded-2xl border border-gray-100 bg-white shadow-sm">
           <div className="flex items-center gap-3 mb-2">
             <div className="p-2 bg-red-50 text-red-600 rounded-lg">
               <PieChart className="h-5 w-5" />
             </div>
             <p className="text-sm font-bold text-gray-500 uppercase tracking-wider">Total Deductions</p>
           </div>
-          <p className="text-2xl font-black text-red-600">-{school?.currency} {totalDeductions.toLocaleString()}</p>
+          <p className="text-xl md:text-2xl font-black text-red-600">-{school?.currency} {totalDeductions.toLocaleString()}</p>
         </div>
 
-        <div className="p-6 rounded-2xl border border-gray-100 bg-white shadow-sm">
+        <div className="p-4 md:p-6 rounded-2xl border border-gray-100 bg-white shadow-sm">
           <div className="flex items-center gap-3 mb-2">
             <div className="p-2 bg-primary/10 text-primary rounded-lg">
               <FileText className="h-5 w-5" />
             </div>
             <p className="text-sm font-bold text-gray-500 uppercase tracking-wider">Total Net Pay</p>
           </div>
-          <p className="text-2xl font-black text-primary">{school?.currency} {totalNet.toLocaleString()}</p>
+          <p className="text-xl md:text-2xl font-black text-primary">{school?.currency} {totalNet.toLocaleString()}</p>
         </div>
       </div>
 
@@ -183,22 +183,22 @@ export default function Reports({ schoolId, school }: Props) {
           <h3 className="font-bold text-gray-900">Payroll Summary ({entries.length} entries)</h3>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-sm text-left">
+          <table className="min-w-[700px] w-full text-sm text-left">
             <thead className="text-xs text-gray-500 uppercase bg-gray-50">
               <tr>
-                <th className="px-6 py-4 font-bold">Employee</th>
-                <th className="px-6 py-4 font-bold">Basic Salary</th>
-                <th className="px-6 py-4 font-bold">Allowances</th>
-                <th className="px-6 py-4 font-bold">Deductions</th>
-                <th className="px-6 py-4 font-bold">Gross Pay</th>
-                <th className="px-6 py-4 font-bold">Net Pay</th>
-                <th className="px-6 py-4 font-bold">Status</th>
+                <th className="px-4 md:px-6 py-4 font-bold">Employee</th>
+                <th className="px-4 md:px-6 py-4 font-bold">Basic Salary</th>
+                <th className="px-4 md:px-6 py-4 font-bold">Allowances</th>
+                <th className="px-4 md:px-6 py-4 font-bold">Deductions</th>
+                <th className="px-4 md:px-6 py-4 font-bold">Gross Pay</th>
+                <th className="px-4 md:px-6 py-4 font-bold">Net Pay</th>
+                <th className="px-4 md:px-6 py-4 font-bold">Status</th>
               </tr>
             </thead>
             <tbody>
               {entries.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-8 text-center text-gray-500">
+                  <td colSpan={7} className="px-4 md:px-6 py-4 md:py-8 text-center text-gray-500">
                     No payroll data found for the selected period.
                   </td>
                 </tr>
@@ -209,13 +209,13 @@ export default function Reports({ schoolId, school }: Props) {
                   
                   return (
                     <tr key={entry.id} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
-                      <td className="px-6 py-4 font-bold text-gray-900">{(entry as any).employeeName || 'Unknown'}</td>
-                      <td className="px-6 py-4 text-gray-600">{school?.currency} {entry.basicSalary.toLocaleString()}</td>
-                      <td className="px-6 py-4 text-green-600">+{school?.currency} {empTotalAllowances.toLocaleString()}</td>
-                      <td className="px-6 py-4 text-red-600">-{school?.currency} {empTotalDeductions.toLocaleString()}</td>
-                      <td className="px-6 py-4 font-medium text-gray-900">{school?.currency} {entry.grossPay.toLocaleString()}</td>
-                      <td className="px-6 py-4 font-black text-primary">{school?.currency} {entry.netPay.toLocaleString()}</td>
-                      <td className="px-6 py-4">
+                      <td className="px-4 md:px-6 py-4 font-bold text-gray-900">{(entry as any).employeeName || 'Unknown'}</td>
+                      <td className="px-4 md:px-6 py-4 text-gray-600">{school?.currency} {entry.basicSalary.toLocaleString()}</td>
+                      <td className="px-4 md:px-6 py-4 text-green-600">+{school?.currency} {empTotalAllowances.toLocaleString()}</td>
+                      <td className="px-4 md:px-6 py-4 text-red-600">-{school?.currency} {empTotalDeductions.toLocaleString()}</td>
+                      <td className="px-4 md:px-6 py-4 font-medium text-gray-900">{school?.currency} {entry.grossPay.toLocaleString()}</td>
+                      <td className="px-4 md:px-6 py-4 font-black text-primary">{school?.currency} {entry.netPay.toLocaleString()}</td>
+                      <td className="px-4 md:px-6 py-4">
                         <span className={`px-2.5 py-1 text-xs font-bold rounded-full ${
                           entry.status === 'paid' ? 'bg-green-100 text-green-700' : 
                           entry.status === 'approved' ? 'bg-blue-100 text-blue-700' : 

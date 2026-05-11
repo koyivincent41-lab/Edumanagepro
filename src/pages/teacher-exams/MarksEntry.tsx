@@ -93,7 +93,7 @@ export default function MarksEntry({ teacher }: { teacher: any }) {
     <div className="space-y-8">
       {/* Selection Panel */}
       <div className="bg-white rounded-2xl md:rounded-3xl shadow-xl shadow-gray-200/50 border border-gray-100 p-4 md:p-8 md:sticky md:top-24 z-20">
-        <div className="grid grid-cols-2 lg:grid-cols-6 gap-3 md:gap-6 items-end">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-3 md:gap-4 md:gap-6 items-end">
           <div className="space-y-1.5 md:space-y-2 col-span-2 lg:col-span-1">
             <label className="block text-[9px] md:text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Select Class</label>
             <select value={selectedClassId} onChange={(e) => setSelectedClassId(e.target.value)} className="w-full p-2.5 md:p-3.5 bg-gray-50 border border-gray-200 rounded-xl md:rounded-2xl text-xs md:text-sm focus:ring-4 focus:ring-maroon/5 outline-none transition-all font-bold text-gray-700 cursor-pointer">
@@ -140,7 +140,7 @@ export default function MarksEntry({ teacher }: { teacher: any }) {
 
       {isEntryLoaded && (
         <div className="space-y-6">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
             <h3 className="text-xl font-black text-gray-900">Learners in {classes.find(c => c.id === selectedClassId)?.name}</h3>
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -152,24 +152,24 @@ export default function MarksEntry({ teacher }: { teacher: any }) {
             <table className="w-full min-w-[600px]">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase">#</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase">Admission</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase">Name</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase">Action</th>
+                  <th className="px-4 md:px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase">#</th>
+                  <th className="px-4 md:px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase">Admission</th>
+                  <th className="px-4 md:px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase">Name</th>
+                  <th className="px-4 md:px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {loadingStudents ? (
-                  <tr><td colSpan={4} className="p-8 text-center text-gray-500"><Loader2 className="h-8 w-8 animate-spin mx-auto" /></td></tr>
+                  <tr><td colSpan={4} className="p-4 md:p-8 text-center text-gray-500"><Loader2 className="h-8 w-8 animate-spin mx-auto" /></td></tr>
                 ) : filteredStudents.length === 0 ? (
-                  <tr><td colSpan={4} className="p-8 text-center text-gray-500">No learners found</td></tr>
+                  <tr><td colSpan={4} className="p-4 md:p-8 text-center text-gray-500">No learners found</td></tr>
                 ) : (
                   filteredStudents.map((student, idx) => (
                     <tr key={student.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 font-bold text-gray-900">{idx + 1}</td>
-                      <td className="px-6 py-4 font-bold text-gray-900">{student.admissionNumber}</td>
-                      <td className="px-6 py-4 font-bold text-gray-900">{student.fullName}</td>
-                      <td className="px-6 py-4 flex items-center gap-2">
+                      <td className="px-4 md:px-6 py-4 font-bold text-gray-900">{idx + 1}</td>
+                      <td className="px-4 md:px-6 py-4 font-bold text-gray-900">{student.admissionNumber}</td>
+                      <td className="px-4 md:px-6 py-4 font-bold text-gray-900">{student.fullName}</td>
+                      <td className="px-4 md:px-6 py-4 flex items-center gap-2">
                         <button onClick={() => setEditingStudent(student)} className="p-2 text-maroon hover:bg-maroon/10 rounded-lg transition-colors" title="Edit">
                           <Edit2 className="h-4 w-4" />
                         </button>
@@ -344,10 +344,10 @@ const EditLearnerModal = ({ student, onClose, teacher, selectedExamSessionId, se
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 md:p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white rounded-3xl md:rounded-[2.5rem] shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden border border-gray-100">
+      <div className="bg-white rounded-3xl md:rounded-[2.5rem] shadow-2xl w-[calc(100%-2rem)] md:w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden border border-gray-100">
         <div className="p-4 md:p-8 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
           <div>
-            <h2 className="text-lg md:text-2xl font-black text-gray-900 leading-none">Enter Marks</h2>
+            <h2 className="text-lg md:text-xl md:text-2xl font-black text-gray-900 leading-none">Enter Marks</h2>
             <p className="text-xs md:text-sm text-gray-500 mt-1 md:mt-2 font-medium">Student: <span className="text-maroon font-black uppercase tracking-tight">{student.fullName}</span></p>
           </div>
           <button 
@@ -358,7 +358,7 @@ const EditLearnerModal = ({ student, onClose, teacher, selectedExamSessionId, se
           </button>
         </div>
         
-        <div className="flex-1 overflow-y-auto p-2 md:p-8">
+        <div className="flex-1 overflow-y-auto p-2 md:p-4 md:p-8">
           {loadingData ? (
             <div className="flex flex-col items-center justify-center py-20 gap-4">
               <Loader2 className="h-12 w-12 text-maroon animate-spin" />
@@ -366,7 +366,7 @@ const EditLearnerModal = ({ student, onClose, teacher, selectedExamSessionId, se
             </div>
           ) : subjects.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 text-center">
-              <div className="bg-gray-50 p-6 rounded-3xl mb-4">
+              <div className="bg-gray-50 p-4 md:p-6 rounded-3xl mb-4">
                 <AlertCircle className="h-12 w-12 text-gray-300" />
               </div>
               <h3 className="text-lg font-bold text-gray-900">No Subjects Found</h3>
@@ -377,10 +377,10 @@ const EditLearnerModal = ({ student, onClose, teacher, selectedExamSessionId, se
               <table className="w-full min-w-[500px] text-left border-collapse">
                 <thead className="bg-gray-50 border-b border-gray-100">
                   <tr>
-                    <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Subject</th>
-                    <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Max Mark</th>
-                    <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Marks Obtained</th>
-                    <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Grade</th>
+                    <th className="px-4 md:px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Subject</th>
+                    <th className="px-4 md:px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Max Mark</th>
+                    <th className="px-4 md:px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Marks Obtained</th>
+                    <th className="px-4 md:px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Grade</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
@@ -390,7 +390,7 @@ const EditLearnerModal = ({ student, onClose, teacher, selectedExamSessionId, se
 
                     return (
                       <tr key={subject.id} className="hover:bg-gray-50/50 transition-colors group">
-                        <td className="px-6 py-4">
+                        <td className="px-4 md:px-6 py-4">
                           <div className="flex items-center gap-3">
                             <div className="w-8 h-8 bg-maroon/5 rounded-lg flex items-center justify-center text-maroon font-bold text-xs">
                               {subject.code || subject.name.substring(0, 2).toUpperCase()}
@@ -398,12 +398,12 @@ const EditLearnerModal = ({ student, onClose, teacher, selectedExamSessionId, se
                             <span className="font-bold text-gray-900">{subject.name}</span>
                           </div>
                         </td>
-                        <td className="px-6 py-4 text-center">
+                        <td className="px-4 md:px-6 py-4 text-center">
                           <span className="inline-flex items-center px-3 py-1 bg-gray-100 text-gray-500 text-xs font-black rounded-lg">
                             100
                           </span>
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-4 md:px-6 py-4">
                           <div className="relative max-w-[120px]">
                             <input 
                               type="number" 
@@ -417,7 +417,7 @@ const EditLearnerModal = ({ student, onClose, teacher, selectedExamSessionId, se
                             <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-black text-gray-300">/ 100</span>
                           </div>
                         </td>
-                        <td className="px-6 py-4 text-center">
+                        <td className="px-4 md:px-6 py-4 text-center">
                           <div className={`inline-flex items-center px-4 py-2 rounded-xl font-black text-sm shadow-sm transition-all ${
                             grade === '-' ? 'bg-gray-100 text-gray-400' : 
                             ['A','B'].some(g => grade.startsWith(g)) ? 'bg-green-50 text-green-600' :
@@ -444,14 +444,14 @@ const EditLearnerModal = ({ student, onClose, teacher, selectedExamSessionId, se
           <div className="w-full md:w-auto flex items-center gap-2 md:gap-4 justify-between">
             <button 
               onClick={onClose}
-              className="px-4 md:px-6 py-2.5 md:py-3 text-[10px] md:text-xs font-black text-gray-400 uppercase tracking-widest hover:text-gray-600 transition-colors"
+              className="px-4 md:px-4 md:px-6 py-2.5 md:py-3 text-[10px] md:text-xs font-black text-gray-400 uppercase tracking-widest hover:text-gray-600 transition-colors"
             >
               Cancel
             </button>
             <button 
               onClick={handleSave} 
               disabled={saving || subjects.length === 0} 
-              className="flex items-center justify-center gap-2 px-6 md:px-10 py-3 md:py-4 bg-maroon text-white font-black rounded-xl md:rounded-2xl shadow-xl shadow-maroon/20 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100 transition-all uppercase tracking-widest text-[10px] md:text-xs flex-1 md:flex-none"
+              className="flex items-center justify-center gap-2 px-4 md:px-6 md:px-10 py-3 md:py-4 bg-maroon text-white font-black rounded-xl md:rounded-2xl shadow-xl shadow-maroon/20 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:hover:scale-100 transition-all uppercase tracking-widest text-[10px] md:text-xs flex-1 md:flex-none"
             >
               {saving ? (
                 <>

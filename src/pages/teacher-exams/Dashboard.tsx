@@ -39,7 +39,7 @@ export default function Dashboard() {
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}
       <header className="bg-white border-b border-gray-100 sticky top-0 z-30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-4 md:px-6 lg:px-4 md:px-8">
           <div className="flex justify-between items-center h-20">
             <div className="flex items-center gap-4">
               <div className="bg-maroon/10 p-2 rounded-xl">
@@ -51,7 +51,7 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <div className="hidden md:flex items-center gap-8">
+            <div className="hidden md:flex items-center gap-4 md:gap-8">
               <div className="flex items-center gap-3 px-4 py-2 bg-gray-50 rounded-xl border border-gray-100">
                 <SchoolIcon className="h-4 w-4 text-gray-400" />
                 <div className="text-left">
@@ -90,10 +90,10 @@ export default function Dashboard() {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
+      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-4 md:px-6 lg:px-4 md:px-8 py-4 md:py-8">
         
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h1 className="text-2xl font-bold text-white">Exams Portal</h1>
+        <h1 className="text-xl md:text-2xl font-bold text-white">Exams Portal</h1>
       </div>
 
       {/* Tabs */}
@@ -145,7 +145,7 @@ export default function Dashboard() {
       {activeTab === 'marks_entry' && (
         <>
           <div className="mb-6">
-            <h2 className="text-2xl font-black text-white">Marks Entry</h2>
+            <h2 className="text-xl md:text-2xl font-black text-white">Marks Entry</h2>
             <p className="text-gray-300">Select a class and exam to begin entering marks for your students.</p>
           </div>
           <MarksEntry teacher={teacher} />
@@ -155,7 +155,7 @@ export default function Dashboard() {
       {activeTab === 'opener' && (
         <>
           <div className="mb-6">
-            <h2 className="text-2xl font-black text-white">Openar Exams Records</h2>
+            <h2 className="text-xl md:text-2xl font-black text-white">Openar Exams Records</h2>
             <p className="text-gray-300">View, download, and print stored results for Openar Exams.</p>
           </div>
           <ExamRecordsBrowser schoolId={teacher.schoolId} examsCategory="Openar Exams" />
@@ -165,7 +165,7 @@ export default function Dashboard() {
       {activeTab === 'midterm' && (
         <>
           <div className="mb-6">
-            <h2 className="text-2xl font-black text-white">Midterm Exams Records</h2>
+            <h2 className="text-xl md:text-2xl font-black text-white">Midterm Exams Records</h2>
             <p className="text-gray-300">View, download, and print stored results for Midterm Exams.</p>
           </div>
           <ExamRecordsBrowser schoolId={teacher.schoolId} examsCategory="Midterm Exams" />
@@ -175,7 +175,7 @@ export default function Dashboard() {
       {activeTab === 'end_term' && (
         <>
           <div className="mb-6">
-            <h2 className="text-2xl font-black text-white">End Term Exams Records</h2>
+            <h2 className="text-xl md:text-2xl font-black text-white">End Term Exams Records</h2>
             <p className="text-gray-300">View, download, and print stored results for End Term Exams.</p>
           </div>
           <ExamRecordsBrowser schoolId={teacher.schoolId} examsCategory="End Term Exams" />
@@ -185,7 +185,7 @@ export default function Dashboard() {
       {activeTab === 'report_form' && (
         <>
           <div className="mb-6">
-            <h2 className="text-2xl font-black text-white">Term Report Form</h2>
+            <h2 className="text-xl md:text-2xl font-black text-white">Term Report Form</h2>
             <p className="text-gray-300">Generate, view, download, and print full end-of-term report forms.</p>
           </div>
           <ReportFormBrowser schoolId={teacher.schoolId} />
@@ -195,7 +195,7 @@ export default function Dashboard() {
       {activeTab === 'learner_attendance' && (
         <>
           <div className="mb-6">
-            <h2 className="text-2xl font-black text-white">Learners' Attendance</h2>
+            <h2 className="text-xl md:text-2xl font-black text-white">Learners' Attendance</h2>
             <p className="text-gray-300">Mark morning and afternoon attendance for students.</p>
           </div>
           <LearnerAttendanceTeacher teacher={teacher} />

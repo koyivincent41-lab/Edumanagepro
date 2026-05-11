@@ -28,10 +28,10 @@ export default function Attendance({ school }: { school: School | null }) {
 
   return (
     <div className="space-y-4 lg:space-y-6">
-      <h1 className="text-xl lg:text-2xl font-bold text-gray-900">Attendance Records</h1>
+      <h1 className="text-xl lg:text-xl md:text-2xl font-bold text-gray-900">Attendance Records</h1>
       
       {loading ? (
-        <div className="flex justify-center p-8"><Loader2 className="animate-spin" /></div>
+        <div className="flex justify-center p-4 md:p-8"><Loader2 className="animate-spin" /></div>
       ) : (
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
           <div className="overflow-x-auto">

@@ -40,14 +40,14 @@ export default function Login() {
 
   return (
     <PublicLayout>
-      <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 px-4 sm:px-4 md:px-6 lg:px-4 md:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <div className="flex justify-center">
             <div className="bg-maroon p-3 rounded-2xl shadow-xl shadow-maroon/20">
               <GraduationCap className="h-10 w-10 text-white" />
             </div>
           </div>
-          <h2 className="mt-6 text-center text-3xl font-black text-gray-900 tracking-tight">
+          <h2 className="mt-6 text-center text-xl md:text-3xl font-black text-gray-900 tracking-tight">
             Teacher <span className="text-maroon">Portal</span>
           </h2>
           <p className="mt-2 text-center text-sm text-gray-500">
@@ -56,7 +56,7 @@ export default function Login() {
         </div>
 
         <div className="mt-4 sm:mx-auto sm:w-full sm:max-w-md">
-          <div className="bg-white py-8 px-4 shadow-2xl shadow-gray-200/50 sm:rounded-3xl sm:px-10 border border-gray-100">
+          <div className="bg-white py-4 md:py-8 px-4 shadow-2xl shadow-gray-200/50 sm:rounded-3xl sm:px-10 border border-gray-100">
             {/* Tab Switcher */}
             <div className="flex p-1 bg-gray-100 dark:bg-gray-800 rounded-2xl mb-8 relative z-10">
               <button

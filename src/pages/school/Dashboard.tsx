@@ -346,7 +346,7 @@ export default function SchoolDashboard({ profile }: { profile: UserProfile }) {
         ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         flex flex-col
       `}>
-        <div className="p-6 flex items-center gap-3 border-b border-gray-100 dark:border-gray-800">
+        <div className="p-4 md:p-6 flex items-center gap-3 border-b border-gray-100 dark:border-gray-800">
           <div className="p-2 bg-school-gradient rounded-lg shrink-0 shadow-sm">
             <GraduationCap className="h-5 w-5 text-white" />
           </div>
@@ -355,9 +355,9 @@ export default function SchoolDashboard({ profile }: { profile: UserProfile }) {
 
         {/* Plan Badge */}
         {isSidebarOpen && school?.packageId && (
-          <div className="px-6 py-3">
+          <div className="px-4 md:px-6 py-3">
             <div className="bg-primary/5 dark:bg-primary/10 border border-primary/10 dark:border-primary/20 rounded-xl p-3">
-              <div className="flex items-center justify-between mb-1">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 mb-1">
                 <span className="text-[10px] font-black text-primary uppercase tracking-widest">Active Plan</span>
                 <span className="px-1.5 py-0.5 bg-school-gradient text-white text-[9px] font-black rounded uppercase">{packageName || school.packageId}</span>
               </div>
@@ -434,7 +434,7 @@ export default function SchoolDashboard({ profile }: { profile: UserProfile }) {
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col h-screen overflow-hidden">
-        <header className="h-16 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between px-4 lg:px-8 shrink-0">
+        <header className="h-16 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between px-4 lg:px-4 md:px-8 shrink-0">
           <div className="flex items-center gap-2 lg:gap-4">
             <button 
               onClick={() => {
@@ -570,21 +570,21 @@ export default function SchoolDashboard({ profile }: { profile: UserProfile }) {
           </div>
         </header>
 
-        <div className="flex-1 overflow-y-auto p-4 lg:p-8 bg-gray-50 dark:bg-gray-950">
+        <div className="flex-1 overflow-y-auto p-4 lg:p-4 md:p-8 bg-gray-50 dark:bg-gray-950">
           <Routes>
             <Route path="/billing" element={<Billing school={school} />} />
             {isDeactivated ? (
               <Route path="*" element={
-                <div className="flex flex-col items-center justify-center h-full p-8 text-center min-h-[60vh]">
+                <div className="flex flex-col items-center justify-center h-full p-4 md:p-8 text-center min-h-[60vh]">
                   <div className="bg-red-50 dark:bg-red-900/20 p-4 rounded-full mb-4">
                     <AlertCircle className="h-12 w-12 text-red-500" />
                   </div>
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Dashboard Deactivated</h2>
+                  <h2 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-2">Dashboard Deactivated</h2>
                   <p className="text-gray-500 dark:text-gray-400 max-w-md">
                     Your subscription has expired. Please {['owner', 'admin'].includes(profile.role) ? 'renew your plan' : 'contact your school administrator'} to restore access.
                   </p>
                   {['owner', 'admin'].includes(profile.role) && (
-                    <Link to="/dashboard/billing" className="mt-6 px-6 py-3 bg-school-gradient text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
+                    <Link to="/dashboard/billing" className="mt-6 px-4 md:px-6 py-3 bg-school-gradient text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all">
                       Go to Billing & Plan
                     </Link>
                   )}

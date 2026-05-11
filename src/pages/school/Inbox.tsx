@@ -297,12 +297,12 @@ export default function Inbox({ school, defaultTab = 'inbox' }: { school: School
 
   return (
     <div className="space-y-6">
-      <div className="bg-school-gradient p-6 rounded-[2.5rem] shadow-lg shadow-maroon/20">
+      <div className="bg-school-gradient p-4 md:p-6 rounded-[2.5rem] shadow-lg shadow-maroon/20">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <div>
               <div className="flex items-center gap-3">
-                <h1 className="text-2xl font-black text-white">School {activeTab === 'inbox' ? 'Inbox' : 'Outbox'}</h1>
+                <h1 className="text-xl md:text-2xl font-black text-white">School {activeTab === 'inbox' ? 'Inbox' : 'Outbox'}</h1>
                 {notifications.filter(n => n.status === 'unread').length > 0 && (
                   <span className="bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-sm shadow-red-500/40">
                     {notifications.filter(n => n.status === 'unread').length} New
@@ -348,7 +348,7 @@ export default function Inbox({ school, defaultTab = 'inbox' }: { school: School
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8">
         {/* Message List */}
         <div className="lg:col-span-1 space-y-4">
           <div className="flex bg-gray-100 p-1 rounded-xl">
@@ -409,7 +409,7 @@ export default function Inbox({ school, defaultTab = 'inbox' }: { school: School
                      <AlertCircle className="h-5 w-5" />}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between mb-1">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 mb-1">
                       <span className={`text-[10px] font-black uppercase tracking-widest ${
                         selectedNotification?.id === n.id ? 'text-white/70' : 'text-gray-400'
                       }`}>
@@ -425,7 +425,7 @@ export default function Inbox({ school, defaultTab = 'inbox' }: { school: School
                     }`}>
                       {n.message}
                     </p>
-                    <div className="flex items-center justify-between mt-3">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 mt-3">
                       <div className="flex items-center gap-2">
                         <span className={`text-[10px] font-bold ${
                           selectedNotification?.id === n.id ? 'text-white/60' : 'text-gray-400'
@@ -485,7 +485,7 @@ export default function Inbox({ school, defaultTab = 'inbox' }: { school: School
         <div className="lg:col-span-2">
           {selectedNotification ? (
             <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden sticky top-8">
-              <div className="p-6 border-b border-gray-50 flex items-center justify-between">
+              <div className="p-4 md:p-6 border-b border-gray-50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
                 <div className="flex items-center gap-4">
                   <button 
                     onClick={() => setSelectedNotification(null)}
@@ -530,9 +530,9 @@ export default function Inbox({ school, defaultTab = 'inbox' }: { school: School
                 </div>
               </div>
 
-              <div className="p-8 overflow-y-auto max-h-[calc(100vh-250px)]">
+              <div className="p-4 md:p-8 overflow-y-auto max-h-[calc(100vh-250px)]">
                 {selectedNotification.type === 'message' || selectedNotification.type === 'alert' ? (
-                  <div className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm max-w-2xl mx-auto">
+                  <div className="bg-white border border-gray-100 rounded-3xl p-4 md:p-8 shadow-sm max-w-2xl mx-auto">
                     <div className="flex items-center gap-4 mb-8 pb-8 border-b border-gray-50">
                       <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
                         <Mail className="h-6 w-6" />
@@ -567,7 +567,7 @@ export default function Inbox({ school, defaultTab = 'inbox' }: { school: School
                   </div>
                 ) : (
                   /* Document Preview (Invoice/Receipt) */
-                  <div id="printable-document" className="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm max-w-2xl mx-auto">
+                  <div id="printable-document" className="bg-white border border-gray-100 rounded-3xl p-4 md:p-8 shadow-sm max-w-2xl mx-auto">
                   {/* Header */}
                   <div className="flex justify-between items-start mb-12">
                     <div>
@@ -580,11 +580,11 @@ export default function Inbox({ school, defaultTab = 'inbox' }: { school: School
                           referrerPolicy="no-referrer"
                         />
                       ) : (
-                        <div className="w-16 h-16 bg-school-gradient rounded-2xl flex items-center justify-center text-white font-bold text-2xl mb-4">
+                        <div className="w-16 h-16 bg-school-gradient rounded-2xl flex items-center justify-center text-white font-bold text-xl md:text-2xl mb-4">
                           E
                         </div>
                       )}
-                      <h1 className="text-2xl font-black text-gray-900 uppercase tracking-tighter">{systemBranding?.companyName || 'EduManagePro'}</h1>
+                      <h1 className="text-xl md:text-2xl font-black text-gray-900 uppercase tracking-tighter">{systemBranding?.companyName || 'EduManagePro'}</h1>
                       <div className="text-xs text-gray-500 font-medium space-y-1 mt-2">
                         <p>{systemBranding?.companyAddress}</p>
                         <p>{systemBranding?.companyPhone}</p>
@@ -607,7 +607,7 @@ export default function Inbox({ school, defaultTab = 'inbox' }: { school: School
                   </div>
 
                   {/* Billing Info */}
-                  <div className="grid grid-cols-2 gap-12 mb-12">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
                     <div>
                       <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Bill To</p>
                       <h3 className="text-lg font-bold text-gray-900">{school?.name}</h3>
@@ -617,7 +617,7 @@ export default function Inbox({ school, defaultTab = 'inbox' }: { school: School
                         <p>{school?.email}</p>
                       </div>
                     </div>
-                    <div className="bg-gray-50 rounded-2xl p-6">
+                    <div className="bg-gray-50 rounded-2xl p-4 md:p-6">
                       <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Status</p>
                       <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${
                         selectedNotification.type === 'invoice' ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700'
@@ -640,7 +640,7 @@ export default function Inbox({ school, defaultTab = 'inbox' }: { school: School
                   </div>
 
                   {/* Items Table */}
-                  <table className="w-full mb-12">
+                  <table className="min-w-[700px] w-full mb-12">
                     <thead>
                       <tr className="border-b-2 border-gray-900">
                         <th className="py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Description</th>
@@ -732,10 +732,10 @@ export default function Inbox({ school, defaultTab = 'inbox' }: { school: School
       {/* Compose Modal */}
       {isComposeModalOpen && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[70] flex items-center justify-center p-4">
-          <div className="bg-white rounded-[2.5rem] w-full max-w-xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
-            <div className="p-8 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+          <div className="bg-white rounded-[2.5rem] w-[calc(100%-2rem)] md:w-full max-w-xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
+            <div className="p-4 md:p-8 border-b border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 bg-gray-50/50">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">Compose Message</h2>
+                <h2 className="text-xl md:text-2xl font-bold text-gray-900">Compose Message</h2>
                 <p className="text-gray-500 font-medium">Send a message to Super Admin</p>
               </div>
               <button onClick={() => setIsComposeModalOpen(false)} className="p-2 hover:bg-gray-200 rounded-full transition-colors">
@@ -743,7 +743,7 @@ export default function Inbox({ school, defaultTab = 'inbox' }: { school: School
               </button>
             </div>
 
-            <div className="p-8 space-y-6">
+            <div className="p-4 md:p-8 space-y-6">
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider">To</label>
                 <input 

@@ -133,8 +133,8 @@ export default function Receipts({ profile }: { profile: UserProfile }) {
 
   return (
     <ParentLayout profile={profile}>
-      <h1 className="text-3xl font-black text-gray-900 dark:text-white mb-8">Receipts</h1>
-      <div className="bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden">
+      <h1 className="text-xl md:text-3xl font-black text-gray-900 dark:text-white mb-8">Receipts</h1>
+      <div className="bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden overflow-x-auto">
         <table className="w-full">
           <thead className="bg-gray-50 dark:bg-gray-800">
             <tr>
@@ -184,7 +184,7 @@ export default function Receipts({ profile }: { profile: UserProfile }) {
             ))}
             {receipts.length === 0 && (
               <tr>
-                <td colSpan={6} className="p-8 text-center text-gray-500 dark:text-gray-400">No receipts found.</td>
+                <td colSpan={6} className="p-4 md:p-8 text-center text-gray-500 dark:text-gray-400">No receipts found.</td>
               </tr>
             )}
           </tbody>
@@ -194,8 +194,8 @@ export default function Receipts({ profile }: { profile: UserProfile }) {
       {/* Preview Modal */}
       {selectedReceipt && (
         <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-300">
-          <div className="bg-white w-full max-w-3xl rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 flex flex-col max-h-[90vh]">
-            <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-gray-50/50 print:hidden">
+          <div className="bg-white w-[calc(100%-2rem)] md:w-full max-w-3xl rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 flex flex-col max-h-[90vh]">
+            <div className="p-4 md:p-6 border-b border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 bg-gray-50/50 print:hidden">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-school-gradient/10 rounded-xl text-green-600">
                   <CheckCircle2 className="h-5 w-5" />
@@ -227,37 +227,37 @@ export default function Receipts({ profile }: { profile: UserProfile }) {
               </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-12 bg-white print:p-0" id="printable-receipt">
+            <div className="flex-1 overflow-y-auto p-4 sm:p-8 md:p-12 bg-white print:p-0" id="printable-receipt">
               {/* Letterhead */}
-              <div className="flex justify-between items-start mb-12 border-b-4 pb-8" style={{ borderColor: school?.primaryColor || '#800000' }}>
-                <div className="flex items-center gap-6">
+              <div className="flex flex-col sm:flex-row justify-between items-center sm:items-start mb-8 sm:mb-12 border-b-4 pb-6 sm:pb-8 gap-6 sm:gap-0" style={{ borderColor: school?.primaryColor || '#800000' }}>
+                <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-4 sm:gap-6">
                   {school?.logo ? (
                     <img src={school.logo || undefined} alt="Logo" className="h-20 w-20 object-contain rounded-2xl shadow-sm" referrerPolicy="no-referrer" />
                   ) : (
-                    <div className="h-20 w-20 bg-school-gradient rounded-2xl flex items-center justify-center text-white font-bold text-3xl shadow-lg">
+                    <div className="h-20 w-20 bg-school-gradient rounded-2xl flex items-center justify-center text-white font-bold text-xl md:text-3xl shadow-lg">
                       {school?.name?.charAt(0) || 'E'}
                     </div>
                   )}
                   <div>
-                    <h1 className="text-2xl font-black tracking-tighter text-gray-900 uppercase">{school?.name || 'EduManagePro'}</h1>
+                    <h1 className="text-xl md:text-2xl font-black tracking-tighter text-gray-900 uppercase">{school?.name || 'EduManagePro'}</h1>
                     <p className="text-primary font-bold italic text-sm">{school?.motto}</p>
                     <div className="mt-2 text-xs text-gray-500 space-y-0.5 font-medium">
                       <p>{school?.address}</p>
-                      <p>Tel: {school?.phone} | Email: {school?.email}</p>
+                      <p className="break-words">Tel: {school?.phone} | Email: {school?.email}</p>
                     </div>
                   </div>
                 </div>
-                <div className="text-right">
+                <div className="text-center sm:text-right w-full sm:w-auto mt-4 sm:mt-0">
                   <div className="inline-block px-5 py-1.5 rounded-full text-white font-black text-[10px] uppercase tracking-widest mb-3" style={{ backgroundColor: school?.primaryColor || '#800000' }}>
                     Official Receipt
                   </div>
-                  <p className="text-3xl font-black text-gray-900 tracking-tighter">{selectedReceipt.receiptNumber}</p>
+                  <p className="text-xl md:text-3xl font-black text-gray-900 tracking-tighter">{selectedReceipt.receiptNumber}</p>
                   <p className="text-xs font-bold text-gray-400 mt-1 uppercase tracking-widest">Date: {new Date(selectedReceipt.paymentDate).toLocaleDateString()}</p>
                 </div>
               </div>
 
-              <div className="bg-gray-50 p-8 rounded-[2rem] border border-gray-100 mb-12">
-                <div className="grid grid-cols-2 gap-8">
+              <div className="bg-gray-50 p-4 md:p-8 rounded-[2rem] border border-gray-100 mb-12">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
                   <div>
                     <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3">Received From:</p>
                     <div className="space-y-1">
@@ -265,7 +265,7 @@ export default function Receipts({ profile }: { profile: UserProfile }) {
                       <p className="text-xs font-bold text-gray-600">Adm: {selectedReceipt.admissionNumber || 'N/A'}</p>
                     </div>
                   </div>
-                  <div className="text-right">
+                  <div className="text-center sm:text-right w-full sm:w-auto mt-4 sm:mt-0">
                     <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-3">Payment Method:</p>
                     <p className="text-lg font-black text-gray-900 uppercase">{selectedReceipt.paymentMethod?.replace('_', ' ')}</p>
                     {selectedReceipt.reference && (
@@ -275,17 +275,17 @@ export default function Receipts({ profile }: { profile: UserProfile }) {
                 </div>
               </div>
 
-              <div className="mb-12">
-                <div className="flex justify-between items-center py-6 border-y-2 border-gray-100">
-                  <div>
+              <div className="mb-8 md:mb-12 overflow-x-auto">
+                <div className="flex flex-col sm:flex-row justify-between items-center sm:items-center py-6 border-y-2 border-gray-100 gap-4 sm:gap-0">
+                  <div className="text-center sm:text-left">
                     <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">Payment For:</p>
                     <p className="text-lg font-bold text-gray-900">
                       Invoice {selectedReceipt.invoiceNumber || 'N/A'}
                     </p>
                   </div>
-                  <div className="text-right">
+                  <div className="text-center sm:text-right">
                     <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">Amount Paid:</p>
-                    <p className="text-4xl font-black text-green-600">
+                    <p className="text-3xl md:text-4xl font-black text-green-600">
                       {school?.currency || currency} {selectedReceipt.amount?.toLocaleString() || '0'}
                     </p>
                   </div>
@@ -298,7 +298,7 @@ export default function Receipts({ profile }: { profile: UserProfile }) {
                   <div className="mt-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
                     For technical support, contact: support@{school?.email?.split('@')[1] || 'edumanagepro.com'}
                   </div>
-                  <div className="mt-6 flex justify-center gap-8 text-[10px] font-black text-gray-300 uppercase tracking-[0.3em]">
+                  <div className="mt-6 flex justify-center gap-4 md:gap-8 text-[10px] font-black text-gray-300 uppercase tracking-[0.3em]">
                     <span>Official Receipt</span>
                     <span>•</span>
                     <span>{school?.name || 'EduManagePro'}</span>

@@ -199,42 +199,42 @@ export default function Periods({ schoolId, school }: Props) {
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-full text-sm text-left">
+        <table className="min-w-[700px] w-full text-sm text-left">
           <thead className="text-xs text-gray-500 uppercase bg-gray-50">
             <tr>
-              <th className="px-6 py-3 rounded-tl-xl">Period</th>
-              <th className="px-6 py-3">Start Date</th>
-              <th className="px-6 py-3">End Date</th>
-              <th className="px-6 py-3">Payment Date</th>
-              <th className="px-6 py-3">Status</th>
-              <th className="px-6 py-3 rounded-tr-xl text-right">Actions</th>
+              <th className="px-4 md:px-6 py-3 rounded-tl-xl">Period</th>
+              <th className="px-4 md:px-6 py-3">Start Date</th>
+              <th className="px-4 md:px-6 py-3">End Date</th>
+              <th className="px-4 md:px-6 py-3">Payment Date</th>
+              <th className="px-4 md:px-6 py-3">Status</th>
+              <th className="px-4 md:px-6 py-3 rounded-tr-xl text-right">Actions</th>
             </tr>
           </thead>
           <tbody>
             {periods.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-6 py-8 text-center text-gray-500">
+                <td colSpan={6} className="px-4 md:px-6 py-4 md:py-8 text-center text-gray-500">
                   No payroll periods found.
                 </td>
               </tr>
             ) : (
               periods.map((period) => (
                 <tr key={period.id} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
-                  <td className="px-6 py-4 font-bold text-gray-900">
+                  <td className="px-4 md:px-6 py-4 font-bold text-gray-900">
                     <div className="flex items-center gap-2">
                       <Calendar className="h-4 w-4 text-gray-400" />
                       {getMonthName(period.month)} {period.year}
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-gray-600">{period.startDate}</td>
-                  <td className="px-6 py-4 text-gray-600">{period.endDate}</td>
-                  <td className="px-6 py-4 text-gray-600">{period.paymentDate}</td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 md:px-6 py-4 text-gray-600">{period.startDate}</td>
+                  <td className="px-4 md:px-6 py-4 text-gray-600">{period.endDate}</td>
+                  <td className="px-4 md:px-6 py-4 text-gray-600">{period.paymentDate}</td>
+                  <td className="px-4 md:px-6 py-4">
                     <span className={`px-2.5 py-1 text-xs font-bold rounded-full ${getStatusColor(period.status)}`}>
                       {(period.status || 'draft').replace('_', ' ').toUpperCase()}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-right">
+                  <td className="px-4 md:px-6 py-4 text-right">
                     <div className="flex items-center justify-end gap-2">
                       <button 
                         onClick={() => editPeriod(period)} 
@@ -261,8 +261,8 @@ export default function Periods({ schoolId, school }: Props) {
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md">
-            <div className="flex items-center justify-between p-6 border-b border-gray-100">
+          <div className="bg-white rounded-2xl shadow-xl w-[calc(100%-2rem)] md:w-full max-w-md">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 p-4 md:p-6 border-b border-gray-100">
               <h2 className="text-xl font-black text-gray-900">
                 {editingId ? 'Edit Payroll Period' : 'Create Payroll Period'}
               </h2>
@@ -271,8 +271,8 @@ export default function Periods({ schoolId, school }: Props) {
               </button>
             </div>
             
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+            <form onSubmit={handleSubmit} className="p-4 md:p-6 space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-1">Month</label>
                   <select
@@ -353,13 +353,13 @@ export default function Periods({ schoolId, school }: Props) {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-6 py-2 border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 font-bold transition-colors"
+                  className="px-4 md:px-6 py-2 border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 font-bold transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2 bg-school-gradient text-white rounded-xl hover:shadow-lg hover:shadow-primary/20 font-bold transition-all"
+                  className="px-4 md:px-6 py-2 bg-school-gradient text-white rounded-xl hover:shadow-lg hover:shadow-primary/20 font-bold transition-all"
                 >
                   {editingId ? 'Update' : 'Create'}
                 </button>

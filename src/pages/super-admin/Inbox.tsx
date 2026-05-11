@@ -217,13 +217,13 @@ export default function Inbox() {
   );
 
   return (
-    <div className="h-full flex flex-col gap-6">
-      <div className="bg-school-gradient p-6 rounded-[2.5rem] shadow-lg shadow-maroon/20">
+    <div className="h-full flex flex-col gap-4 md:gap-6">
+      <div className="bg-school-gradient p-4 md:p-6 rounded-[2.5rem] shadow-lg shadow-maroon/20">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <div>
               <div className="flex items-center gap-3">
-                <h1 className="text-2xl font-black text-white">Communications</h1>
+                <h1 className="text-xl md:text-2xl font-black text-white">Communications</h1>
                 {unreadCount > 0 && (
                   <span className="bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-sm shadow-red-500/40">
                     {unreadCount} New
@@ -285,7 +285,7 @@ export default function Inbox() {
         </div>
       </div>
 
-      <div className="flex-1 flex gap-6 min-h-0 overflow-hidden">
+      <div className="flex-1 flex gap-4 md:gap-6 min-h-0 overflow-hidden">
         {/* Email List */}
         <div className="w-1/3 bg-white rounded-[2rem] border border-gray-100 shadow-sm overflow-hidden flex flex-col">
           <div className="flex-1 overflow-y-auto divide-y divide-gray-50">
@@ -312,7 +312,7 @@ export default function Inbox() {
                     selectedEmail?.id === email.id ? 'bg-primary/5 border-l-4 border-primary' : 'border-l-4 border-transparent'
                   } ${!email.read ? 'bg-blue-50/30' : ''}`}
                 >
-                  <div className="flex items-center justify-between mb-1">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 mb-1">
                     <span className={`text-sm ${!email.read ? 'font-black text-gray-900' : 'font-bold text-gray-700'}`}>
                       {activeTab === 'outgoing' ? `To: ${email.recipientName || email.to}` : (email.senderName || email.from.split('@')[0])}
                     </span>
@@ -349,7 +349,7 @@ export default function Inbox() {
         <div className="flex-1 bg-white rounded-[2rem] border border-gray-100 shadow-sm overflow-hidden flex flex-col">
           {selectedEmail ? (
             <div className="flex-1 flex flex-col min-h-0">
-              <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+              <div className="p-4 md:p-6 border-b border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 bg-gray-50/50">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary font-bold text-xl">
                     {(selectedEmail.senderName || selectedEmail.from)[0].toUpperCase()}
@@ -383,7 +383,7 @@ export default function Inbox() {
                 </div>
               </div>
 
-              <div className="flex-1 overflow-y-auto p-8">
+              <div className="flex-1 overflow-y-auto p-4 md:p-8">
                 <div className="flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-widest mb-6">
                   <Clock className="h-4 w-4" />
                   Received on {new Date(selectedEmail.createdAt).toLocaleString()}
@@ -412,7 +412,7 @@ export default function Inbox() {
                 )}
               </div>
 
-              <div className="p-6 border-t border-gray-100 bg-gray-50/50">
+              <div className="p-4 md:p-6 border-t border-gray-100 bg-gray-50/50">
                 <button 
                   onClick={() => setIsReplyModalOpen(true)}
                   className="w-full py-4 bg-white border border-gray-200 rounded-2xl text-gray-500 font-bold hover:border-primary hover:text-primary transition-all flex items-center justify-center gap-2"
@@ -437,10 +437,10 @@ export default function Inbox() {
       {/* Reply Modal */}
       {isReplyModalOpen && selectedEmail && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[70] flex items-center justify-center p-4">
-          <div className="bg-white rounded-[2.5rem] w-full max-w-xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
-            <div className="p-8 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+          <div className="bg-white rounded-[2.5rem] w-[calc(100%-2rem)] md:w-full max-w-xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
+            <div className="p-4 md:p-8 border-b border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 bg-gray-50/50">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">Reply to Message</h2>
+                <h2 className="text-xl md:text-2xl font-bold text-gray-900">Reply to Message</h2>
                 <p className="text-gray-500 font-medium">To: {selectedEmail.senderName} ({selectedEmail.from})</p>
               </div>
               <button onClick={() => setIsReplyModalOpen(false)} className="p-2 hover:bg-gray-200 rounded-full transition-colors">
@@ -448,7 +448,7 @@ export default function Inbox() {
               </button>
             </div>
 
-            <div className="p-8 space-y-6">
+            <div className="p-4 md:p-8 space-y-6">
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider">Subject</label>
                 <input 
@@ -515,10 +515,10 @@ export default function Inbox() {
       {/* Compose Modal */}
       {isComposeModalOpen && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[70] flex items-center justify-center p-4">
-          <div className="bg-white rounded-[2.5rem] w-full max-w-xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
-            <div className="p-8 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+          <div className="bg-white rounded-[2.5rem] w-[calc(100%-2rem)] md:w-full max-w-xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
+            <div className="p-4 md:p-8 border-b border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 bg-gray-50/50">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">New Message</h2>
+                <h2 className="text-xl md:text-2xl font-bold text-gray-900">New Message</h2>
                 <p className="text-gray-500 font-medium">Send a new message to a school</p>
               </div>
               <button onClick={() => setIsComposeModalOpen(false)} className="p-2 hover:bg-gray-200 rounded-full transition-colors">
@@ -526,7 +526,7 @@ export default function Inbox() {
               </button>
             </div>
 
-            <div className="p-8 space-y-6">
+            <div className="p-4 md:p-8 space-y-6">
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider">Select School</label>
                 <select 

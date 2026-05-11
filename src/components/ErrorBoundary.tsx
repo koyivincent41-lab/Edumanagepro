@@ -49,11 +49,11 @@ export default class ErrorBoundary extends React.Component<Props, State> {
 
       return (
         <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-          <div className="max-w-md w-full bg-white p-8 rounded-[2.5rem] shadow-xl border border-red-100 text-center">
+          <div className="max-w-md w-full bg-white p-4 md:p-8 rounded-[2.5rem] shadow-xl border border-red-100 text-center">
             <div className="inline-flex p-4 bg-red-50 rounded-3xl mb-6">
               <AlertCircle className="h-10 w-10 text-red-500" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Something went wrong</h1>
+            <h1 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">Something went wrong</h1>
             <p className="text-gray-600 mb-8">{errorMessage}</p>
             
             <button

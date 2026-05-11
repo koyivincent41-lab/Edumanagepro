@@ -338,7 +338,7 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
 
   if (loading) {
     if (isBulkPrint) return null;
-    return <div className="p-8 text-center flex items-center justify-center h-full"><Loader2 className="animate-spin rounded-full h-8 w-8 text-blue-600" /></div>;
+    return <div className="p-4 md:p-8 text-center flex items-center justify-center h-full"><Loader2 className="animate-spin rounded-full h-8 w-8 text-blue-600" /></div>;
   }
 
   if (isBulkPrint) {
@@ -406,7 +406,7 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
               ))
             ) : (
               <tr>
-                <td colSpan={7} className="p-8 text-center text-xs">
+                <td colSpan={7} className="p-4 md:p-8 text-center text-xs">
                   <div className="flex flex-col items-center justify-center text-amber-600">
                     <AlertTriangle className="w-8 h-8 mb-2" />
                     <p className="font-bold">Incomplete report data for this learner.</p>
@@ -422,7 +422,7 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
             {/* Summary Section */}
             <div className={`bg-gray-50 ${summaryPaddingClass} rounded-xl border border-gray-200`}>
               <h3 className="text-center font-bold text-gray-700 mb-1 uppercase tracking-wider text-[10px]">Term Summary</h3>
-              <div className="grid grid-cols-3 gap-2 text-center">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 text-center">
                 <div className="space-y-0.5">
                   <p className="text-gray-500 font-medium text-[8px] uppercase">Openar</p>
                   <p className={`${isVeryCompact ? 'text-sm' : 'text-base'} font-bold`}>{openerTotal} <span className="text-[8px] text-gray-400 font-normal">/ {maxPossiblePerExam}</span></p>
@@ -442,7 +442,7 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
             </div>
 
             {/* Final Grade Section */}
-            <div className="flex items-center justify-between gap-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 gap-4">
               <div className={`bg-gray-100 ${summaryPaddingClass} rounded-xl border border-gray-300 flex-1 flex items-center justify-around`}>
                 <div className="text-center">
                   <p className="text-gray-500 font-medium mb-0.5 uppercase text-[8px] tracking-wider">Final Mean</p>
@@ -481,7 +481,7 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
                   <span className="font-bold text-gray-700 whitespace-nowrap mr-2">Principal's Comment:</span>
                   <div className="flex-1 border-b border-gray-400 border-dashed pb-0.5 px-2 text-gray-800 italic">{principalComment}</div>
                 </div>
-                <div className="grid grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
                   <div className="flex items-end">
                     <span className="font-bold text-gray-700 whitespace-nowrap mr-2">Closing Date:</span>
                     <div className="flex-1 border-b border-gray-400 border-dashed"></div>
@@ -525,7 +525,7 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
         `}
       </style>
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm print:p-0 print:bg-white print:block print:relative print:inset-auto">
-        <div className="bg-white rounded-3xl shadow-2xl w-full max-w-4xl p-8 max-h-[90vh] overflow-y-auto print:shadow-none print:max-w-none print:max-h-none print:p-0 print:overflow-visible">
+        <div className="bg-white rounded-3xl shadow-2xl w-[calc(100%-2rem)] md:w-full max-w-4xl p-4 md:p-8 max-h-[90vh] overflow-y-auto print:shadow-none print:max-w-none print:max-h-none print:p-0 print:overflow-visible">
           <div className="flex justify-between items-center mb-6 print:hidden">
             <h2 className="text-xl font-black">Term Report Form Preview</h2>
             <div className="flex gap-2">
@@ -616,7 +616,7 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
                 {/* Summary Section */}
                 <div className={`bg-gray-50 ${summaryPaddingClass} rounded-xl border border-gray-200`}>
                   <h3 className="text-center font-bold text-gray-700 mb-1 uppercase tracking-wider text-[10px]">Term Summary</h3>
-                  <div className="grid grid-cols-3 gap-2 text-center">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 text-center">
                     <div className="space-y-0.5">
                       <p className="text-gray-500 font-medium text-[8px] uppercase">Openar</p>
                       <p className={`${isVeryCompact ? 'text-sm' : 'text-base'} font-bold`}>{openerTotal} <span className="text-[8px] text-gray-400 font-normal">/ {maxPossiblePerExam}</span></p>
@@ -636,7 +636,7 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
                 </div>
 
                 {/* Final Grade Section */}
-                <div className="flex items-center justify-between gap-4">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 gap-4">
                   <div className={`bg-gray-100 ${summaryPaddingClass} rounded-xl border border-gray-300 flex-1 flex items-center justify-around`}>
                     <div className="text-center">
                       <p className="text-gray-500 font-medium mb-0.5 uppercase text-[8px] tracking-wider">Final Mean</p>
@@ -675,7 +675,7 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
                       <span className="font-bold text-gray-700 whitespace-nowrap mr-2">Principal's Comment:</span>
                       <div className="flex-1 border-b border-gray-400 border-dashed pb-0.5 px-2 text-gray-800 italic">{principalComment}</div>
                     </div>
-                    <div className="grid grid-cols-2 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
                       <div className="flex items-end">
                         <span className="font-bold text-gray-700 whitespace-nowrap mr-2">Closing Date:</span>
                         <div className="flex-1 border-b border-gray-400 border-dashed"></div>

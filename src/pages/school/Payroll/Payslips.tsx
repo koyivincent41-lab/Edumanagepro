@@ -128,7 +128,7 @@ export default function Payslips({ schoolId, school }: Props) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
         <div className="lg:col-span-1 border border-gray-200 rounded-2xl overflow-hidden bg-white h-[calc(100vh-240px)] flex flex-col">
           <div className="p-4 border-b border-gray-100 bg-gray-50 font-bold text-gray-700">
             Employees ({filteredEntries.length})
@@ -162,7 +162,7 @@ export default function Payslips({ schoolId, school }: Props) {
           </div>
         </div>
 
-        <div className="lg:col-span-2 bg-white border border-gray-200 rounded-2xl p-8 shadow-sm h-[calc(100vh-240px)] overflow-y-auto print:shadow-none print:border-none print:h-auto print:overflow-visible">
+        <div className="lg:col-span-2 bg-white border border-gray-200 rounded-2xl p-4 md:p-8 shadow-sm h-[calc(100vh-240px)] overflow-y-auto print:shadow-none print:border-none print:h-auto print:overflow-visible">
           {selectedEntry ? (
             <div className="max-w-2xl mx-auto space-y-8">
               {/* Actions - Hidden when printing */}
@@ -179,7 +179,7 @@ export default function Payslips({ schoolId, school }: Props) {
               </div>
 
               {/* Payslip Content */}
-              <div className="border border-gray-200 rounded-xl p-8 flex flex-col min-h-[600px] space-y-8 print:border-none print:p-0">
+              <div className="border border-gray-200 rounded-xl p-4 md:p-8 flex flex-col min-h-[600px] space-y-8 print:border-none print:p-0">
                 <div className="flex-1 space-y-8">
                   {/* Header */}
                   <div className="text-center space-y-2 border-b border-gray-200 pb-6 relative">
@@ -191,7 +191,7 @@ export default function Payslips({ schoolId, school }: Props) {
                     {school?.logo ? (
                       <img src={school.logo || undefined} alt="School Logo" className="h-16 mx-auto mb-4" referrerPolicy="no-referrer" />
                     ) : null}
-                    <h1 className="text-2xl font-black text-gray-900">{school?.name || 'School Name'}</h1>
+                    <h1 className="text-xl md:text-2xl font-black text-gray-900">{school?.name || 'School Name'}</h1>
                     <p className="text-gray-500 text-sm">{school?.address || 'School Address'}</p>
                     <p className="text-gray-500 text-sm">{school?.email || 'email@school.com'} | {school?.phone || 'Phone'}</p>
                     <div className="mt-4 pt-4">
@@ -201,7 +201,7 @@ export default function Payslips({ schoolId, school }: Props) {
                   </div>
 
                   {/* Employee Details */}
-                  <div className="grid grid-cols-2 gap-x-8 gap-y-4 text-sm">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 text-sm">
                     <div>
                       <span className="text-gray-500">Employee Name:</span>
                       <p className="font-bold text-gray-900">{(selectedEntry as any).employeeName || 'Unknown'}</p>
@@ -221,7 +221,7 @@ export default function Payslips({ schoolId, school }: Props) {
                   </div>
 
                   {/* Earnings & Deductions */}
-                  <div className="grid grid-cols-2 gap-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
                     {/* Earnings */}
                     <div>
                       <h3 className="font-bold text-gray-900 border-b border-gray-200 pb-2 mb-4 uppercase text-xs tracking-wider">Earnings</h3>

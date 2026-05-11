@@ -36,7 +36,7 @@ export default function Subjects({ schoolId, school }: { schoolId: string, schoo
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-900">Subjects</h1>
+        <h1 className="text-xl md:text-2xl font-bold text-gray-900">Subjects</h1>
         <button
           onClick={() => setShowForm(true)}
           className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm font-bold"
@@ -46,7 +46,7 @@ export default function Subjects({ schoolId, school }: { schoolId: string, schoo
       </div>
 
       {loading ? (
-        <div className="flex justify-center p-8"><Loader2 className="animate-spin text-primary" /></div>
+        <div className="flex justify-center p-4 md:p-8"><Loader2 className="animate-spin text-primary" /></div>
       ) : subjects.length === 0 ? (
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-12 text-center">
           <BookOpen className="w-12 h-12 mx-auto mb-4 text-gray-300" />
@@ -61,7 +61,7 @@ export default function Subjects({ schoolId, school }: { schoolId: string, schoo
         </div>
       ) : (
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-          <table className="w-full text-left">
+          <table className="min-w-[700px] w-full text-left">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-100 text-xs font-bold text-gray-500 uppercase">
                 <th className="p-4">Subject Name</th>

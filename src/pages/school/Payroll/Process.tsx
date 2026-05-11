@@ -432,7 +432,7 @@ export default function Process({ schoolId, school }: Props) {
         <p className="text-gray-500 mb-6 max-w-sm mx-auto">You need to create a payroll period before you can process payroll for your employees.</p>
         <button
           onClick={() => navigate('/dashboard/payroll/periods')}
-          className="px-6 py-2 bg-school-gradient text-white rounded-xl font-bold hover:shadow-lg transition-all"
+          className="px-4 md:px-6 py-2 bg-school-gradient text-white rounded-xl font-bold hover:shadow-lg transition-all"
         >
           Go to Periods
         </button>
@@ -563,22 +563,22 @@ export default function Process({ schoolId, school }: Props) {
       )}
 
       <div className="overflow-x-auto">
-        <table className="w-full text-sm text-left">
+        <table className="min-w-[700px] w-full text-sm text-left">
           <thead className="text-xs text-gray-500 uppercase bg-gray-50">
             <tr>
-              <th className="px-6 py-3 rounded-tl-xl">Employee</th>
-              <th className="px-6 py-3">Basic Salary</th>
-              <th className="px-6 py-3">Allowances</th>
-              <th className="px-6 py-3">Deductions</th>
-              <th className="px-6 py-3">Gross Pay</th>
-              <th className="px-6 py-3">Net Pay</th>
-              <th className="px-6 py-3 text-right rounded-tr-xl">Actions</th>
+              <th className="px-4 md:px-6 py-3 rounded-tl-xl">Employee</th>
+              <th className="px-4 md:px-6 py-3">Basic Salary</th>
+              <th className="px-4 md:px-6 py-3">Allowances</th>
+              <th className="px-4 md:px-6 py-3">Deductions</th>
+              <th className="px-4 md:px-6 py-3">Gross Pay</th>
+              <th className="px-4 md:px-6 py-3">Net Pay</th>
+              <th className="px-4 md:px-6 py-3 text-right rounded-tr-xl">Actions</th>
             </tr>
           </thead>
           <tbody>
             {entries.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-6 py-8 text-center text-gray-500">
+                <td colSpan={7} className="px-4 md:px-6 py-4 md:py-8 text-center text-gray-500">
                   No payroll entries found for this period. Click "Run Payroll" to generate.
                 </td>
               </tr>
@@ -590,33 +590,33 @@ export default function Process({ schoolId, school }: Props) {
                 
                 return (
                   <tr key={entry.id} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
-                    <td className="px-6 py-4 font-bold text-gray-900">{(entry as any).employeeName || 'Unknown'}</td>
+                    <td className="px-4 md:px-6 py-4 font-bold text-gray-900">{(entry as any).employeeName || 'Unknown'}</td>
                     
                     {isEditing ? (
                       <>
-                        <td className="px-6 py-4">
+                        <td className="px-4 md:px-6 py-4">
                           <input type="number" value={editForm.basicSalary} onChange={e => setEditForm({...editForm, basicSalary: Number(e.target.value)})} className="w-24 px-2 py-1 border rounded" />
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-4 md:px-6 py-4">
                           <input type="number" value={editForm.totalAllowances} onChange={e => setEditForm({...editForm, totalAllowances: Number(e.target.value)})} className="w-24 px-2 py-1 border rounded" />
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-4 md:px-6 py-4">
                           <input type="number" value={editForm.totalDeductions} onChange={e => setEditForm({...editForm, totalDeductions: Number(e.target.value)})} className="w-24 px-2 py-1 border rounded" />
                         </td>
-                        <td className="px-6 py-4 font-medium text-gray-900">{school?.currency} {((editForm.basicSalary || 0) + (editForm.totalAllowances || 0)).toLocaleString()}</td>
-                        <td className="px-6 py-4 font-black text-primary">{school?.currency} {((editForm.basicSalary || 0) + (editForm.totalAllowances || 0) - (editForm.totalDeductions || 0)).toLocaleString()}</td>
+                        <td className="px-4 md:px-6 py-4 font-medium text-gray-900">{school?.currency} {((editForm.basicSalary || 0) + (editForm.totalAllowances || 0)).toLocaleString()}</td>
+                        <td className="px-4 md:px-6 py-4 font-black text-primary">{school?.currency} {((editForm.basicSalary || 0) + (editForm.totalAllowances || 0) - (editForm.totalDeductions || 0)).toLocaleString()}</td>
                       </>
                     ) : (
                       <>
-                        <td className="px-6 py-4 text-gray-600">{school?.currency} {(entry.basicSalary || 0).toLocaleString()}</td>
-                        <td className="px-6 py-4 text-green-600">+{school?.currency} {(totalAllowances || 0).toLocaleString()}</td>
-                        <td className="px-6 py-4 text-red-600">-{school?.currency} {(totalDeductions || 0).toLocaleString()}</td>
-                        <td className="px-6 py-4 font-medium text-gray-900">{school?.currency} {(entry.grossPay || 0).toLocaleString()}</td>
-                        <td className="px-6 py-4 font-black text-primary">{school?.currency} {(entry.netPay || 0).toLocaleString()}</td>
+                        <td className="px-4 md:px-6 py-4 text-gray-600">{school?.currency} {(entry.basicSalary || 0).toLocaleString()}</td>
+                        <td className="px-4 md:px-6 py-4 text-green-600">+{school?.currency} {(totalAllowances || 0).toLocaleString()}</td>
+                        <td className="px-4 md:px-6 py-4 text-red-600">-{school?.currency} {(totalDeductions || 0).toLocaleString()}</td>
+                        <td className="px-4 md:px-6 py-4 font-medium text-gray-900">{school?.currency} {(entry.grossPay || 0).toLocaleString()}</td>
+                        <td className="px-4 md:px-6 py-4 font-black text-primary">{school?.currency} {(entry.netPay || 0).toLocaleString()}</td>
                       </>
                     )}
                     
-                    <td className="px-6 py-4 text-right">
+                    <td className="px-4 md:px-6 py-4 text-right">
                       {selectedPeriod?.status === 'draft' && (
                         <div className="flex items-center justify-end gap-2">
                           {isEditing ? (

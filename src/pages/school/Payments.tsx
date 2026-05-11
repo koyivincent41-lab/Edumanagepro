@@ -231,10 +231,10 @@ export default function Payments({ schoolId, school }: { schoolId: string; schoo
 
   return (
     <div className="space-y-6">
-      <div className="bg-school-gradient p-6 rounded-[2.5rem] shadow-lg shadow-maroon/20">
+      <div className="bg-school-gradient p-4 md:p-6 rounded-[2.5rem] shadow-lg shadow-maroon/20">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-black text-white">Payments</h1>
+            <h1 className="text-xl md:text-2xl font-black text-white">Payments</h1>
             <p className="text-sm text-white/80 font-medium tracking-wide">Record and track fee payments.</p>
           </div>
           <div className="flex items-center gap-3">
@@ -250,7 +250,7 @@ export default function Payments({ schoolId, school }: { schoolId: string; schoo
             </div>
             <button 
               onClick={() => setIsModalOpen(true)}
-              className="px-6 py-2.5 bg-white text-maroon font-black uppercase tracking-widest text-[10px] rounded-xl shadow-xl hover:scale-105 transition-all flex items-center gap-2"
+              className="px-4 md:px-6 py-2.5 bg-white text-maroon font-black uppercase tracking-widest text-[10px] rounded-xl shadow-xl hover:scale-105 transition-all flex items-center gap-2"
             >
               <Plus className="h-4 w-4" />
               Record Payment
@@ -261,15 +261,15 @@ export default function Payments({ schoolId, school }: { schoolId: string; schoo
 
       <div className="bg-white rounded-[2rem] border border-gray-100 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left">
+          <table className="min-w-[700px] w-full text-left">
             <thead>
               <tr className="bg-gray-50">
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Receipt #</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Student</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Amount</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Method</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Date</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Reference</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Receipt #</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Student</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Amount</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Method</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Date</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Reference</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -277,28 +277,28 @@ export default function Payments({ schoolId, school }: { schoolId: string; schoo
                 const student = students.find(s => s.id === payment.studentId);
                 return (
                   <tr key={payment.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4">
+                    <td className="px-4 md:px-6 py-4">
                       <p className="text-sm font-bold text-gray-900">{payment.receiptNumber}</p>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 md:px-6 py-4">
                       <p className="text-sm font-bold text-gray-900">{student?.fullName || payment.studentName || 'N/A'}</p>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 md:px-6 py-4">
                       <p className="text-sm font-extrabold text-green-600">{school?.currency} {payment.amount.toLocaleString()}</p>
                       <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{payment.term}</p>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 md:px-6 py-4">
                       <span className="px-3 py-1 bg-gray-100 rounded-full text-[10px] font-bold uppercase text-gray-600">
                         {payment.paymentMethod.replace('_', ' ')}
                       </span>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 md:px-6 py-4">
                       <div className="flex items-center gap-2 text-sm text-gray-600">
                         <Calendar className="h-4 w-4 text-gray-400" />
                         {new Date(payment.paymentDate).toLocaleDateString()}
                       </div>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 md:px-6 py-4">
                       <p className="text-sm text-gray-500">{payment.reference || '-'}</p>
                     </td>
                   </tr>
@@ -306,8 +306,8 @@ export default function Payments({ schoolId, school }: { schoolId: string; schoo
               })}
               {payments.length > 0 && (
                 <tr className="bg-gray-50 font-bold">
-                  <td className="px-6 py-4 text-gray-900" colSpan={2}>TOTAL</td>
-                  <td className="px-6 py-4 text-green-600">
+                  <td className="px-4 md:px-6 py-4 text-gray-900" colSpan={2}>TOTAL</td>
+                  <td className="px-4 md:px-6 py-4 text-green-600">
                     {school?.currency} {payments.reduce((sum, p) => sum + p.amount, 0).toLocaleString()}
                   </td>
                   <td colSpan={3}></td>
@@ -321,15 +321,15 @@ export default function Payments({ schoolId, school }: { schoolId: string; schoo
       {/* Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white w-full max-w-xl rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="p-8 border-b border-gray-100 flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-gray-900">Record Payment</h2>
+          <div className="bg-white w-[calc(100%-2rem)] md:w-full max-w-xl rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="p-4 md:p-8 border-b border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
+              <h2 className="text-xl md:text-2xl font-bold text-gray-900">Record Payment</h2>
               <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-gray-100 rounded-xl transition-colors">
                 <X className="h-6 w-6" />
               </button>
             </div>
-            <form onSubmit={handleSubmit(onSubmit)} className="p-8 space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="p-4 md:p-8 space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Select Student</label>
                   <select
@@ -377,7 +377,7 @@ export default function Payments({ schoolId, school }: { schoolId: string; schoo
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Term</label>
                   <select
@@ -415,7 +415,7 @@ export default function Payments({ schoolId, school }: { schoolId: string; schoo
 
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Payment Method</label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {['cash', 'bank_transfer', 'mobile_money', 'cheque'].map((method) => (
                     <label key={method} className="relative flex items-center p-4 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition-all overflow-hidden">
                       <input

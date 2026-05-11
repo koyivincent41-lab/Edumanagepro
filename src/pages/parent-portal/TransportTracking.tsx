@@ -83,7 +83,7 @@ export default function TransportTracking({ profile }: { profile: UserProfile })
     <ParentLayout profile={profile}>
       <div className="max-w-5xl mx-auto space-y-8">
         <div>
-          <h1 className="text-2xl font-black text-gray-900 dark:text-white">Transport Tracking</h1>
+          <h1 className="text-xl md:text-2xl font-black text-gray-900 dark:text-white">Transport Tracking</h1>
           <p className="text-gray-500 dark:text-gray-400 mt-1">View transport details, routes, and vehicle info for your children.</p>
         </div>
 
@@ -94,9 +94,9 @@ export default function TransportTracking({ profile }: { profile: UserProfile })
         ) : (
           <div className="space-y-8">
             {kidsWithTransport.length > 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                 {kidsWithTransport.map(kid => (
-                  <div key={kid.id} className="bg-white dark:bg-gray-900 p-6 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800">
+                  <div key={kid.id} className="bg-white dark:bg-gray-900 p-4 md:p-6 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800">
                     <div className="flex items-center gap-4 mb-6">
                       <div className="w-12 h-12 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 rounded-2xl flex items-center justify-center shrink-0">
                         <Bus className="w-6 h-6" />
@@ -167,7 +167,7 @@ export default function TransportTracking({ profile }: { profile: UserProfile })
                             </h3>
                             <div className="space-y-2 relative before:absolute before:inset-0 before:ml-2 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-gray-200 before:to-transparent">
                               {kid.routeDetails.stops.map((stop, i) => (
-                                <div key={i} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                                <div key={i} className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 md:justify-normal md:odd:flex-row-reverse group is-active">
                                   <div className="flex items-center justify-center w-5 h-5 rounded-full border-4 border-white dark:border-gray-900 bg-indigo-500 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10" />
                                   <div className="w-[calc(100%-2.5rem)] md:w-[calc(50%-1.25rem)] p-3 rounded-xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-800 shadow-sm flex justify-between items-center">
                                     <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
@@ -195,7 +195,7 @@ export default function TransportTracking({ profile }: { profile: UserProfile })
             )}
 
             {kidsWithoutTransport.length > 0 && (
-              <div className="bg-white dark:bg-gray-900 p-6 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800">
+              <div className="bg-white dark:bg-gray-900 p-4 md:p-6 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800">
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Not Subscribed to Transport</h3>
                 <div className="space-y-4">
                   {kidsWithoutTransport.map(kid => (

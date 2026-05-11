@@ -181,22 +181,22 @@ export default function ParentDashboard({ profile }: { profile: UserProfile }) {
   return (
     <ParentLayout profile={profile}>
       <div 
-        className="mb-8 p-6 rounded-[2.5rem] shadow-lg"
+        className="mb-8 p-4 md:p-6 rounded-[2.5rem] shadow-lg"
         style={{ background: gradientStyle }}
       >
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-black text-white">Welcome back, {profile.fullName}</h1>
+            <h1 className="text-xl md:text-2xl font-black text-white">Welcome back, {profile.fullName}</h1>
             <p className="text-sm text-white/80 font-medium tracking-wide mt-1">Here is a summary of your account activity at {data.schoolName}.</p>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-10">
         {summaryCards.map((card, index) => {
           const Icon = card.icon;
           return (
-            <div key={index} className="bg-white dark:bg-gray-900 p-6 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm flex items-center gap-4">
+            <div key={index} className="bg-white dark:bg-gray-900 p-4 md:p-6 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm flex items-center gap-4">
               <div className={`p-4 rounded-2xl bg-gray-50 dark:bg-gray-800 ${card.color}`}>
                 <Icon className="h-6 w-6" />
               </div>
@@ -219,7 +219,7 @@ export default function ParentDashboard({ profile }: { profile: UserProfile }) {
                 <Link
                   key={index}
                   to={action.path}
-                  className="bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col items-center gap-3 text-center hover:border-primary hover:shadow-lg hover:shadow-primary/10 transition-all group"
+                  className="bg-white dark:bg-gray-900 p-4 md:p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col items-center gap-3 text-center hover:border-primary hover:shadow-lg hover:shadow-primary/10 transition-all group"
                 >
                   <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-xl group-hover:bg-primary group-hover:text-white transition-all">
                     <Icon className="h-6 w-6 text-gray-600 dark:text-gray-400 group-hover:text-white" />
@@ -232,7 +232,7 @@ export default function ParentDashboard({ profile }: { profile: UserProfile }) {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-900 p-6 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm">
+        <div className="bg-white dark:bg-gray-900 p-4 md:p-6 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm">
           <h2 className="text-lg font-black text-gray-900 dark:text-white mb-4 flex items-center gap-2">
             <History className="h-5 w-5 text-primary" />
             Recent Payments

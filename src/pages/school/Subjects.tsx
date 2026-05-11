@@ -173,7 +173,7 @@ export default function Subjects({ school }: { school: School }) {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Subject Management</h1>
+          <h1 className="text-xl md:text-2xl font-bold text-gray-900">Subject Management</h1>
           <p className="text-gray-500">Manage subjects and class assignments</p>
         </div>
         <button
@@ -251,27 +251,27 @@ export default function Subjects({ school }: { school: School }) {
           {/* Subjects Table */}
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
             <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
+              <table className="min-w-[700px] w-full text-left border-collapse">
                 <thead>
                   <tr className="bg-gray-50 border-b border-gray-100">
-                    <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-widest">Subject</th>
-                    <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-widest">Code</th>
-                    <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-widest">Category</th>
-                    <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-widest">Status</th>
-                    <th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-widest text-right">Actions</th>
+                    <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-widest">Subject</th>
+                    <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-widest">Code</th>
+                    <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-widest">Category</th>
+                    <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-widest">Status</th>
+                    <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-widest text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
                   {loading ? (
                     <tr>
-                      <td colSpan={5} className="px-6 py-12 text-center">
+                      <td colSpan={5} className="px-4 md:px-6 py-12 text-center">
                         <Loader2 className="w-8 h-8 animate-spin mx-auto text-primary mb-2" />
                         <p className="text-gray-500">Loading subjects...</p>
                       </td>
                     </tr>
                   ) : filteredSubjects.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="px-6 py-12 text-center">
+                      <td colSpan={5} className="px-4 md:px-6 py-12 text-center">
                         <BookOpen className="w-12 h-12 mx-auto text-gray-300 mb-4" />
                         <p className="text-gray-500 font-medium">No subjects found</p>
                       </td>
@@ -279,21 +279,21 @@ export default function Subjects({ school }: { school: School }) {
                   ) : (
                     filteredSubjects.map((subject) => (
                       <tr key={subject.id} className="hover:bg-gray-50/50 transition-colors">
-                        <td className="px-6 py-4">
+                        <td className="px-4 md:px-6 py-4">
                           <div className="font-bold text-gray-900">{subject.name}</div>
                           {subject.description && (
                             <div className="text-xs text-gray-500 line-clamp-1">{subject.description}</div>
                           )}
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-4 md:px-6 py-4">
                           <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs font-bold">
                             {subject.code}
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-sm text-gray-600">
+                        <td className="px-4 md:px-6 py-4 text-sm text-gray-600">
                           {subject.category || 'N/A'}
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-4 md:px-6 py-4">
                           <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold ${
                             subject.status === 'active' 
                               ? 'bg-green-100 text-green-700' 
@@ -303,7 +303,7 @@ export default function Subjects({ school }: { school: School }) {
                             {subject.status === 'active' ? 'Active' : 'Inactive'}
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-right">
+                        <td className="px-4 md:px-6 py-4 text-right">
                           <div className="flex justify-end gap-2">
                             <button
                               onClick={() => {
@@ -331,10 +331,10 @@ export default function Subjects({ school }: { school: School }) {
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
           {/* Class Selection */}
           <div className="lg:col-span-1 space-y-4">
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            <div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-gray-100">
               <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
                 <LinkIcon className="w-5 h-5 text-primary" />
                 Select Class
@@ -363,7 +363,7 @@ export default function Subjects({ school }: { school: School }) {
           {/* Subject Assignment */}
           <div className="lg:col-span-2 space-y-4">
             {selectedClassId ? (
-              <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+              <div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-gray-100">
                 <div className="flex justify-between items-center mb-6">
                   <div>
                     <h3 className="text-lg font-bold">
@@ -374,7 +374,7 @@ export default function Subjects({ school }: { school: School }) {
                   <button
                     onClick={() => handleSaveAssignments(selectedClassAssignments)}
                     disabled={savingAssignment}
-                    className="px-6 py-2 bg-primary text-white rounded-xl font-bold hover:bg-primary/90 transition-all disabled:opacity-50 flex items-center gap-2"
+                    className="px-4 md:px-6 py-2 bg-primary text-white rounded-xl font-bold hover:bg-primary/90 transition-all disabled:opacity-50 flex items-center gap-2"
                   >
                     {savingAssignment ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save Changes'}
                   </button>
@@ -461,22 +461,22 @@ export default function Subjects({ school }: { school: School }) {
             {/* Assignment Summary Table */}
             {selectedClassId && (
               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
+                <div className="px-4 md:px-6 py-4 border-b border-gray-100 bg-gray-50/50">
                   <h4 className="font-bold text-gray-900">Current Assignments</h4>
                 </div>
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left border-collapse">
+                  <table className="min-w-[700px] w-full text-left border-collapse">
                     <thead>
                       <tr className="bg-gray-50 border-b border-gray-100">
-                        <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-widest">Subject Name</th>
-                        <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-widest">Code</th>
-                        <th className="px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-widest">Teacher</th>
+                        <th className="px-4 md:px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-widest">Subject Name</th>
+                        <th className="px-4 md:px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-widest">Code</th>
+                        <th className="px-4 md:px-6 py-3 text-xs font-bold text-gray-500 uppercase tracking-widest">Teacher</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-50">
                       {selectedClassAssignments.length === 0 ? (
                         <tr>
-                          <td colSpan={3} className="px-6 py-8 text-center text-gray-500 italic">
+                          <td colSpan={3} className="px-4 md:px-6 py-4 md:py-8 text-center text-gray-500 italic">
                             No subjects assigned to this class yet
                           </td>
                         </tr>
@@ -487,13 +487,13 @@ export default function Subjects({ school }: { school: School }) {
                           if (!subject) return null;
                           return (
                             <tr key={assignment.subjectId} className="hover:bg-gray-50/50 transition-colors">
-                              <td className="px-6 py-4 font-bold text-gray-900">{subject.name}</td>
-                              <td className="px-6 py-4">
+                              <td className="px-4 md:px-6 py-4 font-bold text-gray-900">{subject.name}</td>
+                              <td className="px-4 md:px-6 py-4">
                                 <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs font-bold">
                                   {subject.code}
                                 </span>
                               </td>
-                              <td className="px-6 py-4 text-sm text-gray-600">
+                              <td className="px-4 md:px-6 py-4 text-sm text-gray-600">
                                 {teacher ? (
                                   <span className="font-medium text-primary">{teacher.fullName}</span>
                                 ) : (
@@ -527,8 +527,8 @@ export default function Subjects({ school }: { school: School }) {
       {/* Delete Confirmation Modal */}
       {subjectToDelete && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[70] flex items-center justify-center p-4">
-          <div className="bg-white rounded-[2rem] w-full max-w-md overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
-            <div className="p-8 text-center">
+          <div className="bg-white rounded-[2rem] w-[calc(100%-2rem)] md:w-full max-w-md overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
+            <div className="p-4 md:p-8 text-center">
               <div className="w-16 h-16 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <Trash2 className="h-8 w-8" />
               </div>

@@ -166,14 +166,14 @@ export default function LearnerAttendanceAdmin({ school }: { school: School | nu
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="text-2xl font-black text-gray-900">Learners' Attendance</h1>
+            <h1 className="text-xl md:text-2xl font-black text-gray-900">Learners' Attendance</h1>
             <p className="text-gray-500">Monitor student attendance records ({dayName}, {selectedDate})</p>
           </div>
           <div className="flex items-center gap-3">
             <button 
               onClick={exportSchoolCSV}
               disabled={loading}
-              className="flex items-center gap-2 px-6 py-3 bg-gray-900 text-white font-bold rounded-xl shadow-lg hover:bg-gray-800 transition-all disabled:opacity-50 disabled:shadow-none"
+              className="flex items-center gap-2 px-4 md:px-6 py-3 bg-gray-900 text-white font-bold rounded-xl shadow-lg hover:bg-gray-800 transition-all disabled:opacity-50 disabled:shadow-none"
             >
               {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
               Download School CSV
@@ -181,7 +181,7 @@ export default function LearnerAttendanceAdmin({ school }: { school: School | nu
             <button 
               onClick={exportClassCSV}
               disabled={!selectedClass || attendanceRecords.length === 0}
-              className="flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/20 hover:bg-indigo-700 transition-all disabled:opacity-50 disabled:shadow-none"
+              className="flex items-center gap-2 px-4 md:px-6 py-3 bg-indigo-600 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/20 hover:bg-indigo-700 transition-all disabled:opacity-50 disabled:shadow-none"
             >
               <Download className="h-4 w-4" />
               Download Class CSV
@@ -189,7 +189,7 @@ export default function LearnerAttendanceAdmin({ school }: { school: School | nu
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-4">
+        <div className="bg-white p-4 md:p-6 rounded-2xl border border-gray-100 shadow-sm space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <select value={selectedClass} onChange={e => setSelectedClass(e.target.value)} className="p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-primary">
               <option value="">Select Class...</option>

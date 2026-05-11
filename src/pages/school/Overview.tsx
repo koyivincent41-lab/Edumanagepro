@@ -248,10 +248,10 @@ export default function SchoolOverview({ school }: { school: School | null }) {
         </div>
       )}
 
-      <div className="bg-school-gradient p-4 lg:p-6 rounded-2xl lg:rounded-[2.5rem] shadow-lg shadow-maroon/20">
+      <div className="bg-school-gradient p-4 lg:p-4 md:p-6 rounded-2xl lg:rounded-[2.5rem] shadow-lg shadow-maroon/20">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="text-center md:text-left">
-            <h1 className="text-xl lg:text-2xl font-black text-white">Welcome back, {school?.name}</h1>
+            <h1 className="text-xl lg:text-xl md:text-2xl font-black text-white">Welcome back, {school?.name}</h1>
             <p className="text-xs lg:text-sm text-white/80 font-medium tracking-wide">Here's what's happening with your school today.</p>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-2 lg:gap-3">
@@ -268,28 +268,28 @@ export default function SchoolOverview({ school }: { school: School | null }) {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 lg:gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 lg:gap-4 md:gap-6">
         {cards.map((card) => (
-          <div key={card.name} className="bg-white dark:bg-gray-900 p-4 lg:p-6 rounded-2xl lg:rounded-[2rem] border border-gray-100 dark:border-gray-800 shadow-sm">
-            <div className="flex items-center justify-between mb-2 lg:mb-4">
+          <div key={card.name} className="bg-white dark:bg-gray-900 p-4 lg:p-4 md:p-6 rounded-2xl lg:rounded-[2rem] border border-gray-100 dark:border-gray-800 shadow-sm">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 mb-2 lg:mb-4">
               <div className={`p-2 lg:p-3 ${card.color === 'bg-primary' ? 'bg-school-gradient' : card.color} rounded-xl lg:rounded-2xl`}>
                 <card.icon className="h-4 w-4 lg:h-6 lg:w-6 text-white" />
               </div>
               <TrendingUp className="h-3 w-3 lg:h-5 lg:w-5 text-green-500" />
             </div>
             <p className="text-[10px] lg:text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">{card.name}</p>
-            <p className="text-sm lg:text-2xl font-extrabold text-gray-900 dark:text-white truncate">{card.value}</p>
+            <p className="text-sm lg:text-xl md:text-2xl font-extrabold text-gray-900 dark:text-white truncate">{card.value}</p>
           </div>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-4 md:gap-8">
         <div className="lg:col-span-2 bg-white dark:bg-gray-900 rounded-2xl lg:rounded-[2.5rem] border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden">
-          <div className="bg-school-gradient px-4 lg:px-8 py-3 lg:py-4">
+          <div className="bg-school-gradient px-4 lg:px-4 md:px-8 py-3 lg:py-4">
             <h3 className="font-black text-white uppercase tracking-[0.2em] text-[10px] lg:text-xs">Financial Performance</h3>
           </div>
-          <div className="p-4 lg:p-8">
-            <div className="flex items-center justify-between mb-4 lg:mb-8">
+          <div className="p-4 lg:p-4 md:p-8">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 mb-4 lg:mb-8">
               <div className="flex flex-wrap gap-2 lg:gap-4">
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 bg-primary rounded-full"></div>
@@ -354,13 +354,13 @@ export default function SchoolOverview({ school }: { school: School | null }) {
       </div>
 
         <div className="bg-white dark:bg-gray-900 rounded-2xl lg:rounded-[2.5rem] border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden">
-          <div className="bg-school-gradient px-4 lg:px-8 py-3 lg:py-4">
+          <div className="bg-school-gradient px-4 lg:px-4 md:px-8 py-3 lg:py-4">
             <h3 className="font-black text-white uppercase tracking-[0.2em] text-[10px] lg:text-xs">Recent Invoices</h3>
           </div>
-          <div className="p-4 lg:p-8">
+          <div className="p-4 lg:p-4 md:p-8">
             <div className="space-y-4 lg:space-y-6">
             {recentInvoices.map((inv) => (
-              <div key={inv.id} className="flex items-center justify-between group">
+              <div key={inv.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 group">
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 bg-gray-50 dark:bg-gray-800 rounded-xl flex items-center justify-center text-gray-400 group-hover:bg-primary/10 group-hover:text-primary transition-colors">
                     <FileText className="h-5 w-5" />

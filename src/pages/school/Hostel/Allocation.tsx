@@ -135,7 +135,7 @@ export default function Allocation({ schoolId }: { schoolId: string }) {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 md:p-6 space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h2 className="text-lg font-bold text-gray-900">Bed Allocation</h2>
         
@@ -165,20 +165,20 @@ export default function Allocation({ schoolId }: { schoolId: string }) {
 
       <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
+          <table className="min-w-[700px] w-full text-left text-sm">
             <thead className="bg-gray-50 border-b border-gray-100">
               <tr>
-                <th className="px-6 py-4 font-semibold text-gray-900">Student Name</th>
-                <th className="px-6 py-4 font-semibold text-gray-900">Admission No.</th>
-                <th className="px-6 py-4 font-semibold text-gray-900">Hostel</th>
-                <th className="px-6 py-4 font-semibold text-gray-900">Room No.</th>
-                <th className="px-6 py-4 font-semibold text-gray-900 text-right">Action</th>
+                <th className="px-4 md:px-6 py-4 font-semibold text-gray-900">Student Name</th>
+                <th className="px-4 md:px-6 py-4 font-semibold text-gray-900">Admission No.</th>
+                <th className="px-4 md:px-6 py-4 font-semibold text-gray-900">Hostel</th>
+                <th className="px-4 md:px-6 py-4 font-semibold text-gray-900">Room No.</th>
+                <th className="px-4 md:px-6 py-4 font-semibold text-gray-900 text-right">Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {filteredAllocations.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
+                  <td colSpan={5} className="px-4 md:px-6 py-4 md:py-8 text-center text-gray-500">
                     No active allocations found.
                   </td>
                 </tr>
@@ -192,23 +192,23 @@ export default function Allocation({ schoolId }: { schoolId: string }) {
 
                   return (
                     <tr key={alloc.id} className="hover:bg-gray-50/50 transition-colors">
-                      <td className="px-6 py-4 font-medium text-gray-900">
+                      <td className="px-4 md:px-6 py-4 font-medium text-gray-900">
                         {student.fullName}
                       </td>
-                      <td className="px-6 py-4 text-gray-500">
+                      <td className="px-4 md:px-6 py-4 text-gray-500">
                         {student.admissionNumber}
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="px-4 md:px-6 py-4">
                         <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-blue-50 text-blue-700 font-medium text-xs">
                           {hostel?.name || 'Unknown'}
                         </span>
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="px-4 md:px-6 py-4">
                         <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-purple-50 text-purple-700 font-medium text-xs">
                           {room?.roomNumber || 'Unknown'}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-right flex justify-end gap-2">
+                      <td className="px-4 md:px-6 py-4 text-right flex justify-end gap-2">
                         <button
                           onClick={() => setAllocationToVacate(alloc.id)}
                           className="px-3 py-1.5 bg-orange-50 text-orange-600 rounded-lg text-xs font-bold hover:bg-orange-100 transition-colors"
@@ -234,7 +234,7 @@ export default function Allocation({ schoolId }: { schoolId: string }) {
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md overflow-hidden">
+          <div className="bg-white rounded-2xl w-[calc(100%-2rem)] md:w-full max-w-md overflow-hidden">
             <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
               <h3 className="font-bold text-gray-900">Allocate Bed</h3>
               <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-gray-200 rounded-lg">
@@ -242,7 +242,7 @@ export default function Allocation({ schoolId }: { schoolId: string }) {
               </button>
             </div>
             
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
+            <form onSubmit={handleSubmit} className="p-4 md:p-6 space-y-4">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1">Select Student</label>
                 <select 
@@ -314,7 +314,7 @@ export default function Allocation({ schoolId }: { schoolId: string }) {
 
       {allocationToVacate && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md overflow-hidden p-6 text-center">
+          <div className="bg-white rounded-2xl w-[calc(100%-2rem)] md:w-full max-w-md overflow-hidden p-4 md:p-6 text-center">
             <h3 className="text-xl font-bold text-gray-900 mb-2">Vacate Student</h3>
             <p className="text-gray-500 mb-6">Are you sure you want to vacate this student from the room? Their history will be preserved.</p>
             <div className="flex justify-center gap-3">
@@ -337,7 +337,7 @@ export default function Allocation({ schoolId }: { schoolId: string }) {
 
       {allocationToDelete && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md overflow-hidden p-6 text-center">
+          <div className="bg-white rounded-2xl w-[calc(100%-2rem)] md:w-full max-w-md overflow-hidden p-4 md:p-6 text-center">
             <div className="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
               <Trash2 className="w-8 h-8" />
             </div>

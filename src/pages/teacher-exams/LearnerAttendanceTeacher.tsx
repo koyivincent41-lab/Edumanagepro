@@ -240,7 +240,7 @@ export default function LearnerAttendanceTeacher({ teacher }: { teacher: any }) 
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
-      <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-4">
+      <div className="bg-white p-4 md:p-6 rounded-2xl border border-gray-100 shadow-sm space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <select value={selectedClass} onChange={e => { setSelectedClass(e.target.value); setHasLoaded(false); }} className="p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-maroon">
             <option value="">Select Class...</option>
@@ -266,12 +266,12 @@ export default function LearnerAttendanceTeacher({ teacher }: { teacher: any }) 
              <button 
                onClick={exportToCalendar}
                disabled={!selectedClass || attendanceRecords.length === 0}
-               className="px-6 py-3 bg-indigo-600 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/20 hover:bg-indigo-700 transition-all disabled:opacity-50 disabled:shadow-none flex items-center gap-2"
+               className="px-4 md:px-6 py-3 bg-indigo-600 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/20 hover:bg-indigo-700 transition-all disabled:opacity-50 disabled:shadow-none flex items-center gap-2"
              >
                <Download className="h-4 w-4" />
                Sync to Google Calendar
              </button>
-             <button onClick={loadRegister} disabled={!selectedClass} className="px-6 py-3 bg-maroon text-white font-bold rounded-xl disabled:opacity-50 flex items-center gap-2 hover:bg-maroon/90 transition-colors shadow-lg shadow-maroon/20">
+             <button onClick={loadRegister} disabled={!selectedClass} className="px-4 md:px-6 py-3 bg-maroon text-white font-bold rounded-xl disabled:opacity-50 flex items-center gap-2 hover:bg-maroon/90 transition-colors shadow-lg shadow-maroon/20">
                 {loading && <Loader2 className="h-4 w-4 animate-spin" />}
                 Load Attendance Register
              </button>
@@ -349,11 +349,11 @@ export default function LearnerAttendanceTeacher({ teacher }: { teacher: any }) 
 
       {showConfirmModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="p-6 border-b border-gray-100">
+          <div className="bg-white rounded-2xl shadow-xl w-[calc(100%-2rem)] md:w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="p-4 md:p-6 border-b border-gray-100">
               <h3 className="text-xl font-bold text-gray-900">Confirm Save</h3>
             </div>
-            <div className="p-6">
+            <div className="p-4 md:p-6">
               <p className="text-gray-600 mb-4">
                 Are you sure you want to save the {selectedSession} attendance for the selected week?
               </p>
@@ -372,7 +372,7 @@ export default function LearnerAttendanceTeacher({ teacher }: { teacher: any }) 
               <button
                 onClick={confirmAndSaveAttendance}
                 disabled={saving}
-                className="px-6 py-2 bg-maroon text-white font-bold rounded-xl hover:bg-maroon/90 transition-all flex items-center gap-2"
+                className="px-4 md:px-6 py-2 bg-maroon text-white font-bold rounded-xl hover:bg-maroon/90 transition-all flex items-center gap-2"
               >
                 {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
                 Confirm & Save

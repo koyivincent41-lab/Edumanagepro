@@ -22,7 +22,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 overflow-y-auto">
-      <div className="bg-white rounded-3xl p-8 max-w-lg w-full relative my-8 text-center">
+      <div className="bg-white rounded-3xl p-4 md:p-8 max-w-lg w-full relative my-8 text-center">
         <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
           <X className="h-6 w-6" />
         </button>
@@ -31,10 +31,10 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
           <CreditCard className="h-8 w-8 text-primary" />
         </div>
 
-        <h2 className="text-2xl font-black mb-2">Subscribe to {packageName}</h2>
+        <h2 className="text-xl md:text-2xl font-black mb-2">Subscribe to {packageName}</h2>
         <p className="text-gray-500 mb-6 font-medium">Amount: ${price.toFixed(2)}</p>
 
-        <div className="bg-gray-50 rounded-2xl p-6 mb-8">
+        <div className="bg-gray-50 rounded-2xl p-4 md:p-6 mb-8">
           <p className="text-sm text-gray-600 mb-4">
             Online payments are currently being updated. To activate your subscription immediately, please contact our billing department.
           </p>

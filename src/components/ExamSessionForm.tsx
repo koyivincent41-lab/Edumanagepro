@@ -110,7 +110,7 @@ export default function ExamSessionForm({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl p-6 max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-xl w-[calc(100%-2rem)] md:w-full max-w-2xl p-4 md:p-6 max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-bold">{session ? 'Edit' : 'Create'} Exam Session</h2>
           <button onClick={onClose}><X className="w-6 h-6" /></button>
@@ -183,7 +183,7 @@ export default function ExamSessionForm({
 
           <div className="space-y-3">
             <label className="text-xs font-black text-gray-400 uppercase tracking-widest">Applicable Classes</label>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 p-4 bg-gray-50 rounded-2xl border border-gray-100 max-h-48 overflow-y-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 sm:grid-cols-3 gap-3 p-4 bg-gray-50 rounded-2xl border border-gray-100 max-h-48 overflow-y-auto">
               {classes.map(c => (
                 <label key={c.id} className="flex items-center gap-2 p-2 hover:bg-white rounded-xl transition-colors cursor-pointer group">
                   <input
@@ -224,7 +224,7 @@ export default function ExamSessionForm({
             <button type="button" onClick={onClose} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">
               Cancel
             </button>
-            <button type="submit" disabled={loading} className="px-6 py-2 bg-primary text-white rounded-lg flex items-center gap-2 disabled:opacity-50">
+            <button type="submit" disabled={loading} className="px-4 md:px-6 py-2 bg-primary text-white rounded-lg flex items-center gap-2 disabled:opacity-50">
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Save Session'}
             </button>
           </div>

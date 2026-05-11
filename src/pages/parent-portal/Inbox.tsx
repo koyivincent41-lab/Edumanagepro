@@ -105,7 +105,7 @@ export default function Inbox({ profile }: { profile: UserProfile }) {
   return (
     <ParentLayout profile={profile}>
       <div className="mb-8">
-        <h1 className="text-2xl font-black text-gray-900 dark:text-white">Inbox</h1>
+        <h1 className="text-xl md:text-2xl font-black text-gray-900 dark:text-white">Inbox</h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">View your notifications and messages from the school.</p>
       </div>
 
@@ -143,7 +143,7 @@ export default function Inbox({ profile }: { profile: UserProfile }) {
                   {getIcon(notification.type)}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between mb-1">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 mb-1">
                     <h3 className={`font-bold truncate ${notification.read ? 'text-gray-700 dark:text-gray-300' : 'text-gray-900 dark:text-white'}`}>
                       {notification.title}
                     </h3>

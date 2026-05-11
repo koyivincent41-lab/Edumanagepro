@@ -108,8 +108,8 @@ export default function ReportFormBrowser({ schoolId, isAdmin = false }: ReportF
 
   return (
     <div className="space-y-6">
-      <div className="bg-white rounded-3xl shadow-xl shadow-gray-200/50 border border-gray-100 p-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
+      <div className="bg-white rounded-3xl shadow-xl shadow-gray-200/50 border border-gray-100 p-4 md:p-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6 items-end">
           <div className="space-y-2">
             <label className="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Class</label>
             <select value={selectedClassId} onChange={(e) => setSelectedClassId(e.target.value)} className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none font-bold text-gray-700">
@@ -159,14 +159,14 @@ export default function ReportFormBrowser({ schoolId, isAdmin = false }: ReportF
           </div>
 
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            <table className="w-full">
+            <table className="min-w-[700px] w-full">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase">Admission</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase">Name</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase">Class</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase">Stream</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase">Action</th>
+                  <th className="px-4 md:px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase">Admission</th>
+                  <th className="px-4 md:px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase">Name</th>
+                  <th className="px-4 md:px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase">Class</th>
+                  <th className="px-4 md:px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase">Stream</th>
+                  <th className="px-4 md:px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
@@ -176,11 +176,11 @@ export default function ReportFormBrowser({ schoolId, isAdmin = false }: ReportF
 
                   return (
                     <tr key={student.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 font-bold text-gray-900">{student.admissionNumber}</td>
-                      <td className="px-6 py-4 font-bold text-gray-900">{student.fullName}</td>
-                      <td className="px-6 py-4 text-gray-600">{studentClass?.name || '-'}</td>
-                      <td className="px-6 py-4 text-gray-600">{studentStream?.name || '-'}</td>
-                      <td className="px-6 py-4 flex items-center gap-2">
+                      <td className="px-4 md:px-6 py-4 font-bold text-gray-900">{student.admissionNumber}</td>
+                      <td className="px-4 md:px-6 py-4 font-bold text-gray-900">{student.fullName}</td>
+                      <td className="px-4 md:px-6 py-4 text-gray-600">{studentClass?.name || '-'}</td>
+                      <td className="px-4 md:px-6 py-4 text-gray-600">{studentStream?.name || '-'}</td>
+                      <td className="px-4 md:px-6 py-4 flex items-center gap-2">
                         <button onClick={() => setViewingStudent({ student, action: 'view' })} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="View Report Form">
                           <Eye className="h-4 w-4" />
                         </button>
@@ -217,9 +217,9 @@ export default function ReportFormBrowser({ schoolId, isAdmin = false }: ReportF
 
       {showBulkPrintModal && (
         <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex flex-col items-center justify-center p-4 md:p-8">
-          <div className="bg-white w-full max-w-5xl h-full rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden relative">
+          <div className="bg-white w-[calc(100%-2rem)] md:w-full max-w-5xl h-full rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden relative">
             {/* Sticky Header */}
-            <div className="sticky top-0 z-10 bg-white border-b border-gray-100 p-6 flex items-center justify-between shrink-0">
+            <div className="sticky top-0 z-10 bg-white border-b border-gray-100 p-4 md:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 shrink-0">
               <div className="flex items-center gap-4">
                 <div className="p-3 bg-purple-100 text-purple-600 rounded-2xl">
                   <Printer className="h-6 w-6" />
@@ -245,7 +245,7 @@ export default function ReportFormBrowser({ schoolId, isAdmin = false }: ReportF
                 <button
                   onClick={triggerPrint}
                   disabled={loadedCount < bulkPrintStudents.length}
-                  className="flex items-center gap-2 px-6 py-3 bg-purple-600 text-white rounded-xl font-black uppercase tracking-widest text-[10px] shadow-lg shadow-purple-600/20 hover:bg-purple-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center gap-2 px-4 md:px-6 py-3 bg-purple-600 text-white rounded-xl font-black uppercase tracking-widest text-[10px] shadow-lg shadow-purple-600/20 hover:bg-purple-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Printer className="h-4 w-4" />
                   Print All
@@ -264,7 +264,7 @@ export default function ReportFormBrowser({ schoolId, isAdmin = false }: ReportF
             </div>
 
             {/* Scrollable Body */}
-            <div className="flex-1 overflow-y-auto p-8 space-y-12 bg-gray-50/50 bulk-print-modal-body">
+            <div className="flex-1 overflow-y-auto p-4 md:p-8 space-y-12 bg-gray-50/50 bulk-print-modal-body">
               {loadedCount < bulkPrintStudents.length && (
                 <div className="flex flex-col items-center justify-center py-20 print:hidden">
                   <Loader2 className="h-12 w-12 animate-spin text-purple-600 mb-4" />
@@ -275,7 +275,7 @@ export default function ReportFormBrowser({ schoolId, isAdmin = false }: ReportF
               
               <div className="bulk-print-container">
                 {bulkPrintStudents.map(student => (
-                  <div key={student.id} className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 mb-8 last:mb-0 print:m-0 print:p-0 print:shadow-none print:border-none print:block">
+                  <div key={student.id} className="bg-white p-4 md:p-8 rounded-3xl shadow-sm border border-gray-100 mb-8 last:mb-0 print:m-0 print:p-0 print:shadow-none print:border-none print:block">
                     <TermReportForm
                       student={student}
                       term={selectedTerm}

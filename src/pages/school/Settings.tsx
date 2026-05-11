@@ -257,17 +257,17 @@ export default function SettingsPage({ school }: { school: School | null }) {
         '--school-gradient': isGradient ? `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})` : primaryColor
       } as React.CSSProperties}
     >
-      <div className="bg-school-gradient p-4 lg:p-6 rounded-2xl lg:rounded-[2.5rem] shadow-lg shadow-maroon/20">
-        <div className="flex items-center justify-between">
+      <div className="bg-school-gradient p-4 lg:p-4 md:p-6 rounded-2xl lg:rounded-[2.5rem] shadow-lg shadow-maroon/20">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
           <div>
-            <h1 className="text-xl lg:text-2xl font-black text-white">School Settings</h1>
+            <h1 className="text-xl lg:text-xl md:text-2xl font-black text-white">School Settings</h1>
             <p className="text-xs lg:text-sm text-white/80 font-medium tracking-wide">Manage your school profile and branding.</p>
           </div>
         </div>
       </div>
 
       <div className="bg-white rounded-2xl lg:rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden">
-        <div className="p-4 lg:p-8 bg-gray-50 border-b border-gray-100 flex flex-col md:flex-row items-center gap-4 lg:gap-8">
+        <div className="p-4 lg:p-4 md:p-8 bg-gray-50 border-b border-gray-100 flex flex-col md:flex-row items-center gap-4 lg:gap-4 md:gap-8">
           <div className="relative group">
             <input
               id="logo-upload"
@@ -314,14 +314,14 @@ export default function SettingsPage({ school }: { school: School | null }) {
           </div>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="p-4 lg:p-8 space-y-6 lg:space-y-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+        <form onSubmit={handleSubmit(onSubmit)} className="p-4 lg:p-4 md:p-8 space-y-6 lg:space-y-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 lg:gap-4 md:gap-8">
             <div className="space-y-4 lg:space-y-6">
               <h4 className="text-[10px] lg:text-xs font-bold text-gray-400 uppercase tracking-widest">General Information</h4>
               
               {school && (
                 <div className="bg-primary/5 p-4 rounded-xl border border-primary/10 mb-6">
-                  <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                     <div>
                       <p className="text-gray-500 mb-1">Registration Date</p>
                       <p className="font-bold text-gray-900">{new Date(school.createdAt).toLocaleDateString()}</p>
@@ -400,7 +400,7 @@ export default function SettingsPage({ school }: { school: School | null }) {
                   </div>
                   
                   {pkg && (
-                    <div className="mt-3 p-3 bg-blue-50 rounded-xl border border-blue-100 flex items-center justify-between">
+                    <div className="mt-3 p-3 bg-blue-50 rounded-xl border border-blue-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
                       <div className="flex items-center gap-2">
                         <CreditCard className="h-4 w-4 text-blue-600" />
                         <span className="text-xs font-bold text-blue-800">Plan Preview ({school?.packageId})</span>
@@ -429,7 +429,7 @@ export default function SettingsPage({ school }: { school: School | null }) {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Academic Year</label>
                   <div className="relative group/select">
@@ -448,7 +448,7 @@ export default function SettingsPage({ school }: { school: School | null }) {
                   </div>
                 </div>
                 <div>
-                  <div className="flex items-center justify-between mb-2">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 mb-2">
                     <label className="block text-sm font-semibold text-gray-700">Current Term</label>
                     <span className="px-2 py-0.5 bg-green-100 text-green-600 text-[10px] font-black rounded uppercase tracking-widest">Active</span>
                   </div>
@@ -503,7 +503,7 @@ export default function SettingsPage({ school }: { school: School | null }) {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 pt-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
                   <div>
                     <label className="block text-xs font-medium text-gray-500 mb-1">Primary Color</label>
                     <div className="flex items-center gap-2">
@@ -576,7 +576,7 @@ export default function SettingsPage({ school }: { school: School | null }) {
                   <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest">Attendance Settings</h4>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-medium text-gray-500 mb-1">Clock-In Window</label>
                     <div className="flex items-center gap-2">
@@ -611,7 +611,7 @@ export default function SettingsPage({ school }: { school: School | null }) {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-medium text-gray-500 mb-1">Late Threshold (Mins)</label>
                     <input
@@ -631,7 +631,7 @@ export default function SettingsPage({ school }: { school: School | null }) {
                 </div>
 
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 p-4 bg-gray-50 rounded-2xl border border-gray-100">
                     <div className="flex items-center gap-3">
                       <div className="p-2 bg-white rounded-xl shadow-sm">
                         <Navigation className="h-4 w-4 text-blue-600" />
@@ -660,7 +660,7 @@ export default function SettingsPage({ school }: { school: School | null }) {
 
                   {watch('requireGPS') && (
                     <div className="p-4 bg-blue-50/50 rounded-2xl border border-blue-100/50 space-y-4">
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                           <label className="block text-[10px] font-black uppercase tracking-widest text-blue-600 mb-1">Latitude</label>
                           <input
@@ -724,7 +724,7 @@ export default function SettingsPage({ school }: { school: School | null }) {
                   )}
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 p-4 bg-gray-50 rounded-2xl border border-gray-100">
                       <div className="flex items-center gap-3">
                         <Fingerprint className="h-4 w-4 text-gray-400" />
                         <span className="text-xs font-bold text-gray-700">Fingerprint Mandatory</span>
@@ -735,7 +735,7 @@ export default function SettingsPage({ school }: { school: School | null }) {
                         className="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary"
                       />
                     </div>
-                    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 p-4 bg-gray-50 rounded-2xl border border-gray-100">
                       <div className="flex items-center gap-3">
                         <UserCheck className="h-4 w-4 text-gray-400" />
                         <span className="text-xs font-bold text-gray-700">Selfie Required</span>
@@ -746,7 +746,7 @@ export default function SettingsPage({ school }: { school: School | null }) {
                         className="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary"
                       />
                     </div>
-                    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 p-4 bg-gray-50 rounded-2xl border border-gray-100">
                       <div className="flex items-center gap-3">
                         <Repeat className="h-4 w-4 text-gray-400" />
                         <span className="text-xs font-bold text-gray-700">Once Per Session</span>

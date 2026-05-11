@@ -16,7 +16,7 @@ export default function TransportModule({ schoolId, school }: { schoolId: string
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       <div>
-        <h1 className="text-2xl font-black text-gray-900">Transport Management</h1>
+        <h1 className="text-xl md:text-2xl font-black text-gray-900">Transport Management</h1>
         <p className="text-gray-500">Manage school vehicles, routes, and transport assignments.</p>
       </div>
 

@@ -81,9 +81,17 @@ export default function ParentLayout({ children, profile }: { children: React.Re
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex transition-colors duration-300">
+      {/* Mobile Sidebar Overlay */}
+      {!isSidebarOpen && window.innerWidth <= 768 ? null : (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm transition-opacity"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
-      <aside className={`print:hidden bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 transition-all duration-300 ${isSidebarOpen ? 'w-64' : 'w-20'} flex flex-col shrink-0`}>
-        <div className="p-6 flex items-center gap-3 border-b border-gray-100 dark:border-gray-800">
+      <aside className={`print:hidden fixed inset-y-0 left-0 z-50 md:relative bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 transition-all duration-300 ${isSidebarOpen ? 'w-64 translate-x-0' : '-translate-x-full md:translate-x-0 md:w-20'} flex flex-col shrink-0`}>
+        <div className="p-4 md:p-6 flex items-center gap-3 border-b border-gray-100 dark:border-gray-800">
           <div className="p-2 bg-primary rounded-xl shrink-0">
             <GraduationCap className="h-5 w-5 text-white" />
           </div>
@@ -146,7 +154,7 @@ export default function ParentLayout({ children, profile }: { children: React.Re
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col h-screen overflow-hidden print:overflow-visible print:h-auto">
-        <header className="print:hidden h-16 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between px-8 shrink-0">
+        <header className="print:hidden h-16 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between px-4 md:px-8 shrink-0">
           <div className="flex items-center gap-4">
             <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg text-gray-500 dark:text-gray-400">
               {isSidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -172,7 +180,7 @@ export default function ParentLayout({ children, profile }: { children: React.Re
           </div>
         </header>
 
-        <div className="flex-1 overflow-y-auto p-8 bg-gray-50 dark:bg-gray-950 print:p-0 print:bg-white print:overflow-visible">
+        <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-gray-50 dark:bg-gray-950 print:p-0 print:bg-white print:overflow-visible">
           {children}
         </div>
       </main>

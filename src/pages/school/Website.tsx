@@ -103,7 +103,7 @@ export default function Website({ school }: { school: School | null }) {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Our Website</h1>
+          <h1 className="text-xl md:text-2xl font-bold text-gray-900">Our Website</h1>
           <p className="text-gray-600 mt-1">Manage your school's public website</p>
         </div>
         <div className="flex items-center space-x-3">
@@ -126,8 +126,8 @@ export default function Website({ school }: { school: School | null }) {
       </div>
 
       {/* Status Card */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-        <div className="flex items-center justify-between">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 md:p-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
           <div className="flex items-center space-x-4">
             <div className={`p-3 rounded-full ${websiteData?.isPublished ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-500'}`}>
               <Globe className="w-6 h-6" />
@@ -162,7 +162,7 @@ export default function Website({ school }: { school: School | null }) {
         </div>
 
         {websiteData?.isPublished && (
-          <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200 flex items-center justify-between">
+          <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
             <div className="flex-1 truncate mr-4">
               <p className="text-sm text-gray-500 mb-1">Public Link</p>
               <a href={publicUrl} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-medium truncate block">
@@ -182,7 +182,7 @@ export default function Website({ school }: { school: School | null }) {
 
       {/* Content Editor */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="p-6 border-b border-gray-100 bg-gray-50/50">
+        <div className="p-4 md:p-6 border-b border-gray-100 bg-gray-50/50">
           <div className="flex items-center space-x-2">
             <LayoutTemplate className="w-5 h-5 text-primary" />
             <h3 className="text-lg font-semibold text-gray-900">Website Content</h3>
@@ -192,8 +192,8 @@ export default function Website({ school }: { school: School | null }) {
           </p>
         </div>
 
-        <div className="p-6 space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="p-4 md:p-6 space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">URL Slug</label>
               <div className="flex rounded-md shadow-sm">
@@ -252,7 +252,7 @@ export default function Website({ school }: { school: School | null }) {
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-gray-700">Mission</label>
                 <textarea

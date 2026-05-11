@@ -135,10 +135,10 @@ export default function Expenses({ schoolId, school }: { schoolId: string; schoo
 
   return (
     <div className="space-y-6">
-      <div className="bg-school-gradient p-6 rounded-[2.5rem] shadow-lg shadow-maroon/20">
+      <div className="bg-school-gradient p-4 md:p-6 rounded-[2.5rem] shadow-lg shadow-maroon/20">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-black text-white">School Expenses</h1>
+            <h1 className="text-xl md:text-2xl font-black text-white">School Expenses</h1>
             <p className="text-sm text-white/80 font-medium tracking-wide">Track and manage school operational costs.</p>
           </div>
           <div className="flex items-center gap-3">
@@ -164,7 +164,7 @@ export default function Expenses({ schoolId, school }: { schoolId: string; schoo
                 });
                 setIsModalOpen(true);
               }}
-              className="px-6 py-2.5 bg-white text-maroon font-black uppercase tracking-widest text-[10px] rounded-xl shadow-xl hover:scale-105 transition-all flex items-center gap-2"
+              className="px-4 md:px-6 py-2.5 bg-white text-maroon font-black uppercase tracking-widest text-[10px] rounded-xl shadow-xl hover:scale-105 transition-all flex items-center gap-2"
             >
               <Plus className="h-4 w-4" />
               Record Expense
@@ -175,39 +175,39 @@ export default function Expenses({ schoolId, school }: { schoolId: string; schoo
 
       <div className="bg-white rounded-[2rem] border border-gray-100 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left">
+          <table className="min-w-[700px] w-full text-left">
             <thead>
               <tr className="bg-gray-50">
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Expense</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Category</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Amount</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Date</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Actions</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Expense</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Category</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Amount</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Date</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {expenses.map((expense) => (
                 <tr key={expense.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-6 py-4">
+                  <td className="px-4 md:px-6 py-4">
                     <p className="text-sm font-bold text-gray-900">{expense.title}</p>
                     <p className="text-xs text-gray-500">{expense.description || 'No description'}</p>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 md:px-6 py-4">
                     <span className="px-3 py-1 bg-gray-100 rounded-full text-[10px] font-bold uppercase text-gray-600 flex items-center gap-1 w-fit">
                       <Tag className="h-3 w-3" />
                       {expense.category}
                     </span>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 md:px-6 py-4">
                     <p className="text-sm font-extrabold text-red-600">{school?.currency} {expense.amount.toLocaleString()}</p>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 md:px-6 py-4">
                     <div className="flex items-center gap-2 text-sm text-gray-600">
                       <Calendar className="h-4 w-4 text-gray-400" />
                       {new Date(expense.date).toLocaleDateString()}
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-right">
+                  <td className="px-4 md:px-6 py-4 text-right">
                     <div className="flex justify-end gap-2">
                       <button 
                         onClick={() => handleEdit(expense)}
@@ -229,8 +229,8 @@ export default function Expenses({ schoolId, school }: { schoolId: string; schoo
               ))}
               {expenses.length > 0 && (
                 <tr className="bg-gray-50 font-bold">
-                  <td className="px-6 py-4 text-gray-900" colSpan={2}>TOTAL</td>
-                  <td className="px-6 py-4 text-red-600">
+                  <td className="px-4 md:px-6 py-4 text-gray-900" colSpan={2}>TOTAL</td>
+                  <td className="px-4 md:px-6 py-4 text-red-600">
                     {school?.currency} {expenses.reduce((sum, e) => sum + e.amount, 0).toLocaleString()}
                   </td>
                   <td colSpan={2}></td>
@@ -244,14 +244,14 @@ export default function Expenses({ schoolId, school }: { schoolId: string; schoo
       {/* Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white w-full max-w-xl rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="p-8 border-b border-gray-100 flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-gray-900">{editingExpense ? 'Edit Expense' : 'Record Expense'}</h2>
+          <div className="bg-white w-[calc(100%-2rem)] md:w-full max-w-xl rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="p-4 md:p-8 border-b border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
+              <h2 className="text-xl md:text-2xl font-bold text-gray-900">{editingExpense ? 'Edit Expense' : 'Record Expense'}</h2>
               <button onClick={handleCloseModal} className="p-2 hover:bg-gray-100 rounded-xl transition-colors">
                 <X className="h-6 w-6" />
               </button>
             </div>
-            <form onSubmit={handleSubmit(onSubmit)} className="p-8 space-y-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="p-4 md:p-8 space-y-6">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Expense Title</label>
                 <input
@@ -262,7 +262,7 @@ export default function Expenses({ schoolId, school }: { schoolId: string; schoo
                 {errors.title && <p className="mt-1 text-xs text-red-500">{errors.title.message}</p>}
               </div>
 
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Amount</label>
                   <div className="relative">

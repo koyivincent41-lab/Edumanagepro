@@ -201,7 +201,7 @@ export default function Login({ profile }: { profile: UserProfile | null }) {
 
   return (
     <PublicLayout>
-      <div className="min-h-screen relative flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 overflow-hidden">
+      <div className="min-h-screen relative flex items-center justify-center py-12 px-4 sm:px-4 md:px-6 lg:px-4 md:px-8 overflow-hidden">
         {/* Animated Background Gradients */}
         <div className="absolute inset-0 z-0 overflow-hidden">
           <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] rounded-full bg-maroon/10 dark:bg-maroon/20 blur-[120px] animate-pulse" />
@@ -218,13 +218,13 @@ export default function Login({ profile }: { profile: UserProfile | null }) {
             <div className="inline-flex p-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-[2rem] shadow-2xl shadow-maroon/10 mb-6 border border-white/50 dark:border-gray-800">
               <GraduationCap className="h-10 w-10 text-maroon" />
             </div>
-            <h1 className="text-4xl font-black text-gray-900 dark:text-white mb-3 tracking-tight">
+            <h1 className="text-3xl md:text-4xl font-black text-gray-900 dark:text-white mb-3 tracking-tight">
               Welcome <span className="text-maroon">Back</span>
             </h1>
             <p className="text-gray-500 dark:text-gray-400 font-medium">Sign in to manage your school workspace.</p>
           </div>
 
-          <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-2xl p-8 lg:p-10 rounded-[3rem] border border-white/50 dark:border-gray-800 shadow-[0_32px_64px_-15px_rgba(0,0,0,0.1)] dark:shadow-[0_32px_64px_-15px_rgba(0,0,0,0.5)] relative overflow-hidden group">
+          <div className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-2xl p-4 md:p-8 lg:p-10 rounded-[3rem] border border-white/50 dark:border-gray-800 shadow-[0_32px_64px_-15px_rgba(0,0,0,0.1)] dark:shadow-[0_32px_64px_-15px_rgba(0,0,0,0.5)] relative overflow-hidden group">
             {/* Decorative border glow */}
             <div className="absolute inset-0 border-2 border-transparent bg-gradient-to-br from-maroon/20 via-transparent to-gray-400/20 rounded-[3rem] pointer-events-none opacity-50" />
             
@@ -279,7 +279,7 @@ export default function Login({ profile }: { profile: UserProfile | null }) {
                 </div>
 
                 <div className="space-y-2">
-                  <div className="flex items-center justify-between ml-1">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 ml-1">
                     <label className="block text-xs font-black uppercase tracking-widest text-gray-400 dark:text-gray-500">Password</label>
                     <Link to="/forgot-password" title="Coming soon" className="text-[10px] font-black uppercase tracking-widest text-maroon/60 hover:text-maroon transition-colors">Forgot Password?</Link>
                   </div>
@@ -323,7 +323,7 @@ export default function Login({ profile }: { profile: UserProfile | null }) {
                     <div className="w-full border-t border-gray-100 dark:border-gray-800"></div>
                   </div>
                   <div className="relative flex justify-center text-[10px] font-black uppercase tracking-[0.2em]">
-                    <span className="px-6 bg-white/0 backdrop-blur-md text-gray-400 dark:text-gray-500">Or</span>
+                    <span className="px-4 md:px-6 bg-white/0 backdrop-blur-md text-gray-400 dark:text-gray-500">Or</span>
                   </div>
                 </div>
 

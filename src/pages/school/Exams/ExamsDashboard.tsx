@@ -61,7 +61,7 @@ export default function ExamsDashboard({ schoolId, school }: { schoolId: string,
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-white">Exams Portal</h1>
+        <h1 className="text-xl md:text-2xl font-bold text-white">Exams Portal</h1>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -73,16 +73,16 @@ export default function ExamsDashboard({ schoolId, school }: { schoolId: string,
               </div>
               <div>
                 <p className="text-sm font-medium text-white">{stat.name}</p>
-                <p className="text-2xl font-bold text-white">{stat.value}</p>
+                <p className="text-xl md:text-2xl font-bold text-white">{stat.value}</p>
               </div>
             </div>
           </Link>
         ))}
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 md:p-6">
         <h2 className="text-lg font-bold text-gray-900 mb-4">Recent Exam Sessions</h2>
-        <div className="text-center py-8 text-gray-500">
+        <div className="text-center py-4 md:py-8 text-gray-500">
           <Calendar className="w-12 h-12 mx-auto mb-3 text-gray-300" />
           <p>No exam sessions found.</p>
           <Link to="/dashboard/exams/sessions" className="text-blue-600 hover:underline mt-2 inline-block">Create a new session</Link>

@@ -87,7 +87,7 @@ export default function Hostels({ schoolId }: { schoolId: string }) {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 md:p-6 space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-lg font-bold text-gray-900">Hostels</h2>
         <button
@@ -111,7 +111,7 @@ export default function Hostels({ schoolId }: { schoolId: string }) {
           <p className="text-gray-500">No hostels added yet.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {hostels.map(h => (
             <div key={h.id} className="bg-white border text-left border-gray-100 rounded-xl shadow-sm p-4 relative overflow-hidden">
               <div className="absolute top-2 right-2 flex gap-1">
@@ -164,7 +164,7 @@ export default function Hostels({ schoolId }: { schoolId: string }) {
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md overflow-hidden">
+          <div className="bg-white rounded-2xl w-[calc(100%-2rem)] md:w-full max-w-md overflow-hidden">
             <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
               <h3 className="font-bold text-gray-900">
                 {editingHostel ? 'Edit Hostel' : 'Add Hostel'}
@@ -174,13 +174,13 @@ export default function Hostels({ schoolId }: { schoolId: string }) {
               </button>
             </div>
             
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
+            <form onSubmit={handleSubmit} className="p-4 md:p-6 space-y-4">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1">Hostel Name</label>
                 <input required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full p-3 border border-gray-200 rounded-xl outline-none focus:border-primary" placeholder="e.g. Sunrise Hostel" />
               </div>
               
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1">Type</label>
                   <select required value={formData.type} onChange={e => setFormData({...formData, type: e.target.value as any})} className="w-full p-3 border border-gray-200 rounded-xl outline-none focus:border-primary">
@@ -200,7 +200,7 @@ export default function Hostels({ schoolId }: { schoolId: string }) {
                 <input value={formData.block} onChange={e => setFormData({...formData, block: e.target.value})} className="w-full p-3 border border-gray-200 rounded-xl outline-none focus:border-primary" placeholder="e.g. Block A" />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1">Warden Name (Optional)</label>
                   <input value={formData.wardenName} onChange={e => setFormData({...formData, wardenName: e.target.value})} className="w-full p-3 border border-gray-200 rounded-xl outline-none focus:border-primary" placeholder="e.g. John Doe" />
@@ -226,7 +226,7 @@ export default function Hostels({ schoolId }: { schoolId: string }) {
 
       {hostelToDelete && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md overflow-hidden p-6 text-center">
+          <div className="bg-white rounded-2xl w-[calc(100%-2rem)] md:w-full max-w-md overflow-hidden p-4 md:p-6 text-center">
             <div className="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
               <Trash2 className="w-8 h-8" />
             </div>

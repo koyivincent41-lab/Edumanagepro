@@ -428,10 +428,10 @@ export default function Reports({ schoolId, school }: { schoolId: string; school
 
   return (
     <div className="space-y-8">
-      <div className="bg-school-gradient p-6 rounded-[2.5rem] shadow-lg shadow-maroon/20">
+      <div className="bg-school-gradient p-4 md:p-6 rounded-[2.5rem] shadow-lg shadow-maroon/20">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-black text-white">Financial Reports</h1>
+            <h1 className="text-xl md:text-2xl font-black text-white">Financial Reports</h1>
             <p className="text-sm text-white/80 font-medium tracking-wide">Comprehensive financial analysis for {school?.name}.</p>
           </div>
           <div className="flex flex-wrap items-center gap-3">
@@ -465,7 +465,7 @@ export default function Reports({ schoolId, school }: { schoolId: string; school
             </button>
             <button 
               onClick={() => window.print()}
-              className="px-6 py-2.5 bg-white text-maroon font-black uppercase tracking-widest text-[10px] rounded-xl shadow-xl hover:scale-105 transition-all flex items-center gap-2"
+              className="px-4 md:px-6 py-2.5 bg-white text-maroon font-black uppercase tracking-widest text-[10px] rounded-xl shadow-xl hover:scale-105 transition-all flex items-center gap-2"
             >
               <Printer className="h-4 w-4" />
               Print View
@@ -474,7 +474,7 @@ export default function Reports({ schoolId, school }: { schoolId: string; school
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 md:gap-8">
         {/* Sidebar */}
         <div className="lg:col-span-1 space-y-2">
           <div className="relative mb-4">
@@ -510,7 +510,7 @@ export default function Reports({ schoolId, school }: { schoolId: string; school
 
         {/* Report Content */}
         <div className="lg:col-span-3 space-y-6">
-          <div className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm">
+          <div className="bg-white p-4 md:p-8 rounded-[2.5rem] border border-gray-100 shadow-sm">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
               <div>
                 <h3 className="text-xl font-bold text-gray-900">
@@ -547,11 +547,11 @@ export default function Reports({ schoolId, school }: { schoolId: string; school
 
             {reportData.length > 0 ? (
               <div className="overflow-x-auto">
-                <table className="w-full text-left">
+                <table className="min-w-[700px] w-full text-left">
                   <thead>
                     <tr className="bg-gray-50">
                       {Object.keys(reportData[0]).map((header) => (
-                        <th key={header} className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                        <th key={header} className="px-4 md:px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-wider">
                           {header}
                         </th>
                       ))}
@@ -592,16 +592,16 @@ export default function Reports({ schoolId, school }: { schoolId: string; school
           </div>
 
           {/* Quick Stats Summary */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+            <div className="bg-white p-4 md:p-6 rounded-[2rem] border border-gray-100 shadow-sm">
               <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Total Records</p>
-              <p className="text-2xl font-extrabold text-gray-900">{reportData.length}</p>
+              <p className="text-xl md:text-2xl font-extrabold text-gray-900">{reportData.length}</p>
             </div>
-            <div className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm">
+            <div className="bg-white p-4 md:p-6 rounded-[2rem] border border-gray-100 shadow-sm">
               <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Last Updated</p>
-              <p className="text-2xl font-extrabold text-gray-900">{new Date().toLocaleDateString()}</p>
+              <p className="text-xl md:text-2xl font-extrabold text-gray-900">{new Date().toLocaleDateString()}</p>
             </div>
-            <div className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm">
+            <div className="bg-white p-4 md:p-6 rounded-[2rem] border border-gray-100 shadow-sm">
               <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Status</p>
               <div className="flex items-center gap-2 text-green-500">
                 <CheckCircle2 className="h-5 w-5" />

@@ -109,7 +109,7 @@ export default function Vehicles({ schoolId }: { schoolId: string }) {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 md:p-6 space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-lg font-bold text-gray-900">Vehicles</h2>
         <button
@@ -133,7 +133,7 @@ export default function Vehicles({ schoolId }: { schoolId: string }) {
           <p className="text-gray-500">No vehicles added yet.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {vehicles.map(v => (
             <div key={v.id} className="bg-white border text-left border-gray-100 rounded-xl shadow-sm p-4 relative overflow-hidden group">
               <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -205,8 +205,8 @@ export default function Vehicles({ schoolId }: { schoolId: string }) {
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md overflow-hidden">
-            <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+          <div className="bg-white rounded-2xl w-[calc(100%-2rem)] md:w-full max-w-md overflow-hidden">
+            <div className="p-4 md:p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50">
               <h2 className="text-lg font-black text-gray-900">{editingVehicle ? 'Edit Vehicle' : 'Add Vehicle'}</h2>
               <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600">
                 <Trash2 className="w-5 h-5 hidden" />
@@ -214,12 +214,12 @@ export default function Vehicles({ schoolId }: { schoolId: string }) {
               </button>
             </div>
             
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
+            <form onSubmit={handleSubmit} className="p-4 md:p-6 space-y-4">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1">Registration Number</label>
                 <input required value={formData.registrationNumber} onChange={e => setFormData({...formData, registrationNumber: e.target.value})} className="w-full p-3 border border-gray-200 rounded-xl outline-none focus:border-primary" placeholder="e.g. KAB 123C" />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1">Make</label>
                   <input required value={formData.make} onChange={e => setFormData({...formData, make: e.target.value})} className="w-full p-3 border border-gray-200 rounded-xl outline-none focus:border-primary" placeholder="e.g. Toyota" />
@@ -233,7 +233,7 @@ export default function Vehicles({ schoolId }: { schoolId: string }) {
                 <label className="block text-sm font-semibold text-gray-700 mb-1">Capacity (Seats)</label>
                 <input required type="number" min="1" value={formData.capacity || ''} onChange={e => setFormData({...formData, capacity: parseInt(e.target.value) || 0})} className="w-full p-3 border border-gray-200 rounded-xl outline-none focus:border-primary" />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-1">Driver Name</label>
                   <input required value={formData.driverName} onChange={e => setFormData({...formData, driverName: e.target.value})} className="w-full p-3 border border-gray-200 rounded-xl outline-none focus:border-primary" />

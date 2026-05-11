@@ -82,16 +82,16 @@ export default function PricingManagement() {
 
   return (
     <div className="space-y-6">
-      <div className="bg-school-gradient p-6 rounded-[2.5rem] shadow-lg shadow-maroon/20">
+      <div className="bg-school-gradient p-4 md:p-6 rounded-[2.5rem] shadow-lg shadow-maroon/20">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-black text-white">Pricing Page Management</h1>
+            <h1 className="text-xl md:text-2xl font-black text-white">Pricing Page Management</h1>
             <p className="text-sm text-white/80 font-medium tracking-wide">Manage how subscription plans are displayed on the public website.</p>
           </div>
           <button 
             onClick={handleSaveSettings}
             disabled={saving}
-            className="flex items-center gap-2 px-6 py-2 bg-white text-maroon rounded-xl font-bold hover:bg-white/90 transition-all disabled:opacity-50 shadow-lg"
+            className="flex items-center gap-2 px-4 md:px-6 py-2 bg-white text-maroon rounded-xl font-bold hover:bg-white/90 transition-all disabled:opacity-50 shadow-lg"
           >
             {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
             Save Changes
@@ -99,9 +99,9 @@ export default function PricingManagement() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
         {/* Text Settings */}
-        <div className="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm space-y-6">
+        <div className="bg-white p-4 md:p-8 rounded-[2rem] border border-gray-100 shadow-sm space-y-6">
           <div className="flex items-center gap-3 mb-2">
             <div className="p-2 bg-primary/5 text-primary rounded-lg">
               <Type className="h-5 w-5" />
@@ -143,7 +143,7 @@ export default function PricingManagement() {
         </div>
 
         {/* Highlights Settings */}
-        <div className="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm space-y-6">
+        <div className="bg-white p-4 md:p-8 rounded-[2rem] border border-gray-100 shadow-sm space-y-6">
           <div className="flex items-center gap-3 mb-2">
             <div className="p-2 bg-primary/5 text-primary rounded-lg">
               <CheckSquare className="h-5 w-5" />
@@ -185,7 +185,7 @@ export default function PricingManagement() {
         </div>
 
         {/* Package Visibility */}
-        <div className="lg:col-span-2 bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm space-y-6">
+        <div className="lg:col-span-2 bg-white p-4 md:p-8 rounded-[2rem] border border-gray-100 shadow-sm space-y-6">
           <div className="flex items-center gap-3 mb-2">
             <div className="p-2 bg-primary/5 text-primary rounded-lg">
               <Layout className="h-5 w-5" />
@@ -198,7 +198,7 @@ export default function PricingManagement() {
               <div key={pkg.id} className={`p-4 rounded-2xl border transition-all ${
                 pkg.status === 'active' ? 'border-primary/20 bg-primary/5' : 'border-gray-100 bg-gray-50 opacity-60'
               }`}>
-                <div className="flex items-center justify-between mb-2">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 mb-2">
                   <h3 className="font-bold text-gray-900">{pkg.name}</h3>
                   <button 
                     onClick={() => togglePackageVisibility(pkg)}
@@ -210,7 +210,7 @@ export default function PricingManagement() {
                   </button>
                 </div>
                 <p className="text-xs text-gray-500 mb-3">{pkg.description}</p>
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
                   <span className="text-sm font-bold text-gray-900">${pkg.monthlyPrice}/mo</span>
                   <span className={`text-[10px] font-bold uppercase px-2 py-1 rounded-full ${
                     pkg.status === 'active' ? 'bg-green-100 text-green-600' : 'bg-gray-200 text-gray-600'

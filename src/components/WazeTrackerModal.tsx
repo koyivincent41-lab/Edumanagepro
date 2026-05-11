@@ -45,8 +45,8 @@ export default function WazeTrackerModal({ vehicle, route, onClose }: WazeTracke
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white w-full max-w-4xl rounded-[2rem] shadow-2xl overflow-hidden flex flex-col h-[80vh] animate-in zoom-in-95 duration-200">
-        <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50 shrink-0">
+      <div className="bg-white w-[calc(100%-2rem)] md:w-full max-w-4xl rounded-[2rem] shadow-2xl overflow-hidden flex flex-col h-[80vh] animate-in zoom-in-95 duration-200">
+        <div className="p-4 md:p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50 shrink-0">
           <div>
             <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
               <Navigation className="w-5 h-5 text-primary" />
@@ -64,8 +64,8 @@ export default function WazeTrackerModal({ vehicle, route, onClose }: WazeTracke
         
         <div className="flex-1 w-full relative bg-gray-100">
           {!isVerified ? (
-            <div className="absolute inset-0 flex items-center justify-center bg-gray-50 p-6">
-              <form onSubmit={handleVerify} className="max-w-md w-full bg-white p-8 rounded-[2rem] shadow-sm border border-gray-100 text-center">
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-50 p-4 md:p-6">
+              <form onSubmit={handleVerify} className="max-w-md w-full bg-white p-4 md:p-8 rounded-[2rem] shadow-sm border border-gray-100 text-center">
                 <div className="w-16 h-16 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
                   <Navigation className="w-8 h-8" />
                 </div>
@@ -130,7 +130,7 @@ export default function WazeTrackerModal({ vehicle, route, onClose }: WazeTracke
                 <div className="w-2 h-2 bg-white rounded-full animate-ping" />
                 Live GPS Active • ID: {vehicle.trackingId || enteredId.toUpperCase()}
               </div>
-              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-sm px-6 py-3 rounded-full shadow-lg border border-gray-200 flex flex-col items-center">
+              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-sm px-4 md:px-6 py-3 rounded-full shadow-lg border border-gray-200 flex flex-col items-center">
                  <span className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-1">Driver</span>
                  <span className="text-sm font-black text-gray-900">{vehicle.driverName} • {vehicle.driverPhone}</span>
               </div>

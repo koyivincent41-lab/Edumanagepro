@@ -115,8 +115,8 @@ export default function PaymentHistory({ profile }: { profile: UserProfile }) {
 
   return (
     <ParentLayout profile={profile}>
-      <div className="flex items-center justify-between mb-8 print:hidden">
-        <h1 className="text-3xl font-black text-gray-900 dark:text-white">Payment History Report</h1>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 mb-8 print:hidden">
+        <h1 className="text-xl md:text-3xl font-black text-gray-900 dark:text-white">Payment History Report</h1>
         <div className="text-sm text-gray-500 font-bold uppercase tracking-widest">
           Total Collected: <span className="text-green-600 ml-2">{formatCurrency(payments.filter(p => p.status === 'paid' || p.status === 'Confirmed').reduce((sum, p) => sum + (p.amount || 0), 0))}</span>
         </div>
@@ -124,7 +124,7 @@ export default function PaymentHistory({ profile }: { profile: UserProfile }) {
 
       <div className="bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden print:shadow-none print:border-none">
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+          <table className="min-w-[700px] w-full text-left border-collapse">
             <thead className="bg-gray-50 dark:bg-gray-800">
               <tr>
                 <th className="p-4 text-xs font-black uppercase text-gray-500 dark:text-gray-400 tracking-widest">Receipt #</th>
@@ -198,13 +198,13 @@ export default function PaymentHistory({ profile }: { profile: UserProfile }) {
       {/* Receipt Modal */}
       {selectedReceipt && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm print:p-0 print:bg-white print:static">
-          <div className="bg-white dark:bg-gray-900 w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden print:shadow-none print:rounded-none print:w-full print:max-w-none animate-in zoom-in-95 duration-200">
-            <div className="p-8 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between print:hidden">
+          <div className="bg-white dark:bg-gray-900 w-[calc(100%-2rem)] md:w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden print:shadow-none print:rounded-none print:w-full print:max-w-none animate-in zoom-in-95 duration-200">
+            <div className="p-4 md:p-8 border-b border-gray-100 dark:border-gray-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 print:hidden">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-xl text-green-600 dark:text-green-400">
                   <CheckCircle2 className="h-5 w-5" />
                 </div>
-                <h2 className="text-2xl font-black text-gray-900 dark:text-white">Official Receipt</h2>
+                <h2 className="text-xl md:text-2xl font-black text-gray-900 dark:text-white">Official Receipt</h2>
               </div>
               <button onClick={() => setSelectedReceipt(null)} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors">
                 <X className="h-6 w-6 text-gray-400" />
@@ -213,18 +213,18 @@ export default function PaymentHistory({ profile }: { profile: UserProfile }) {
             <div className="p-10 space-y-8 print:p-0">
               <div className="flex justify-between items-start">
                 <div>
-                  <h1 className="text-3xl font-black text-primary mb-2 uppercase tracking-tighter">{school?.name || 'EduManagePro'}</h1>
+                  <h1 className="text-xl md:text-3xl font-black text-primary mb-2 uppercase tracking-tighter">{school?.name || 'EduManagePro'}</h1>
                   <p className="text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-widest">{school?.address}</p>
                   <p className="text-gray-500 dark:text-gray-400 text-xs font-bold uppercase tracking-widest">{school?.phone}</p>
                 </div>
                 <div className="text-right">
                   <div className="inline-block px-4 py-1 bg-primary text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-full mb-3">Receipt</div>
-                  <p className="text-2xl font-black text-gray-900 dark:text-white tracking-tighter">#{selectedReceipt.receiptNumber}</p>
+                  <p className="text-xl md:text-2xl font-black text-gray-900 dark:text-white tracking-tighter">#{selectedReceipt.receiptNumber}</p>
                   <p className="text-gray-400 text-[10px] font-black uppercase tracking-widest mt-1">{new Date(selectedReceipt.paymentDate).toLocaleDateString()}</p>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-10 py-8 border-y border-gray-100 dark:border-gray-800">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-10 py-4 md:py-8 border-y border-gray-100 dark:border-gray-800">
                 <div>
                   <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Received From</h3>
                   <p className="font-black text-gray-900 dark:text-white text-lg">{profile.fullName}</p>
@@ -240,7 +240,7 @@ export default function PaymentHistory({ profile }: { profile: UserProfile }) {
               <div className="space-y-4">
                 <div className="flex justify-between items-center py-6 border-b border-gray-100 dark:border-gray-800">
                   <span className="text-sm font-black text-gray-400 uppercase tracking-[0.2em]">Amount Received</span>
-                  <span className="text-4xl font-black text-green-600 tracking-tighter">{formatCurrency(selectedReceipt.amount)}</span>
+                  <span className="text-3xl md:text-4xl font-black text-green-600 tracking-tighter">{formatCurrency(selectedReceipt.amount)}</span>
                 </div>
               </div>
 

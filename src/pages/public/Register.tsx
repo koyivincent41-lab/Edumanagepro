@@ -215,7 +215,7 @@ export default function Register() {
 
   return (
     <PublicLayout>
-      <div className="min-h-screen relative py-16 px-4 sm:px-6 lg:px-8 overflow-hidden">
+      <div className="min-h-screen relative py-16 px-4 sm:px-4 md:px-6 lg:px-4 md:px-8 overflow-hidden">
         {/* Animated Background Gradients */}
         <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
           <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] rounded-full bg-maroon/10 dark:bg-maroon/20 blur-[120px] animate-pulse" />
@@ -235,7 +235,7 @@ export default function Register() {
             <p className="text-gray-500 dark:text-gray-400 font-medium text-lg">Join EduManagePro today and start your 7-day free trial.</p>
           </div>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-2xl p-8 md:p-12 rounded-[3.5rem] border border-white/50 dark:border-gray-800 shadow-[0_32px_64px_-15px_rgba(0,0,0,0.1)] dark:shadow-[0_32px_64px_-15px_rgba(0,0,0,0.5)] relative overflow-hidden group">
+          <form onSubmit={handleSubmit(onSubmit)} className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-2xl p-4 md:p-8 md:p-12 rounded-[3.5rem] border border-white/50 dark:border-gray-800 shadow-[0_32px_64px_-15px_rgba(0,0,0,0.1)] dark:shadow-[0_32px_64px_-15px_rgba(0,0,0,0.5)] relative overflow-hidden group">
             {/* Decorative border glow */}
             <div className="absolute inset-0 border-2 border-transparent bg-gradient-to-br from-maroon/10 via-transparent to-gray-400/10 rounded-[3.5rem] pointer-events-none opacity-50" />
             
@@ -281,7 +281,7 @@ export default function Register() {
                     {errors.address && <p className="mt-1 text-[10px] font-bold text-red-500 ml-1 uppercase tracking-wider">{errors.address.message}</p>}
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                     <div className="space-y-2">
                       <label className="block text-xs font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 ml-1">Country</label>
                       <div className="relative group/select">
@@ -423,7 +423,7 @@ export default function Register() {
                       </div>
                       {errors.packageId && <p className="mt-1 text-[10px] font-bold text-red-500 ml-1 uppercase tracking-wider">{errors.packageId.message}</p>}
                       
-                      <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-md p-6 rounded-[2.5rem] border border-gray-100 dark:border-gray-800 shadow-sm">
+                      <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-md p-4 md:p-6 rounded-[2.5rem] border border-gray-100 dark:border-gray-800 shadow-sm">
                         <label className="block text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] mb-4 ml-1">Billing Cycle</label>
                         <div className="flex flex-wrap gap-3">
                           <label className="flex-1 min-w-[100px] relative cursor-pointer group">
@@ -463,7 +463,7 @@ export default function Register() {
                       </div>
 
                       {selectedPkg && (
-                        <div className="bg-gradient-to-br from-maroon/5 to-gray-400/5 p-8 rounded-[3rem] border border-white/50 dark:border-gray-800 shadow-inner mt-8 relative overflow-hidden">
+                        <div className="bg-gradient-to-br from-maroon/5 to-gray-400/5 p-4 md:p-8 rounded-[3rem] border border-white/50 dark:border-gray-800 shadow-inner mt-8 relative overflow-hidden">
                           <div className="absolute top-0 right-0 p-4 opacity-10">
                             <Wallet className="h-24 w-24 dark:text-white" />
                           </div>
@@ -486,7 +486,7 @@ export default function Register() {
                             </div>
                             <div className="pt-4 border-t border-gray-200/50 dark:border-gray-800 flex justify-between items-center text-gray-900 dark:text-white">
                               <span className="font-black uppercase tracking-widest text-xs">Due Today:</span>
-                              <span className="text-2xl font-black">{convertedSelectedPrice.symbol}0.00</span>
+                              <span className="text-xl md:text-2xl font-black">{convertedSelectedPrice.symbol}0.00</span>
                             </div>
                           </div>
                           <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-6 italic font-medium">
@@ -500,7 +500,7 @@ export default function Register() {
               </div>
             </div>
 
-            <div className="mt-16 pt-10 border-t border-gray-100 dark:border-gray-800 flex flex-col md:flex-row items-center justify-between gap-8 relative">
+            <div className="mt-16 pt-10 border-t border-gray-100 dark:border-gray-800 flex flex-col md:flex-row items-center justify-between gap-4 md:gap-8 relative">
               <p className="text-xs text-gray-400 dark:text-gray-500 font-medium max-w-xs text-center md:text-left leading-relaxed">
                 By registering, you agree to our <Link to="/terms" className="text-maroon font-bold hover:underline">Terms of Service</Link> and <Link to="/privacy" className="text-maroon font-bold hover:underline">Privacy Policy</Link>.
               </p>

@@ -139,7 +139,7 @@ export default function ExamRecordsBrowser({ schoolId, examsCategory }: ExamReco
         <div className="flex justify-center p-12"><Loader2 className="h-8 w-8 animate-spin text-blue-600" /></div>
       ) : records.length > 0 ? (
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
             <h3 className="text-lg font-black text-gray-900">Stored {examsCategory} Records</h3>
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -148,17 +148,17 @@ export default function ExamRecordsBrowser({ schoolId, examsCategory }: ExamReco
           </div>
 
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            <table className="w-full">
+            <table className="min-w-[700px] w-full">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase">Admission</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase">Name</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase">Class</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase">Stream</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase">Term</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase">Year</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase">Exam Type</th>
-                  <th className="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase">Action</th>
+                  <th className="px-4 md:px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase">Admission</th>
+                  <th className="px-4 md:px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase">Name</th>
+                  <th className="px-4 md:px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase">Class</th>
+                  <th className="px-4 md:px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase">Stream</th>
+                  <th className="px-4 md:px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase">Term</th>
+                  <th className="px-4 md:px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase">Year</th>
+                  <th className="px-4 md:px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase">Exam Type</th>
+                  <th className="px-4 md:px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
@@ -168,14 +168,14 @@ export default function ExamRecordsBrowser({ schoolId, examsCategory }: ExamReco
 
                   return (
                     <tr key={`${record.student.id}_${record.examSessionId}`} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 font-bold text-gray-900">{record.student.admissionNumber}</td>
-                      <td className="px-6 py-4 font-bold text-gray-900">{record.student.fullName}</td>
-                      <td className="px-6 py-4 text-gray-600">{studentClass?.name || '-'}</td>
-                      <td className="px-6 py-4 text-gray-600">{studentStream?.name || '-'}</td>
-                      <td className="px-6 py-4 text-gray-600">{record.term}</td>
-                      <td className="px-6 py-4 text-gray-600">{record.academicYear}</td>
-                      <td className="px-6 py-4 text-gray-600">{record.examName}</td>
-                      <td className="px-6 py-4 flex items-center gap-2">
+                      <td className="px-4 md:px-6 py-4 font-bold text-gray-900">{record.student.admissionNumber}</td>
+                      <td className="px-4 md:px-6 py-4 font-bold text-gray-900">{record.student.fullName}</td>
+                      <td className="px-4 md:px-6 py-4 text-gray-600">{studentClass?.name || '-'}</td>
+                      <td className="px-4 md:px-6 py-4 text-gray-600">{studentStream?.name || '-'}</td>
+                      <td className="px-4 md:px-6 py-4 text-gray-600">{record.term}</td>
+                      <td className="px-4 md:px-6 py-4 text-gray-600">{record.academicYear}</td>
+                      <td className="px-4 md:px-6 py-4 text-gray-600">{record.examName}</td>
+                      <td className="px-4 md:px-6 py-4 flex items-center gap-2">
                         <button onClick={() => setViewingStudent({ student: record.student, action: 'view', sessionId: record.examSessionId })} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="View Slip">
                           <Eye className="h-4 w-4" />
                         </button>

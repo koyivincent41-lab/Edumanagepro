@@ -110,9 +110,17 @@ export default function SuperAdminDashboard({ profile }: SuperAdminDashboardProp
         '--school-gradient': isGradient ? `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})` : primaryColor
       } as React.CSSProperties}
     >
+      {/* Mobile Sidebar Overlay */}
+      {!isSidebarOpen && window.innerWidth <= 768 ? null : (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm transition-opacity"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
-      <aside className={`bg-gray-900 dark:bg-black text-white transition-all duration-300 ${isSidebarOpen ? 'w-64' : 'w-20'} flex flex-col`}>
-        <div className="p-6 flex items-center gap-3 border-b border-white/10">
+      <aside className={`fixed inset-y-0 left-0 z-50 md:relative bg-gray-900 dark:bg-black text-white transition-all duration-300 ${isSidebarOpen ? 'w-64 translate-x-0' : '-translate-x-full md:translate-x-0 md:w-20'} flex flex-col`}>
+        <div className="p-4 md:p-6 flex items-center gap-3 border-b border-white/10">
           <div className="p-2 bg-white rounded-lg shrink-0 overflow-hidden w-10 h-10 flex items-center justify-center">
             {systemSettings?.companyLogo ? (
               <img src={systemSettings.companyLogo} alt="Logo" className="w-full h-full object-contain" />
@@ -163,7 +171,7 @@ export default function SuperAdminDashboard({ profile }: SuperAdminDashboardProp
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col h-screen overflow-hidden">
-        <header className="h-16 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between px-8 shrink-0">
+        <header className="h-16 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between px-4 md:px-8 shrink-0">
           <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg text-gray-500 dark:text-gray-400">
             {isSidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
@@ -183,7 +191,7 @@ export default function SuperAdminDashboard({ profile }: SuperAdminDashboardProp
           </div>
         </header>
 
-        <div className="flex-1 overflow-y-auto p-8 bg-gray-50 dark:bg-gray-950">
+        <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-gray-50 dark:bg-gray-950">
           <Routes>
             <Route path="/" element={<Overview />} />
             <Route path="/dashboard" element={<Overview />} />

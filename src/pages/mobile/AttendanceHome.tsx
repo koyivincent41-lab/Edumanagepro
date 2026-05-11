@@ -224,7 +224,7 @@ export default function AttendanceHome() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 lg:p-6 flex flex-col items-center justify-center relative overflow-hidden">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 lg:p-4 md:p-6 flex flex-col items-center justify-center relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute top-0 left-0 w-full h-1/3 bg-blue-600 rounded-b-[2rem] lg:rounded-b-[3rem] z-0" />
       
@@ -234,14 +234,14 @@ export default function AttendanceHome() {
 
       <div className="relative z-10 w-full max-w-sm space-y-4 lg:space-y-8">
         <div className="text-center text-white space-y-1 lg:space-y-2">
-          <h1 className="text-2xl lg:text-3xl font-black tracking-tight">Staff Attendance</h1>
+          <h1 className="text-xl md:text-2xl lg:text-3xl font-black tracking-tight">Staff Attendance</h1>
           <p className="text-blue-100 text-xs lg:text-sm font-medium">
             {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
           </p>
         </div>
 
-        <div className="bg-white p-6 lg:p-8 rounded-2xl lg:rounded-[2.5rem] shadow-2xl shadow-blue-900/10 space-y-6 lg:space-y-8">
-          <div className="flex flex-col items-center gap-6">
+        <div className="bg-white p-4 md:p-6 lg:p-4 md:p-8 rounded-2xl lg:rounded-[2.5rem] shadow-2xl shadow-blue-900/10 space-y-6 lg:space-y-8">
+          <div className="flex flex-col items-center gap-4 md:gap-6">
             <div className="flex justify-center scale-90 lg:scale-100">
               <FingerprintButton 
                 onClick={handleAttendance} 
@@ -259,7 +259,7 @@ export default function AttendanceHome() {
             </button>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 lg:gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 lg:gap-4">
             <div className="p-3 lg:p-4 bg-gray-50 rounded-2xl border border-gray-100 flex flex-col items-center gap-1 lg:gap-2">
               <Clock className="h-4 w-4 lg:h-5 lg:w-5 text-blue-600" />
               <div className="text-center">

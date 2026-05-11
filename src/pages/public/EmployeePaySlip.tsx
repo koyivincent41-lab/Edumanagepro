@@ -136,17 +136,17 @@ export default function EmployeePaySlip() {
 
   return (
     <PublicLayout>
-      <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-4 md:px-6 lg:px-4 md:px-8">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-8 no-print">
             <GraduationCap className="h-12 w-12 text-maroon mx-auto mb-4" />
-            <h1 className="text-3xl font-black text-gray-900">Employee <span className="text-maroon">Pay Slip</span> Portal</h1>
+            <h1 className="text-xl md:text-3xl font-black text-gray-900">Employee <span className="text-maroon">Pay Slip</span> Portal</h1>
             <p className="text-gray-500 mt-2">Access your monthly payslips securely.</p>
           </div>
 
           <div className="bg-white rounded-[2rem] shadow-xl border border-gray-100 overflow-hidden">
             {step === 'id' && (
-              <div className="p-8 lg:p-12 max-w-md mx-auto">
+              <div className="p-4 md:p-8 lg:p-12 max-w-md mx-auto">
                 <form onSubmit={handleVerifyId} className="space-y-6">
                   <div className="space-y-2">
                     <label className="block text-xs font-black uppercase tracking-widest text-gray-400 ml-1">Employee Unique ID</label>
@@ -174,10 +174,10 @@ export default function EmployeePaySlip() {
             )}
 
             {step === 'month' && employee && (
-              <div className="p-8 lg:p-12 max-w-md mx-auto">
+              <div className="p-4 md:p-8 lg:p-12 max-w-md mx-auto">
                 <div className="mb-8 text-center">
                   <div className="w-20 h-20 bg-maroon/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span className="text-2xl font-black text-maroon">{employee.fullName.charAt(0)}</span>
+                    <span className="text-xl md:text-2xl font-black text-maroon">{employee.fullName.charAt(0)}</span>
                   </div>
                   <h2 className="text-xl font-bold text-gray-900">{employee.fullName}</h2>
                   <p className="text-sm text-gray-500">{employee.jobTitle} • {staffNumber}</p>
@@ -211,7 +211,7 @@ export default function EmployeePaySlip() {
                     <button
                       type="submit"
                       disabled={loading}
-                      className="flex-2 py-4 bg-maroon text-white font-black uppercase tracking-widest text-xs rounded-2xl shadow-lg shadow-maroon/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 px-8"
+                      className="flex-2 py-4 bg-maroon text-white font-black uppercase tracking-widest text-xs rounded-2xl shadow-lg shadow-maroon/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2 px-4 md:px-8"
                     >
                       {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'View Payslip'}
                     </button>
@@ -221,7 +221,7 @@ export default function EmployeePaySlip() {
             )}
 
             {step === 'view' && payslip && school && (
-              <div className="p-4 lg:p-8">
+              <div className="p-4 lg:p-4 md:p-8">
                 <div className="flex justify-between items-center mb-8 no-print">
                   <button
                     onClick={() => setStep('month')}
@@ -249,8 +249,8 @@ export default function EmployeePaySlip() {
                 </div>
 
                 {/* Payslip Content */}
-                <div className="bg-white border-2 border-gray-100 rounded-3xl p-6 lg:p-10 print:border-0 print:p-0">
-                  <div className="flex flex-col md:flex-row justify-between items-start gap-6 mb-10 border-b pb-10">
+                <div className="bg-white border-2 border-gray-100 rounded-3xl p-4 md:p-6 lg:p-10 print:border-0 print:p-0">
+                  <div className="flex flex-col md:flex-row justify-between items-start gap-4 md:gap-6 mb-10 border-b pb-10">
                     <div className="flex items-center gap-4">
                       {school.logo ? (
                         <img src={school.logo} alt={school.name} className="h-16 w-16 object-contain" />
@@ -260,7 +260,7 @@ export default function EmployeePaySlip() {
                         </div>
                       )}
                       <div>
-                        <h2 className="text-2xl font-black text-gray-900 uppercase">{school.name}</h2>
+                        <h2 className="text-xl md:text-2xl font-black text-gray-900 uppercase">{school.name}</h2>
                         <p className="text-sm text-gray-500 font-medium">{school.address}</p>
                         <p className="text-sm text-gray-500 font-medium">{school.phone} • {school.email}</p>
                       </div>
@@ -279,7 +279,7 @@ export default function EmployeePaySlip() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-10">
                     <div className="space-y-4">
                       <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest border-b pb-2">Employee Details</h3>
-                      <div className="grid grid-cols-2 gap-y-3">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-y-3">
                         <p className="text-xs font-bold text-gray-500 uppercase">Full Name</p>
                         <p className="text-sm font-black text-gray-900">{employee.fullName}</p>
                         <p className="text-xs font-bold text-gray-500 uppercase">Staff ID</p>
@@ -294,7 +294,7 @@ export default function EmployeePaySlip() {
                     </div>
                     <div className="space-y-4">
                       <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest border-b pb-2">Payment Info</h3>
-                      <div className="grid grid-cols-2 gap-y-3">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-y-3">
                         <p className="text-xs font-bold text-gray-500 uppercase">Basic Salary</p>
                         <p className="text-sm font-black text-gray-900">{school.currency} {payslip.basicSalary.toLocaleString()}</p>
                         <p className="text-xs font-bold text-gray-500 uppercase">Gross Pay</p>
@@ -334,7 +334,7 @@ export default function EmployeePaySlip() {
                     </div>
                   </div>
 
-                  <div className="mt-16 pt-10 border-t flex flex-col md:flex-row justify-between items-end gap-8">
+                  <div className="mt-16 pt-10 border-t flex flex-col md:flex-row justify-between items-end gap-4 md:gap-8">
                     <div className="text-center">
                       <div className="w-48 border-b-2 border-gray-200 mb-2"></div>
                       <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">Employee Signature</p>

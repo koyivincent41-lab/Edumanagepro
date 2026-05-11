@@ -81,7 +81,7 @@ export default function GradingSystemSettings({ schoolId }: { schoolId: string }
   return (
     <div className="space-y-4">
       <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse">
+        <table className="min-w-[700px] w-full text-left border-collapse">
           <thead>
             <tr className="bg-gray-50 border-b border-gray-200">
               <th className="p-3 text-xs font-bold text-gray-600 uppercase">Grade</th>
@@ -153,7 +153,7 @@ export default function GradingSystemSettings({ schoolId }: { schoolId: string }
         <button
           onClick={handleSave}
           disabled={saving}
-          className="flex items-center gap-2 px-6 py-2 text-sm font-bold text-white bg-primary rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
+          className="flex items-center gap-2 px-4 md:px-6 py-2 text-sm font-bold text-white bg-primary rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
         >
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
           Save Grading System

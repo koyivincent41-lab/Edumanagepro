@@ -57,11 +57,11 @@ export default function Outbox() {
   );
 
   return (
-    <div className="h-full flex flex-col gap-6">
-      <div className="bg-school-gradient p-6 rounded-[2.5rem] shadow-lg shadow-maroon/20">
+    <div className="h-full flex flex-col gap-4 md:gap-6">
+      <div className="bg-school-gradient p-4 md:p-6 rounded-[2.5rem] shadow-lg shadow-maroon/20">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-black text-white">Outbox</h1>
+            <h1 className="text-xl md:text-2xl font-black text-white">Outbox</h1>
             <p className="text-sm text-white/80 font-medium tracking-wide">View history of messages sent from the system.</p>
           </div>
           <div className="flex items-center gap-3">
@@ -86,7 +86,7 @@ export default function Outbox() {
         </div>
       </div>
 
-      <div className="flex-1 flex gap-6 min-h-0 overflow-hidden">
+      <div className="flex-1 flex gap-4 md:gap-6 min-h-0 overflow-hidden">
         {/* Email List */}
         <div className="w-1/3 bg-white rounded-[2rem] border border-gray-100 shadow-sm overflow-hidden flex flex-col">
           <div className="flex-1 overflow-y-auto divide-y divide-gray-50">
@@ -110,7 +110,7 @@ export default function Outbox() {
                     selectedEmail?.id === email.id ? 'bg-primary/5 border-l-4 border-primary' : 'border-l-4 border-transparent'
                   }`}
                 >
-                  <div className="flex items-center justify-between mb-1">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 mb-1">
                     <span className="text-sm font-bold text-gray-700">
                       To: {email.recipientName || email.to.split('@')[0]}
                     </span>
@@ -134,7 +134,7 @@ export default function Outbox() {
         <div className="flex-1 bg-white rounded-[2rem] border border-gray-100 shadow-sm overflow-hidden flex flex-col">
           {selectedEmail ? (
             <div className="flex-1 flex flex-col min-h-0">
-              <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+              <div className="p-4 md:p-6 border-b border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 bg-gray-50/50">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-green-50 rounded-2xl flex items-center justify-center text-green-600 font-bold text-xl">
                     {(selectedEmail.recipientName || selectedEmail.to)[0].toUpperCase()}
@@ -155,7 +155,7 @@ export default function Outbox() {
                 </div>
               </div>
 
-              <div className="flex-1 overflow-y-auto p-8">
+              <div className="flex-1 overflow-y-auto p-4 md:p-8">
                 <div className="flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-widest mb-6">
                   <Clock className="h-4 w-4" />
                   Sent on {new Date(selectedEmail.createdAt).toLocaleString()}
@@ -165,7 +165,7 @@ export default function Outbox() {
                 </div>
               </div>
 
-              <div className="p-6 border-t border-gray-100 bg-gray-50/50 flex items-center justify-between">
+              <div className="p-4 md:p-6 border-t border-gray-100 bg-gray-50/50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
                 <div className="flex items-center gap-2 text-green-600">
                   <CheckCircle2 className="h-5 w-5" />
                   <span className="text-sm font-bold">Successfully Sent</span>

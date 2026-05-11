@@ -149,13 +149,13 @@ export default function SendSMS({ schoolId }: { schoolId: string }) {
   };
 
   if (loading) {
-    return <div className="p-6 text-gray-500">Loading...</div>;
+    return <div className="p-4 md:p-6 text-gray-500">Loading...</div>;
   }
 
   return (
-    <div className="p-6 max-w-3xl space-y-6">
+    <div className="p-4 md:p-6 max-w-3xl space-y-6">
       
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
         <button
           onClick={() => setSendType('all')}
           className={`p-4 rounded-2xl border text-left transition-all ${
@@ -202,7 +202,7 @@ export default function SendSMS({ schoolId }: { schoolId: string }) {
         </button>
       </div>
 
-      <form onSubmit={handleSend} className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm space-y-6">
+      <form onSubmit={handleSend} className="bg-white border border-gray-100 rounded-2xl p-4 md:p-6 shadow-sm space-y-6">
         
         {sendType === 'class' && (
           <div>

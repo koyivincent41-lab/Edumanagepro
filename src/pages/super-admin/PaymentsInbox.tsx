@@ -189,10 +189,10 @@ export default function PaymentsInbox() {
 
   return (
     <div className="space-y-6">
-      <div className="bg-school-gradient p-6 rounded-[2.5rem] shadow-lg shadow-maroon/20">
+      <div className="bg-school-gradient p-4 md:p-6 rounded-[2.5rem] shadow-lg shadow-maroon/20">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-black text-white">Payments Inbox</h1>
+            <h1 className="text-xl md:text-2xl font-black text-white">Payments Inbox</h1>
             <p className="text-sm text-white/80 font-medium tracking-wide">Review and verify manual M-Pesa payment submissions</p>
           </div>
         </div>
@@ -226,21 +226,21 @@ export default function PaymentsInbox() {
 
       <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+          <table className="min-w-[700px] w-full text-left border-collapse">
             <thead>
               <tr className="bg-gray-50/50">
-                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">School / Date</th>
-                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Plan Details</th>
-                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Transaction Info</th>
-                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Status</th>
-                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Actions</th>
+                <th className="px-4 md:px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">School / Date</th>
+                <th className="px-4 md:px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Plan Details</th>
+                <th className="px-4 md:px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Transaction Info</th>
+                <th className="px-4 md:px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Status</th>
+                <th className="px-4 md:px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
               {filteredPayments.length > 0 ? (
                 filteredPayments.map((payment) => (
                   <tr key={payment.id} className="hover:bg-gray-50/50 transition-colors group">
-                    <td className="px-6 py-4">
+                    <td className="px-4 md:px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-primary/5 rounded-xl flex items-center justify-center text-primary">
                           <SchoolIcon className="h-5 w-5" />
@@ -254,7 +254,7 @@ export default function PaymentsInbox() {
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 md:px-6 py-4">
                       <div>
                         <p className="text-sm font-bold text-gray-900">{payment.selectedPackageName}</p>
                         <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest bg-gray-100 px-2 py-0.5 rounded inline-block mt-1">
@@ -262,7 +262,7 @@ export default function PaymentsInbox() {
                         </p>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 md:px-6 py-4">
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
                           <span className="text-xs font-black text-maroon font-mono bg-maroon/5 px-2 py-1 rounded tracking-[0.1em]">
@@ -276,7 +276,7 @@ export default function PaymentsInbox() {
                         <p className="text-[10px] text-gray-400">{payment.phoneNumber}</p>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 md:px-6 py-4">
                       <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-1 w-fit ${
                         payment.paymentStatus === 'Approved' ? 'bg-green-100 text-green-600' :
                         payment.paymentStatus === 'Rejected' ? 'bg-red-100 text-red-600' :
@@ -288,7 +288,7 @@ export default function PaymentsInbox() {
                         {payment.paymentStatus}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-right">
+                    <td className="px-4 md:px-6 py-4 text-right">
                       {payment.paymentStatus === 'Pending Approval' ? (
                         <div className="flex items-center justify-end gap-2">
                           <button
@@ -316,7 +316,7 @@ export default function PaymentsInbox() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={5} className="px-6 py-12 text-center">
+                  <td colSpan={5} className="px-4 md:px-6 py-12 text-center">
                     <div className="flex flex-col items-center gap-3 text-gray-400">
                       <CreditCard className="h-12 w-12 opacity-20" />
                       <p className="font-bold">No payments found in this category.</p>

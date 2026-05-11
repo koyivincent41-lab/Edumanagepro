@@ -123,14 +123,14 @@ export default function SalaryStructures({ schoolId, school }: Props) {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         {structures.length === 0 ? (
-          <div className="col-span-full p-8 text-center text-gray-500 bg-white rounded-2xl border border-gray-100">
+          <div className="col-span-full p-4 md:p-8 text-center text-gray-500 bg-white rounded-2xl border border-gray-100">
             No salary structures defined yet.
           </div>
         ) : (
           structures.map(structure => (
-            <div key={structure.id} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col">
+            <div key={structure.id} className="bg-white p-4 md:p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col">
               <div className="flex justify-between items-start mb-4">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-primary/10 text-primary rounded-lg">
@@ -176,8 +176,8 @@ export default function SalaryStructures({ schoolId, school }: Props) {
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden shadow-2xl flex flex-col">
-            <div className="flex justify-between items-center p-6 border-b border-gray-100">
+          <div className="bg-white rounded-2xl w-[calc(100%-2rem)] md:w-full max-w-2xl max-h-[90vh] overflow-hidden shadow-2xl flex flex-col">
+            <div className="flex justify-between items-center p-4 md:p-6 border-b border-gray-100">
               <h2 className="text-xl font-bold text-gray-900">
                 {editingStructure ? 'Edit Structure' : 'New Salary Structure'}
               </h2>
@@ -186,8 +186,8 @@ export default function SalaryStructures({ schoolId, school }: Props) {
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="p-6 space-y-6 overflow-y-auto">
-              <div className="grid grid-cols-2 gap-4">
+            <form onSubmit={handleSubmit} className="p-4 md:p-6 space-y-6 overflow-y-auto">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-1">Structure Name</label>
                   <input
@@ -222,7 +222,7 @@ export default function SalaryStructures({ schoolId, school }: Props) {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                 <div className="space-y-3">
                   <h3 className="font-bold text-gray-900 border-b border-gray-100 pb-2">Allowances</h3>
                   {allowances.length === 0 ? (
@@ -282,7 +282,7 @@ export default function SalaryStructures({ schoolId, school }: Props) {
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2 bg-primary text-white rounded-xl hover:bg-primary/90 font-bold transition-colors"
+                  className="px-4 md:px-6 py-2 bg-primary text-white rounded-xl hover:bg-primary/90 font-bold transition-colors"
                 >
                   {editingStructure ? 'Update' : 'Save'}
                 </button>

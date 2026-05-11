@@ -58,11 +58,11 @@ export default function PublicSchoolWebsite() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4 text-center">
         <GraduationCap className="w-16 h-16 text-gray-400 mb-4" />
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Website Not Found</h1>
+        <h1 className="text-xl md:text-3xl font-bold text-gray-900 mb-2">Website Not Found</h1>
         <p className="text-gray-600 max-w-md">
           The school website you are looking for does not exist or is currently unpublished.
         </p>
-        <Link to="/" className="mt-8 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+        <Link to="/" className="mt-8 px-4 md:px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
           Return to Main Platform
         </Link>
       </div>
@@ -84,7 +84,7 @@ export default function PublicSchoolWebsite() {
   return (
     <div className="min-h-screen flex flex-col font-sans bg-white">
       {/* Top Bar */}
-      <div className="bg-gray-900 text-white py-2 px-4 sm:px-6 lg:px-8 text-sm">
+      <div className="bg-gray-900 text-white py-2 px-4 sm:px-4 md:px-6 lg:px-4 md:px-8 text-sm">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
           <div className="flex items-center space-x-4">
             {school.phone && (
@@ -103,7 +103,7 @@ export default function PublicSchoolWebsite() {
 
       {/* Header */}
       <header className="bg-white shadow-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-4 md:px-6 lg:px-4 md:px-8">
           <div className="flex justify-between items-center h-20">
             <Link to={`/s/${slug}`} className="flex items-center space-x-3">
               {school.logo ? (
@@ -170,7 +170,7 @@ export default function PublicSchoolWebsite() {
 
       {/* Footer */}
       <footer className="bg-gray-900 text-white pt-16 pb-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-4 md:px-6 lg:px-4 md:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
             <div>
               <div className="flex items-center space-x-3 mb-6">
@@ -241,25 +241,25 @@ function HomePage({ school, websiteData, primaryColor }: { school: School, websi
         <div className="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')] bg-cover bg-center"></div>
         <div className="absolute inset-0 bg-gradient-to-r from-gray-900 to-gray-900/50"></div>
         
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-4 md:px-6 lg:px-4 md:px-8 z-10">
           <div className="max-w-3xl">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
+            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
               {heroTitle}
             </h1>
-            <p className="text-xl md:text-2xl text-gray-300 mb-10 max-w-2xl">
+            <p className="text-xl md:text-xl md:text-2xl text-gray-300 mb-10 max-w-2xl">
               {heroSubtitle}
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link 
                 to="about" 
-                className="px-8 py-4 rounded-full font-semibold text-center transition-transform hover:scale-105"
+                className="px-4 md:px-8 py-4 rounded-full font-semibold text-center transition-transform hover:scale-105"
                 style={{ backgroundColor: primaryColor, color: 'white' }}
               >
                 Learn More About Us
               </Link>
               <Link 
                 to="contact" 
-                className="px-8 py-4 rounded-full font-semibold text-center bg-white text-gray-900 hover:bg-gray-100 transition-transform hover:scale-105"
+                className="px-4 md:px-8 py-4 rounded-full font-semibold text-center bg-white text-gray-900 hover:bg-gray-100 transition-transform hover:scale-105"
               >
                 Contact Admissions
               </Link>
@@ -270,14 +270,14 @@ function HomePage({ school, websiteData, primaryColor }: { school: School, websi
 
       {/* Features/Highlights */}
       <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-4 md:px-6 lg:px-4 md:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Why Choose {school.name}?</h2>
+            <h2 className="text-xl md:text-3xl font-bold text-gray-900 mb-4">Why Choose {school.name}?</h2>
             <div className="w-24 h-1 mx-auto rounded" style={{ backgroundColor: primaryColor }}></div>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-            <div className="p-8 rounded-2xl bg-gray-50 border border-gray-100 hover:shadow-lg transition-shadow text-center">
+            <div className="p-4 md:p-8 rounded-2xl bg-gray-50 border border-gray-100 hover:shadow-lg transition-shadow text-center">
               <div className="w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-6" style={{ backgroundColor: `${primaryColor}15`, color: primaryColor }}>
                 <BookOpen className="w-8 h-8" />
               </div>
@@ -285,7 +285,7 @@ function HomePage({ school, websiteData, primaryColor }: { school: School, websi
               <p className="text-gray-600">We provide a rigorous curriculum designed to challenge students and foster a lifelong love of learning.</p>
             </div>
             
-            <div className="p-8 rounded-2xl bg-gray-50 border border-gray-100 hover:shadow-lg transition-shadow text-center">
+            <div className="p-4 md:p-8 rounded-2xl bg-gray-50 border border-gray-100 hover:shadow-lg transition-shadow text-center">
               <div className="w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-6" style={{ backgroundColor: `${primaryColor}15`, color: primaryColor }}>
                 <Users className="w-8 h-8" />
               </div>
@@ -293,7 +293,7 @@ function HomePage({ school, websiteData, primaryColor }: { school: School, websi
               <p className="text-gray-600">Our experienced educators are passionate about teaching and committed to the success of every student.</p>
             </div>
             
-            <div className="p-8 rounded-2xl bg-gray-50 border border-gray-100 hover:shadow-lg transition-shadow text-center">
+            <div className="p-4 md:p-8 rounded-2xl bg-gray-50 border border-gray-100 hover:shadow-lg transition-shadow text-center">
               <div className="w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-6" style={{ backgroundColor: `${primaryColor}15`, color: primaryColor }}>
                 <Award className="w-8 h-8" />
               </div>
@@ -306,7 +306,7 @@ function HomePage({ school, websiteData, primaryColor }: { school: School, websi
 
       {/* About Preview */}
       <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-4 md:px-6 lg:px-4 md:px-8">
           <div className="flex flex-col lg:flex-row items-center gap-16">
             <div className="lg:w-1/2">
               <img 
@@ -317,7 +317,7 @@ function HomePage({ school, websiteData, primaryColor }: { school: School, websi
               />
             </div>
             <div className="lg:w-1/2">
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">About Our School</h2>
+              <h2 className="text-xl md:text-3xl font-bold text-gray-900 mb-6">About Our School</h2>
               <p className="text-lg text-gray-600 mb-8 leading-relaxed">
                 {aboutText}
               </p>
@@ -346,29 +346,29 @@ function AboutPage({ school, websiteData, primaryColor }: { school: School, webs
     <div>
       {/* Page Header */}
       <div className="bg-gray-900 text-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl font-bold mb-4">About Us</h1>
+        <div className="max-w-7xl mx-auto px-4 sm:px-4 md:px-6 lg:px-4 md:px-8 text-center">
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">About Us</h1>
           <p className="text-xl text-gray-400 max-w-2xl mx-auto">Discover our history, mission, and the values that drive us.</p>
         </div>
       </div>
 
       <div className="py-20">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-4 md:px-6 lg:px-4 md:px-8">
           <div className="prose prose-lg max-w-none text-gray-600">
-            <h2 className="text-3xl font-bold text-gray-900 mb-6">Welcome to {school.name}</h2>
+            <h2 className="text-xl md:text-3xl font-bold text-gray-900 mb-6">Welcome to {school.name}</h2>
             <p className="mb-12 leading-relaxed">{aboutText}</p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mt-16">
-              <div className="bg-gray-50 p-8 rounded-2xl border border-gray-100">
-                <h3 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
+              <div className="bg-gray-50 p-4 md:p-8 rounded-2xl border border-gray-100">
+                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 flex items-center">
                   <span className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm mr-3" style={{ backgroundColor: primaryColor }}>M</span>
                   Our Mission
                 </h3>
                 <p>{mission}</p>
               </div>
               
-              <div className="bg-gray-50 p-8 rounded-2xl border border-gray-100">
-                <h3 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
+              <div className="bg-gray-50 p-4 md:p-8 rounded-2xl border border-gray-100">
+                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 flex items-center">
                   <span className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm mr-3" style={{ backgroundColor: primaryColor }}>V</span>
                   Our Vision
                 </h3>
@@ -376,8 +376,8 @@ function AboutPage({ school, websiteData, primaryColor }: { school: School, webs
               </div>
             </div>
 
-            <div className="mt-12 bg-gray-50 p-8 rounded-2xl border border-gray-100">
-              <h3 className="text-2xl font-bold text-gray-900 mb-4 flex items-center">
+            <div className="mt-12 bg-gray-50 p-4 md:p-8 rounded-2xl border border-gray-100">
+              <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 flex items-center">
                 <span className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm mr-3" style={{ backgroundColor: primaryColor }}>C</span>
                 Core Values
               </h3>
@@ -395,18 +395,18 @@ function ContactPage({ school, primaryColor }: { school: School, primaryColor: s
     <div>
       {/* Page Header */}
       <div className="bg-gray-900 text-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl font-bold mb-4">Contact Us</h1>
+        <div className="max-w-7xl mx-auto px-4 sm:px-4 md:px-6 lg:px-4 md:px-8 text-center">
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">Contact Us</h1>
           <p className="text-xl text-gray-400 max-w-2xl mx-auto">Get in touch with us for admissions, inquiries, or more information.</p>
         </div>
       </div>
 
       <div className="py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-4 md:px-6 lg:px-4 md:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
             {/* Contact Info */}
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-8">Get In Touch</h2>
+              <h2 className="text-xl md:text-3xl font-bold text-gray-900 mb-8">Get In Touch</h2>
               
               <div className="space-y-8">
                 {school.address && (
@@ -446,7 +446,7 @@ function ContactPage({ school, primaryColor }: { school: School, primaryColor: s
                 )}
               </div>
 
-              <div className="mt-12 p-8 bg-gray-50 rounded-2xl border border-gray-100">
+              <div className="mt-12 p-4 md:p-8 bg-gray-50 rounded-2xl border border-gray-100">
                 <h3 className="text-xl font-bold text-gray-900 mb-4">Office Hours</h3>
                 <ul className="space-y-3 text-gray-600">
                   <li className="flex justify-between"><span>Monday - Friday:</span> <span>8:00 AM - 5:00 PM</span></li>
@@ -457,10 +457,10 @@ function ContactPage({ school, primaryColor }: { school: School, primaryColor: s
             </div>
 
             {/* Contact Form Placeholder */}
-            <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100">
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">Send us a message</h3>
+            <div className="bg-white p-4 md:p-8 rounded-2xl shadow-lg border border-gray-100">
+              <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-6">Send us a message</h3>
               <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">First Name</label>
                     <input type="text" className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary transition-colors" placeholder="John" />
@@ -480,7 +480,7 @@ function ContactPage({ school, primaryColor }: { school: School, primaryColor: s
                 </div>
                 <button 
                   type="button" 
-                  className="w-full py-4 px-6 text-white font-semibold rounded-lg hover:opacity-90 transition-opacity"
+                  className="w-full py-4 px-4 md:px-6 text-white font-semibold rounded-lg hover:opacity-90 transition-opacity"
                   style={{ backgroundColor: primaryColor }}
                   onClick={() => alert("This is a preview. Form submission is disabled.")}
                 >

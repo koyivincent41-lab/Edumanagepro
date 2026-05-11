@@ -146,10 +146,10 @@ export default function Schools() {
 
   return (
     <div className="space-y-6">
-      <div className="bg-school-gradient p-6 rounded-[2.5rem] shadow-lg shadow-maroon/20">
+      <div className="bg-school-gradient p-4 md:p-6 rounded-[2.5rem] shadow-lg shadow-maroon/20">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-black text-white">School Management</h1>
+            <h1 className="text-xl md:text-2xl font-black text-white">School Management</h1>
             <p className="text-sm text-white/80 font-medium tracking-wide">Monitor and manage all registered schools on the platform.</p>
           </div>
           <div className="flex flex-wrap items-center gap-3">
@@ -180,20 +180,20 @@ export default function Schools() {
 
       <div className="bg-white rounded-[2rem] border border-gray-100 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left">
+          <table className="min-w-[700px] w-full text-left">
             <thead>
               <tr className="bg-gray-50">
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">School Details</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Owner / Contact</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Package / Students</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Actions</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">School Details</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Owner / Contact</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Package / Students</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Status</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {filteredSchools.map((school) => (
                 <tr key={school.id} className="hover:bg-gray-50 transition-colors group">
-                  <td className="px-6 py-4">
+                  <td className="px-4 md:px-6 py-4">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center text-gray-400 font-bold">
                         {school.name.charAt(0)}
@@ -206,14 +206,14 @@ export default function Schools() {
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 md:px-6 py-4">
                     <p className="text-sm font-medium text-gray-900">{school.ownerName}</p>
                     <div className="flex items-center gap-3 mt-1">
                       <a href={`mailto:${school.email}`} className="text-gray-400 hover:text-primary transition-colors"><Mail className="h-3.5 w-3.5" /></a>
                       <a href={`tel:${school.phone}`} className="text-gray-400 hover:text-primary transition-colors"><Phone className="h-3.5 w-3.5" /></a>
                     </div>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 md:px-6 py-4">
                     <div className="space-y-1">
                       <span className="px-3 py-1 bg-primary/5 text-primary rounded-full text-xs font-bold uppercase">
                         {packages.find(p => p.id === school.packageId)?.name || school.packageId}
@@ -221,7 +221,7 @@ export default function Schools() {
                       <p className="text-xs text-gray-500 font-medium">{school.studentCount || 0} Students</p>
                     </div>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 md:px-6 py-4">
                     <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${
                       school.status === 'active' ? 'bg-green-100 text-green-600' : 
                       school.status === 'pending' ? 'bg-yellow-100 text-yellow-600' : 
@@ -230,7 +230,7 @@ export default function Schools() {
                       {school.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-right">
+                  <td className="px-4 md:px-6 py-4 text-right">
                     <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button 
                         onClick={() => {
@@ -264,14 +264,14 @@ export default function Schools() {
       {/* School Profile Modal */}
       {isProfileModalOpen && selectedSchool && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-[2.5rem] w-full max-w-2xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
-            <div className="p-8 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+          <div className="bg-white rounded-[2.5rem] w-[calc(100%-2rem)] md:w-full max-w-2xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
+            <div className="p-4 md:p-8 border-b border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 bg-gray-50/50">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 bg-school-gradient text-white rounded-2xl flex items-center justify-center text-2xl font-bold">
+                <div className="w-16 h-16 bg-school-gradient text-white rounded-2xl flex items-center justify-center text-xl md:text-2xl font-bold">
                   {selectedSchool.name.charAt(0)}
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900">{selectedSchool.name}</h2>
+                  <h2 className="text-xl md:text-2xl font-bold text-gray-900">{selectedSchool.name}</h2>
                   <p className="text-gray-500 font-medium">School Profile</p>
                 </div>
               </div>
@@ -280,7 +280,7 @@ export default function Schools() {
               </button>
             </div>
 
-            <div className="p-8 grid grid-cols-2 gap-8">
+            <div className="p-4 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
               <div className="space-y-6">
                 <div>
                   <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Contact Information</h4>
@@ -300,27 +300,27 @@ export default function Schools() {
                 <div>
                   <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Subscription Details</h4>
                   <div className="space-y-3">
-                    <div className="flex items-center justify-between text-sm">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 text-sm">
                       <span className="text-gray-500">Current Package</span>
                       <span className="font-bold text-primary uppercase">
                         {packages.find(p => p.id === selectedSchool.packageId)?.name || selectedSchool.packageId}
                       </span>
                     </div>
-                    <div className="flex items-center justify-between text-sm">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 text-sm">
                       <span className="text-gray-500">Student Count</span>
                       <span className="font-bold text-gray-900">{selectedSchool.studentCount || 0}</span>
                     </div>
-                    <div className="flex items-center justify-between text-sm">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 text-sm">
                       <span className="text-gray-500">Registration Date</span>
                       <span className="font-bold text-gray-900">{new Date(selectedSchool.createdAt).toLocaleDateString()}</span>
                     </div>
                     {selectedSchool.activationDate && (
-                      <div className="flex items-center justify-between text-sm">
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 text-sm">
                         <span className="text-gray-500">Activation Date</span>
                         <span className="font-bold text-gray-900">{new Date(selectedSchool.activationDate).toLocaleDateString()}</span>
                       </div>
                     )}
-                    <div className="flex items-center justify-between text-sm">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 text-sm">
                       <span className="text-gray-500">Expiry Date</span>
                       <span className="font-bold text-gray-900">
                         {selectedSchool.subscriptionStatus === 'trial' 
@@ -381,16 +381,16 @@ export default function Schools() {
       {/* Edit School Modal */}
       {isEditModalOpen && selectedSchool && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-[2.5rem] w-full max-w-xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
-            <div className="p-8 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
-              <h2 className="text-2xl font-bold text-gray-900">Edit School Profile</h2>
+          <div className="bg-white rounded-[2.5rem] w-[calc(100%-2rem)] md:w-full max-w-xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
+            <div className="p-4 md:p-8 border-b border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 bg-gray-50/50">
+              <h2 className="text-xl md:text-2xl font-bold text-gray-900">Edit School Profile</h2>
               <button onClick={() => setIsEditModalOpen(false)} className="p-2 hover:bg-gray-200 rounded-full transition-colors">
                 <XCircle className="h-6 w-6 text-gray-400" />
               </button>
             </div>
 
-            <form onSubmit={handleSubmit(onEditSubmit)} className="p-8 space-y-6">
-              <div className="grid grid-cols-1 gap-6">
+            <form onSubmit={handleSubmit(onEditSubmit)} className="p-4 md:p-8 space-y-6">
+              <div className="grid grid-cols-1 gap-4 md:gap-6">
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-2">School Name</label>
                   <input
@@ -431,7 +431,7 @@ export default function Schools() {
                     ))}
                   </select>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-bold text-gray-700 mb-2">Subs Status</label>
                     <select
@@ -479,8 +479,8 @@ export default function Schools() {
       {/* Delete Confirmation Modal */}
       {isDeleteConfirmOpen && selectedSchool && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
-          <div className="bg-white rounded-[2rem] w-full max-w-md overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
-            <div className="p-8 text-center">
+          <div className="bg-white rounded-[2rem] w-[calc(100%-2rem)] md:w-full max-w-md overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
+            <div className="p-4 md:p-8 text-center">
               <div className="w-16 h-16 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <AlertCircle className="h-8 w-8" />
               </div>

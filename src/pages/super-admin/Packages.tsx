@@ -209,10 +209,10 @@ export default function Packages() {
 
   return (
     <div className="space-y-6">
-      <div className="bg-school-gradient p-6 rounded-[2.5rem] shadow-lg shadow-maroon/20">
+      <div className="bg-school-gradient p-4 md:p-6 rounded-[2.5rem] shadow-lg shadow-maroon/20">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-black text-white">Package Management</h1>
+            <h1 className="text-xl md:text-2xl font-black text-white">Package Management</h1>
             <p className="text-sm text-white/80 font-medium tracking-wide">Manage subscription plans and pricing page content</p>
           </div>
           
@@ -260,14 +260,14 @@ export default function Packages() {
                 });
                 setIsModalOpen(true);
               }}
-              className="px-6 py-2.5 bg-school-gradient text-white font-bold rounded-xl shadow-lg shadow-primary/20 hover:scale-105 transition-all flex items-center gap-2"
+              className="px-4 md:px-6 py-2.5 bg-school-gradient text-white font-bold rounded-xl shadow-lg shadow-primary/20 hover:scale-105 transition-all flex items-center gap-2"
             >
               <Plus className="h-5 w-5" />
               Create Package
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             {packages.map((pkg) => (
               <div key={pkg.id} className={`bg-white p-6 rounded-[2rem] border ${pkg.isFeatured ? 'border-primary ring-4 ring-primary/5' : 'border-gray-100'} shadow-sm relative group transition-all hover:shadow-xl`}>
                 {pkg.isFeatured && (
@@ -290,7 +290,7 @@ export default function Packages() {
                   <PackageIcon className="h-5 w-5 text-primary" />
                 </div>
 
-                <div className="flex items-center justify-between mb-1">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 mb-1">
                   <h3 className="text-base font-bold text-gray-900 truncate pr-8">{pkg.name}</h3>
                   <span className={`text-[8px] font-bold uppercase px-1.5 py-0.5 rounded-full ${pkg.status === 'active' ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-500'}`}>
                     {pkg.status}
@@ -310,14 +310,14 @@ export default function Packages() {
                 </div>
 
                 <div className="space-y-1.5 mb-4">
-                  <div className="p-2 bg-gray-50 rounded-lg flex items-center justify-between">
+                  <div className="p-2 bg-gray-50 rounded-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
                     <div className="flex items-center gap-1.5">
                       <Users className="h-3 w-3 text-gray-400" />
                       <span className="text-[10px] font-bold text-gray-700">Students</span>
                     </div>
                     <span className="text-[10px] font-bold text-primary">{pkg.studentLimit.toLocaleString()}</span>
                   </div>
-                  <div className="p-2 bg-gray-50 rounded-lg flex items-center justify-between">
+                  <div className="p-2 bg-gray-50 rounded-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
                     <div className="flex items-center gap-1.5">
                       <Users className="h-3 w-3 text-gray-400" />
                       <span className="text-[10px] font-bold text-gray-700">Users</span>
@@ -343,21 +343,21 @@ export default function Packages() {
         </div>
       ) : (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-300">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
             <h2 className="text-lg font-bold text-gray-900">Pricing Page Content</h2>
             <button 
               onClick={handleSavePricingSettings}
               disabled={savingSettings}
-              className="flex items-center gap-2 px-6 py-2 bg-school-gradient text-white rounded-xl font-bold hover:bg-primary/90 transition-all disabled:opacity-50"
+              className="flex items-center gap-2 px-4 md:px-6 py-2 bg-school-gradient text-white rounded-xl font-bold hover:bg-primary/90 transition-all disabled:opacity-50"
             >
               {savingSettings ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
               Save Changes
             </button>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
             {/* Text Settings */}
-            <div className="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm space-y-6">
+            <div className="bg-white p-4 md:p-8 rounded-[2rem] border border-gray-100 shadow-sm space-y-6">
               <div className="flex items-center gap-3 mb-2">
                 <div className="p-2 bg-primary/5 text-primary rounded-lg">
                   <Type className="h-5 w-5" />
@@ -414,7 +414,7 @@ export default function Packages() {
             </div>
 
             {/* Highlights Settings */}
-            <div className="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm space-y-6">
+            <div className="bg-white p-4 md:p-8 rounded-[2rem] border border-gray-100 shadow-sm space-y-6">
               <div className="flex items-center gap-3 mb-2">
                 <div className="p-2 bg-primary/5 text-primary rounded-lg">
                   <CheckSquare className="h-5 w-5" />
@@ -461,16 +461,16 @@ export default function Packages() {
       {/* Package Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-[2.5rem] w-full max-w-2xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
-            <div className="p-8 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
-              <h2 className="text-2xl font-bold text-gray-900">{editingPackage ? 'Edit Package' : 'Create New Package'}</h2>
+          <div className="bg-white rounded-[2.5rem] w-[calc(100%-2rem)] md:w-full max-w-2xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
+            <div className="p-4 md:p-8 border-b border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 bg-gray-50/50">
+              <h2 className="text-xl md:text-2xl font-bold text-gray-900">{editingPackage ? 'Edit Package' : 'Create New Package'}</h2>
               <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-gray-200 rounded-full transition-colors">
                 <X className="h-6 w-6 text-gray-400" />
               </button>
             </div>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="p-8 overflow-y-auto max-h-[70vh]">
-              <div className="grid grid-cols-2 gap-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="p-4 md:p-8 overflow-y-auto max-h-[70vh]">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                 <div className="col-span-2">
                   <label className="block text-sm font-bold text-gray-700 mb-2">Package Name</label>
                   <input
@@ -601,14 +601,14 @@ export default function Packages() {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="flex-1 px-6 py-3 bg-gray-100 text-gray-600 font-bold rounded-xl hover:bg-gray-200 transition-all"
+                  className="flex-1 px-4 md:px-6 py-3 bg-gray-100 text-gray-600 font-bold rounded-xl hover:bg-gray-200 transition-all"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex-1 px-6 py-3 bg-school-gradient text-white font-bold rounded-xl shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="flex-1 px-4 md:px-6 py-3 bg-school-gradient text-white font-bold rounded-xl shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {isSubmitting ? (
                     <>
@@ -630,8 +630,8 @@ export default function Packages() {
       {/* Delete Confirmation Modal */}
       {isDeleteConfirmOpen && packageToDelete && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
-          <div className="bg-white rounded-[2rem] w-full max-w-md overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
-            <div className="p-8 text-center">
+          <div className="bg-white rounded-[2rem] w-[calc(100%-2rem)] md:w-full max-w-md overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
+            <div className="p-4 md:p-8 text-center">
               <div className="w-16 h-16 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <AlertCircle className="h-8 w-8" />
               </div>

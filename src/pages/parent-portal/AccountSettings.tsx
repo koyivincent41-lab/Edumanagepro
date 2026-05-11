@@ -5,8 +5,8 @@ import { UserProfile } from '../../types';
 export default function AccountSettings({ profile }: { profile: UserProfile }) {
   return (
     <ParentLayout profile={profile}>
-      <h1 className="text-3xl font-black text-white dark:text-white mb-8">Account Settings</h1>
-      <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm max-w-lg">
+      <h1 className="text-xl md:text-3xl font-black text-white dark:text-white mb-8">Account Settings</h1>
+      <div className="bg-white dark:bg-gray-900 p-4 md:p-8 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm max-w-lg">
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Parent Name</label>

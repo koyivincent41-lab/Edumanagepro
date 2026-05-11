@@ -450,10 +450,10 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
 
   return (
     <div className="space-y-6">
-      <div className="bg-school-gradient p-6 rounded-[2.5rem] shadow-lg shadow-maroon/20">
+      <div className="bg-school-gradient p-4 md:p-6 rounded-[2.5rem] shadow-lg shadow-maroon/20">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-black text-white">Students Management</h1>
+            <h1 className="text-xl md:text-2xl font-black text-white">Students Management</h1>
             <p className="text-sm text-white/80 font-medium tracking-wide">Manage student enrollment and records.</p>
           </div>
           <div className="flex items-center gap-3">
@@ -472,7 +472,7 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
                 setEditingStudent(null);
                 setIsModalOpen(true);
               }}
-              className="px-6 py-2.5 bg-white text-maroon font-black uppercase tracking-widest text-[10px] rounded-xl shadow-xl hover:scale-105 transition-all flex items-center gap-2"
+              className="px-4 md:px-6 py-2.5 bg-white text-maroon font-black uppercase tracking-widest text-[10px] rounded-xl shadow-xl hover:scale-105 transition-all flex items-center gap-2"
             >
               <Plus className="h-4 w-4" />
               Add Student
@@ -482,7 +482,7 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
                 setIsBulkModalOpen(true);
                 setSelectedFile(null);
               }}
-              className="px-6 py-2.5 bg-white/10 backdrop-blur-md border border-white/20 text-white font-black uppercase tracking-widest text-[10px] rounded-xl hover:bg-white/20 transition-all flex items-center gap-2"
+              className="px-4 md:px-6 py-2.5 bg-white/10 backdrop-blur-md border border-white/20 text-white font-black uppercase tracking-widest text-[10px] rounded-xl hover:bg-white/20 transition-all flex items-center gap-2"
             >
               <Upload className="h-4 w-4" />
               Bulk Import
@@ -493,7 +493,7 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
 
       {/* Limit Info Card */}
       {activePackage && (
-        <div className="bg-primary/5 border border-primary/10 p-4 rounded-2xl flex items-center justify-between">
+        <div className="bg-primary/5 border border-primary/10 p-4 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-school-gradient/10 rounded-lg">
               <GraduationCap className="h-5 w-5 text-primary" />
@@ -517,15 +517,15 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
 
       <div className="bg-white rounded-[2rem] border border-gray-100 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left">
+          <table className="min-w-[700px] w-full text-left">
             <thead>
               <tr className="bg-gray-50">
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Student</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Adm No.</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Class / Stream</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider text-center">Outstanding Balance</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Parent</th>
-                <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Actions</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Student</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Adm No.</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Class / Stream</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider text-center">Outstanding Balance</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Parent</th>
+                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -535,7 +535,7 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
                 const strm = streams.find(s => s.id === student.streamId);
                 return (
                   <tr key={student.id} className="hover:bg-gray-50 transition-colors group">
-                    <td className="px-6 py-4">
+                    <td className="px-4 md:px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-school-gradient/10 rounded-xl flex items-center justify-center text-primary font-bold">
                           {student.fullName.charAt(0)}
@@ -546,23 +546,23 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-sm font-medium text-gray-600">{student.admissionNumber}</td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 md:px-6 py-4 text-sm font-medium text-gray-600">{student.admissionNumber}</td>
+                    <td className="px-4 md:px-6 py-4">
                       <p className="text-sm font-bold text-gray-900">{cls?.name || 'N/A'}</p>
                       <p className="text-xs text-gray-500">{strm?.name || 'N/A'}</p>
                     </td>
-                    <td className="px-6 py-4 text-center">
+                    <td className="px-4 md:px-6 py-4 text-center">
                       <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase ${
                         getStudentBalance(student.id, student.arrears) > 0 ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'
                       }`}>
                         {school?.currency} {getStudentBalance(student.id, student.arrears).toLocaleString()}
                       </span>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 md:px-6 py-4">
                       <p className="text-sm font-medium text-gray-900">{parent?.fullName || 'N/A'}</p>
                       <p className="text-xs text-gray-500">{parent?.phone || ''}</p>
                     </td>
-                    <td className="px-6 py-4 text-right">
+                    <td className="px-4 md:px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button 
                           onClick={() => setViewingIdStudent(student)}
@@ -611,15 +611,15 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
       {/* Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden max-h-[90vh] flex flex-col animate-in zoom-in-95 duration-200">
-            <div className="p-8 border-b border-gray-100 flex items-center justify-between shrink-0">
-              <h2 className="text-2xl font-bold text-gray-900">{editingStudent ? 'Edit Student' : 'Add New Student'}</h2>
+          <div className="bg-white w-[calc(100%-2rem)] md:w-full max-w-2xl rounded-[2.5rem] shadow-2xl overflow-hidden max-h-[90vh] flex flex-col animate-in zoom-in-95 duration-200">
+            <div className="p-4 md:p-8 border-b border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 shrink-0">
+              <h2 className="text-xl md:text-2xl font-bold text-gray-900">{editingStudent ? 'Edit Student' : 'Add New Student'}</h2>
               <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-gray-100 rounded-xl transition-colors">
                 <X className="h-6 w-6" />
               </button>
             </div>
-            <form onSubmit={handleSubmit(onSubmit)} className="p-8 space-y-6 overflow-y-auto">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="p-4 md:p-8 space-y-6 overflow-y-auto">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                 {editingStudent && (
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">Admission Number</label>
@@ -642,7 +642,7 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Student Photo</label>
                   <input
@@ -668,7 +668,7 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Gender</label>
                   <select
@@ -691,7 +691,7 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Class</label>
                   <select
@@ -716,7 +716,7 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Parent / Guardian</label>
                   <select
@@ -790,7 +790,7 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
                 </div>
               </div>
 
-              <div className="pt-4 flex gap-4 mt-6 shrink-0 sticky -bottom-8 bg-white pb-8 z-10 w-[calc(100%+4rem)] -ml-8 px-8 border-t border-gray-100">
+              <div className="pt-4 flex gap-4 mt-6 shrink-0 sticky -bottom-8 bg-white pb-8 z-10 w-[calc(100%+4rem)] -ml-8 px-4 md:px-8 border-t border-gray-100">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
@@ -814,15 +814,15 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
       {/* Bulk Import Modal */}
       {isBulkModalOpen && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="p-8 border-b border-gray-100 flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-gray-900">Bulk Import Students</h2>
+          <div className="bg-white w-[calc(100%-2rem)] md:w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="p-4 md:p-8 border-b border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
+              <h2 className="text-xl md:text-2xl font-bold text-gray-900">Bulk Import Students</h2>
               <button onClick={() => setIsBulkModalOpen(false)} className="p-2 hover:bg-gray-100 rounded-xl transition-colors">
                 <X className="h-6 w-6" />
               </button>
             </div>
-            <div className="p-8 space-y-6">
-              <div className="p-6 bg-primary/5 rounded-2xl border border-primary/10">
+            <div className="p-4 md:p-8 space-y-6">
+              <div className="p-4 md:p-6 bg-primary/5 rounded-2xl border border-primary/10">
                 <h3 className="font-bold text-gray-900 mb-2 flex items-center gap-2">
                   <Download className="h-4 w-4 text-primary" />
                   Step 1: Download Template
@@ -837,7 +837,7 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
                 </button>
               </div>
 
-              <div className="p-6 bg-gray-50 rounded-2xl border border-gray-100">
+              <div className="p-4 md:p-6 bg-gray-50 rounded-2xl border border-gray-100">
                 <h3 className="font-bold text-gray-900 mb-2 flex items-center gap-2">
                   <Upload className="h-4 w-4 text-gray-400" />
                   Step 2: Upload Filled CSV
@@ -896,8 +896,8 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
       {/* Delete Confirmation Modal */}
       {isDeleteConfirmOpen && studentToDelete && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[70] flex items-center justify-center p-4">
-          <div className="bg-white rounded-[2rem] w-full max-w-md overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
-            <div className="p-8 text-center">
+          <div className="bg-white rounded-[2rem] w-[calc(100%-2rem)] md:w-full max-w-md overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
+            <div className="p-4 md:p-8 text-center">
               <div className="w-16 h-16 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <AlertCircle className="h-8 w-8" />
               </div>

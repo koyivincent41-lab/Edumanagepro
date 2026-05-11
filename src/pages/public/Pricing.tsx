@@ -108,9 +108,9 @@ export default function Pricing() {
         <div className="absolute top-0 right-0 w-1/2 h-full bg-gray-50 dark:bg-gray-900/50 -z-10 skew-x-12 translate-x-20"></div>
         <div className="absolute bottom-0 left-0 w-full h-1 bg-striped-primary opacity-10"></div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-4 md:px-6 lg:px-4 md:px-8 relative z-10">
           <div className="text-center mb-16">
-            <h1 className="text-4xl md:text-6xl font-black text-gray-900 dark:text-white mb-6 tracking-tighter leading-tight whitespace-pre-line">
+            <h1 className="text-3xl md:text-4xl md:text-6xl font-black text-gray-900 dark:text-white mb-6 tracking-tighter leading-tight whitespace-pre-line">
               {title}
             </h1>
             <p className="text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto mb-10 font-medium whitespace-pre-line">
@@ -119,7 +119,7 @@ export default function Pricing() {
 
             {/* Highlights */}
             {settings?.highlights && settings.highlights.length > 0 && (
-              <div className="flex flex-wrap items-center justify-center gap-8 mb-16">
+              <div className="flex flex-wrap items-center justify-center gap-4 md:gap-8 mb-16">
                 {settings.highlights.map((highlight, i) => (
                   <div key={i} className="flex items-center gap-2">
                     <CheckCircle2 className="h-5 w-5 text-primary" />
@@ -130,8 +130,8 @@ export default function Pricing() {
             )}
 
             {/* Toggle & Currency */}
-            <div className="flex flex-col md:flex-row items-center justify-center gap-6 mb-12">
-              <div className="flex items-center justify-center gap-6 bg-gray-100 dark:bg-gray-900 p-2 rounded-3xl inline-flex">
+            <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6 mb-12">
+              <div className="flex items-center justify-center gap-4 md:gap-6 bg-gray-100 dark:bg-gray-900 p-2 rounded-3xl inline-flex">
                 <button 
                   onClick={() => setIsYearly(false)}
                   className={`px-8 py-3 rounded-2xl text-sm font-black transition-all ${!isYearly ? 'bg-primary text-white shadow-lg' : 'text-gray-500 dark:text-gray-400 hover:text-primary'}`}
@@ -167,7 +167,7 @@ export default function Pricing() {
             )}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             {packages.map((pkg) => (
               <div
                 key={pkg.id}
@@ -196,14 +196,14 @@ export default function Pricing() {
                 )}
 
                 <div className={`mb-8 ${pkg.status === 'inactive' ? 'opacity-50' : ''}`}>
-                  <div className="flex items-center justify-between mb-4">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 mb-4">
                     <h3 className={`text-lg font-black uppercase tracking-widest ${pkg.isFeatured && pkg.status === 'active' ? 'text-white' : 'text-primary'}`}>{pkg.name}</h3>
                     {pkg.status === 'inactive' && (
                       <span className="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-500 text-[8px] font-bold rounded uppercase">Inactive</span>
                     )}
                   </div>
                   <div className="flex items-baseline gap-1">
-                    <span className="text-2xl font-black tracking-tighter">
+                    <span className="text-xl md:text-2xl font-black tracking-tighter">
                       {convertPrice(isYearly ? (pkg.monthlyPrice * 12 * 0.7) / 12 : pkg.monthlyPrice).symbol}{convertPrice(isYearly ? (pkg.monthlyPrice * 12 * 0.7) / 12 : pkg.monthlyPrice).value}
                     </span>
                     <div className="flex flex-col">
