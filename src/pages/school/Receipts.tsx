@@ -229,19 +229,19 @@ export default function Receipts({ schoolId, school }: { schoolId: string; schoo
                       <div className="flex items-center justify-end gap-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
                         <button 
                           onClick={() => setSelectedReceipt(payment)}
-                          className="p-2 text-black md:text-gray-400 hover:bg-gray-100 rounded-lg transition-colors" 
+                          className="p-2 text-black hover:bg-gray-200 rounded-lg transition-colors" 
                           title="View Receipt"
                         >
                           <ReceiptIcon className="h-5 w-5" />
                         </button>
                         <button 
                           onClick={() => handleExportPDF(payment)}
-                          className="p-2 text-black md:text-gray-400 hover:bg-gray-100 rounded-lg transition-colors" 
+                          className="p-2 text-black hover:bg-gray-200 rounded-lg transition-colors" 
                           title="Download Receipt"
                         >
                           <Download className="h-5 w-5" />
                         </button>
-                        <button className="p-2 text-black md:text-gray-400 hover:bg-gray-100 rounded-lg transition-colors" title="Print Receipt">
+                        <button className="p-2 text-black hover:bg-gray-200 rounded-lg transition-colors" title="Print Receipt">
                           <Printer className="h-5 w-5" />
                         </button>
                       </div>
