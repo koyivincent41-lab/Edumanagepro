@@ -356,6 +356,37 @@ export default function EmployeeRegistrationForm({ school, employee, onClose, on
           <button onClick={onClose}><X className="w-6 h-6" /></button>
         </div>
         <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="col-span-1 md:col-span-2 flex flex-col items-center justify-center mb-4 p-4 border border-dashed border-gray-300 rounded-xl bg-gray-50">
+            <h3 className="text-sm font-bold text-gray-700 mb-3 block w-full text-center">Employee Profile Photo (For ID Card)</h3>
+            <div className="flex flex-col items-center gap-4">
+              {photoPreview ? (
+                <div className="relative group">
+                  <img src={photoPreview} alt="Preview" className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md" />
+                  <label className="absolute inset-0 flex items-center justify-center bg-black/50 text-white rounded-full opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity text-xs font-bold">
+                    Change
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      onChange={handlePhotoChange}
+                      className="hidden"
+                    />
+                  </label>
+                </div>
+              ) : (
+                <label className="w-24 h-24 flex flex-col items-center justify-center rounded-full border-4 border-white shadow-sm bg-gray-200 cursor-pointer hover:bg-gray-300 transition-colors">
+                  <span className="text-[10px] uppercase font-bold text-gray-500 mt-1 text-center leading-tight">Upload<br/>Photo</span>
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    onChange={handlePhotoChange}
+                    className="hidden"
+                  />
+                </label>
+              )}
+              {!photoPreview && <p className="text-xs text-gray-500 text-center">This photo will be displayed on the ID card.</p>}
+            </div>
+          </div>
+
           <div className="space-y-1">
             <label className="text-xs font-bold text-gray-500 uppercase">Full Name</label>
             <input {...register('fullName')} placeholder="Full Name" className="w-full p-2 border rounded" />
@@ -541,24 +572,11 @@ export default function EmployeeRegistrationForm({ school, employee, onClose, on
             </select>
           </div>
 
-          <div className="col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Profile Photo</label>
-            <div className="flex items-center gap-4">
-              {photoPreview && (
-                <img src={photoPreview} alt="Preview" className="w-16 h-16 rounded-full object-cover border" />
-              )}
-              <input 
-                type="file" 
-                accept="image/*" 
-                onChange={handlePhotoChange}
-                className="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20"
-              />
-            </div>
+          <div className="col-span-2 py-4">
+            <button type="submit" disabled={loading} className="w-full py-3 bg-primary text-white rounded-xl font-bold hover:bg-primary/90 transition-colors shadow-lg flex items-center justify-center">
+              {loading ? <Loader2 className="animate-spin mx-auto" /> : employee ? 'Update Employee' : 'Register Employee'}
+            </button>
           </div>
-
-          <button type="submit" disabled={loading} className="col-span-2 py-3 bg-primary text-white rounded-lg font-bold">
-            {loading ? <Loader2 className="animate-spin mx-auto" /> : employee ? 'Update Employee' : 'Register Employee'}
-          </button>
         </form>
       </div>
     </div>

@@ -554,7 +554,7 @@ export default function ExamAccessControl({ schoolId }: { schoolId: string }) {
         title="Remove Override"
         message="Are you sure you want to remove this access override? The user's access will revert to default/automation rules."
         confirmText={isSaving ? "Removing..." : "Remove"}
-        type="danger"
+        variant="danger"
       />
     </div>
   );
