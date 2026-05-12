@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { School } from '../../../types';
-import { Calendar, Award } from 'lucide-react';
+import { Calendar, Award, Lock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import { db } from '../../../firebase';
@@ -56,6 +56,7 @@ export default function ExamsDashboard({ schoolId, school }: { schoolId: string,
   const stats = [
     { name: 'Exam Sessions', value: examSessionsCount.toString(), icon: Calendar, color: 'text-white', bg: 'bg-white/20', cardBg: 'bg-blue-600', link: '/dashboard/exams/sessions' },
     { name: 'Report Cards', value: reportCardsCount.toString(), icon: Award, color: 'text-white', bg: 'bg-white/20', cardBg: 'bg-orange-600', link: '/dashboard/exams/results' },
+    { name: 'Access Control', value: 'Manage', icon: Lock, color: 'text-white', bg: 'bg-white/20', cardBg: 'bg-purple-600', link: '/dashboard/exams/access-control' },
   ];
 
   return (
@@ -64,7 +65,7 @@ export default function ExamsDashboard({ schoolId, school }: { schoolId: string,
         <h1 className="text-xl md:text-2xl font-bold text-white">Exams Portal</h1>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {stats.map((stat) => (
           <Link key={stat.name} to={stat.link} className={`${stat.cardBg} p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow`}>
             <div className="flex items-center gap-4">

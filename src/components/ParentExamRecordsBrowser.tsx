@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
 import { Class, Student, ExamSession, Stream, ExamResult } from '../types';
-import { Loader2, Search, Eye, Download, Printer } from 'lucide-react';
+import { Loader2, Search, Eye, Download, Printer, Lock } from 'lucide-react';
 import ResultsSlip from './ResultsSlip';
+import { useExamAccess } from '../hooks/useExamAccess';
 
 interface ParentExamRecordsBrowserProps {
   schoolId: string;
@@ -28,6 +29,8 @@ export default function ParentExamRecordsBrowser({ schoolId, parentId, examsCate
   const [searchTerm, setSearchTerm] = useState('');
   
   const [viewingStudent, setViewingStudent] = useState<{ student: Student, action: 'view' | 'download' | 'print', sessionId: string } | null>(null);
+
+  const { loadingAccess, checkAccess } = useExamAccess(schoolId, parentId);
 
   useEffect(() => {
     if (!schoolId || !parentId) return;
@@ -152,7 +155,7 @@ export default function ParentExamRecordsBrowser({ schoolId, parentId, examsCate
 
   return (
     <div className="space-y-6">
-      {loading ? (
+      {(loading || loadingAccess) ? (
         <div className="flex justify-center p-12"><Loader2 className="h-8 w-8 animate-spin text-blue-600" /></div>
       ) : records.length > 0 ? (
         <div className="space-y-4">
@@ -181,6 +184,7 @@ export default function ParentExamRecordsBrowser({ schoolId, parentId, examsCate
                 <tbody className="divide-y divide-gray-100">
                   {filteredRecords.map((record) => {
                     const studentClass = classes[record.student.classId];
+                    const hasAccess = checkAccess(record.student.id, examsCategory);
 
                     return (
                       <tr key={`${record.student.id}_${record.examSessionId}`} className="hover:bg-gray-50">
@@ -191,12 +195,21 @@ export default function ParentExamRecordsBrowser({ schoolId, parentId, examsCate
                         <td className="px-4 md:px-6 py-4 text-gray-600">{record.academicYear}</td>
                         <td className="px-4 md:px-6 py-4 text-gray-600">{record.examName}</td>
                         <td className="px-4 md:px-6 py-4 flex items-center gap-2">
-                          <button onClick={() => setViewingStudent({ student: record.student, action: 'view', sessionId: record.examSessionId })} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="View Slip">
-                            <Eye className="h-4 w-4" />
-                          </button>
-                          <button onClick={() => setViewingStudent({ student: record.student, action: 'download', sessionId: record.examSessionId })} className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors" title="Download Slip">
-                            <Download className="h-4 w-4" />
-                          </button>
+                          {hasAccess ? (
+                            <>
+                              <button onClick={() => setViewingStudent({ student: record.student, action: 'view', sessionId: record.examSessionId })} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="View Slip">
+                                <Eye className="h-5 w-5" />
+                              </button>
+                              <button onClick={() => setViewingStudent({ student: record.student, action: 'download', sessionId: record.examSessionId })} className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors" title="Download Slip">
+                                <Download className="h-5 w-5" />
+                              </button>
+                            </>
+                          ) : (
+                            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-600 rounded-lg text-xs font-bold border border-red-100" title="Examination results are currently unavailable. Please contact the school office for assistance.">
+                              <Lock className="h-3.5 w-3.5" />
+                              <span>Restricted</span>
+                            </div>
+                          )}
                         </td>
                       </tr>
                     );

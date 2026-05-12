@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { collection, query, where, getDocs, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase';
 import { Class, Student, Stream } from '../types';
-import { Loader2, Search, Eye, Download } from 'lucide-react';
+import { Loader2, Search, Eye, Download, Lock } from 'lucide-react';
 import { toast } from 'sonner';
 import TermReportForm from './TermReportForm';
+import { useExamAccess } from '../hooks/useExamAccess';
 
 interface ParentReportFormBrowserProps {
   schoolId: string;
@@ -23,6 +24,8 @@ export default function ParentReportFormBrowser({ schoolId, parentId }: ParentRe
   const [searchTerm, setSearchTerm] = useState('');
   
   const [viewingStudent, setViewingStudent] = useState<{ student: Student, action: 'view' | 'download' } | null>(null);
+
+  const { loadingAccess, checkAccess } = useExamAccess(schoolId, parentId);
 
   useEffect(() => {
     if (!schoolId) return;
@@ -96,7 +99,7 @@ export default function ParentReportFormBrowser({ schoolId, parentId }: ParentRe
         </div>
       </div>
 
-      {loading ? (
+      {(loading || loadingAccess) ? (
         <div className="flex justify-center p-12"><Loader2 className="h-8 w-8 animate-spin text-blue-600" /></div>
       ) : students.length > 0 ? (
         <div className="space-y-4">
@@ -122,6 +125,7 @@ export default function ParentReportFormBrowser({ schoolId, parentId }: ParentRe
                 <tbody className="divide-y divide-gray-100">
                   {filteredStudents.map((student) => {
                     const studentClass = classes.find(c => c.id === student.classId);
+                    const hasAccess = checkAccess(student.id, 'Report Forms');
 
                     return (
                       <tr key={student.id} className="hover:bg-gray-50">
@@ -129,12 +133,21 @@ export default function ParentReportFormBrowser({ schoolId, parentId }: ParentRe
                         <td className="px-4 md:px-6 py-4 font-bold text-gray-900">{student.fullName}</td>
                         <td className="px-4 md:px-6 py-4 text-gray-600">{studentClass?.name || '-'}</td>
                         <td className="px-4 md:px-6 py-4 flex items-center gap-2">
-                          <button onClick={() => setViewingStudent({ student, action: 'view' })} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="View Report Form">
-                            <Eye className="h-4 w-4" />
-                          </button>
-                          <button onClick={() => setViewingStudent({ student, action: 'download' })} className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors" title="Download Report Form">
-                            <Download className="h-4 w-4" />
-                          </button>
+                          {hasAccess ? (
+                            <>
+                              <button onClick={() => setViewingStudent({ student, action: 'view' })} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="View Report Form">
+                                <Eye className="h-4 w-4" />
+                              </button>
+                              <button onClick={() => setViewingStudent({ student, action: 'download' })} className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors" title="Download Report Form">
+                                <Download className="h-4 w-4" />
+                              </button>
+                            </>
+                          ) : (
+                            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-600 rounded-lg text-xs font-bold border border-red-100" title="Examination results are currently unavailable. Please contact the school office for assistance.">
+                              <Lock className="h-3.5 w-3.5" />
+                              <span>Restricted</span>
+                            </div>
+                          )}
                         </td>
                       </tr>
                     );
