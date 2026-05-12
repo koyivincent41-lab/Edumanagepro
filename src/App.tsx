@@ -39,6 +39,7 @@ import PaymentHistory from './pages/parent-portal/PaymentHistory';
 import AccountSettings from './pages/parent-portal/AccountSettings';
 import LearnerAttendanceParent from './pages/parent-portal/LearnerAttendanceParent';
 import TransportTracking from './pages/parent-portal/TransportTracking';
+import ExaminationResults from './pages/parent-portal/ExaminationResults';
 import ParentProtectedRoute from './components/ParentProtectedRoute';
 import SuperAdminProtectedRoute from './components/SuperAdminProtectedRoute';
 import SchoolProtectedRoute from './components/SchoolProtectedRoute';
@@ -191,6 +192,14 @@ export default function App() {
           element={
             <ParentProtectedRoute profile={profile} user={user} loading={loading}>
               <TransportTracking profile={profile!} />
+            </ParentProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/parent-portal/examination-results" 
+          element={
+            <ParentProtectedRoute profile={profile} user={user} loading={loading}>
+              <ExaminationResults profile={profile!} />
             </ParentProtectedRoute>
           } 
         />

@@ -73,6 +73,7 @@ export default function ParentLayout({ children, profile }: { children: React.Re
     { name: 'Inbox', path: '/parent-portal/inbox', icon: Bell },
     { name: 'My Children', path: '/parent-portal/children', icon: Users },
     { name: 'Transport Info', path: '/parent-portal/transport', icon: Bus },
+    { name: 'Examination Results', path: '/parent-portal/examination-results', icon: FileText },
     { name: 'Invoices', path: '/parent-portal/invoices', icon: FileText },
     { name: 'Receipts', path: '/parent-portal/receipts', icon: Receipt },
     { name: 'Payment History', path: '/parent-portal/payment-history', icon: History },

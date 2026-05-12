@@ -158,6 +158,7 @@ export default function ParentDashboard({ profile }: { profile: UserProfile }) {
     { name: 'Inbox', path: '/parent-portal/inbox', icon: Bell },
     { name: 'View My Children', path: '/parent-portal/children', icon: Users },
     { name: 'Learner Attendance', path: '/parent-portal/attendance', icon: Calendar },
+    { name: 'Examination Results', path: '/parent-portal/examination-results', icon: FileText },
     { name: 'View Invoices', path: '/parent-portal/invoices', icon: FileText },
     { name: 'View Receipts', path: '/parent-portal/receipts', icon: Receipt },
     { name: 'Payment History', path: '/parent-portal/payment-history', icon: History },
