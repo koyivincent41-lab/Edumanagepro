@@ -7,12 +7,15 @@ import {
   Loader2,
   ChevronRight,
   GitBranch,
-  BarChart3
+  BarChart3,
+  Download
 } from 'lucide-react';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../../../../../firebase';
 import { School, ExamSession, ExamResult, GradingSystem, Class, Stream } from '../../../../../types';
 import { calculateAcademicStats } from '../../../../../lib/academicUtils';
+import { exportToPDF } from '../../../../../lib/reportUtils';
+import { toast } from 'sonner';
 
 interface WholeSchoolAnalysisProps {
   schoolId: string;
@@ -83,10 +86,47 @@ export default function WholeSchoolAnalysis({ schoolId, school, session, grading
     };
   }).sort((a, b) => b.stats.meanScore - a.stats.meanScore);
 
+  const handleExportPDF = async () => {
+    if (classAnalysis.length === 0) {
+      toast.error('No data to export');
+      return;
+    }
+
+    const headers = ['#', 'Class', 'Candidates', 'Mean Score', 'Mean Grade', 'Pass Rate', 'Best Stream'];
+    const data = classAnalysis.map((cls, i) => {
+      const bestStream = [...cls.streamBreakdown].sort((a,b) => b.mean - a.mean)[0];
+      return [
+        (i + 1).toString(),
+        cls.name,
+        cls.stats.totalCandidates.toString(),
+        cls.stats.meanScore.toFixed(2),
+        cls.stats.meanGrade,
+        cls.stats.passRate.toFixed(1) + '%',
+        bestStream?.name || 'N/A'
+      ];
+    });
+
+    try {
+      await exportToPDF(session.examName + ' - Class Analysis', headers, data, school, 'class_analysis');
+    } catch (error) {
+      console.error('Error exporting PDF:', error);
+      toast.error('Error exporting to PDF');
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="bg-white p-6 rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden">
-        <h3 className="text-sm font-black text-gray-900 uppercase tracking-widest mb-6">Class Performance Comparison</h3>
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-sm font-black text-gray-900 uppercase tracking-widest">Class Performance Comparison</h3>
+          <button
+            onClick={handleExportPDF}
+            className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl hover:bg-primary/90 transition-colors text-sm font-bold shadow-lg shadow-primary/20"
+          >
+            <Download className="h-4 w-4" />
+            Export to PDF
+          </button>
+        </div>
         <div className="overflow-x-auto">
           <table className="min-w-full text-left">
             <thead>
