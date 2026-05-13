@@ -24,7 +24,6 @@ import { useBranch } from '../../context/BranchContext';
 
 const userSchema = z.object({
   fullName: z.string().min(3, 'Full name must be at least 3 characters'),
-  email: z.string().email('Invalid email address'),
   role: z.enum(['admin', 'accountant', 'clerk', 'teacher', 'branch-admin']),
 });
 
@@ -76,13 +75,11 @@ export default function Users({ schoolId, school }: { schoolId: string; school: 
     if (editingUser) {
       reset({
         fullName: editingUser.fullName,
-        email: editingUser.email,
         role: editingUser.role as any,
       });
     } else {
       reset({
         fullName: '',
-        email: '',
         role: 'teacher',
       });
     }
@@ -152,8 +149,7 @@ export default function Users({ schoolId, school }: { schoolId: string; school: 
   };
 
   const filteredUsers = users.filter(u => 
-    u.fullName.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    u.email.toLowerCase().includes(searchTerm.toLowerCase())
+    u.fullName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   if (loading) {
@@ -239,9 +235,6 @@ export default function Users({ schoolId, school }: { schoolId: string; school: 
                       </div>
                       <div>
                         <p className="text-sm font-bold text-gray-900">{user.fullName}</p>
-                        <p className="text-xs text-gray-500 flex items-center gap-1">
-                          <Mail className="h-3 w-3" /> {user.email}
-                        </p>
                       </div>
                     </div>
                   </td>
@@ -316,16 +309,6 @@ export default function Users({ schoolId, school }: { schoolId: string; school: 
                   placeholder="Staff member's full name"
                 />
                 {errors.fullName && <p className="mt-1 text-xs text-red-500">{errors.fullName.message}</p>}
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
-                <input
-                  {...register('email')}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/10 outline-none transition-all"
-                  placeholder="staff@school.com"
-                />
-                {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>}
               </div>
 
               <div>

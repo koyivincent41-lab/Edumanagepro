@@ -120,13 +120,22 @@ export default function SubjectAnalysis({ schoolId, school, session, gradingSyst
       <div className="bg-white p-6 rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-sm font-black text-gray-900 uppercase tracking-widest">Subject Performance Ranking</h3>
-          <button
-            onClick={handleExportPDF}
-            className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl hover:bg-primary/90 transition-colors text-sm font-bold shadow-lg shadow-primary/20"
-          >
-            <Download className="h-4 w-4" />
-            Export to PDF
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handleExportPDF}
+              className="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-xl text-xs font-bold hover:bg-primary/20 transition-all"
+            >
+              <Download className="h-4 w-4" />
+              Export PDF
+            </button>
+            <button
+              onClick={() => window.print()}
+              className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-600 rounded-xl text-xs font-bold hover:bg-gray-200 transition-all"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-printer h-4 w-4"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
+              Print
+            </button>
+          </div>
         </div>
         <div className="overflow-x-auto">
           <table className="min-w-full text-left">
