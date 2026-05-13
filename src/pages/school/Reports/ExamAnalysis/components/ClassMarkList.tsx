@@ -25,9 +25,10 @@ interface ClassMarkListProps {
   session: ExamSession;
   gradingSystem: GradingSystem | null;
   academicSettings: AcademicSettings | null;
+  restrictedClassId?: string;
 }
 
-export default function ClassMarkList({ schoolId, school, session, gradingSystem, academicSettings }: ClassMarkListProps) {
+export default function ClassMarkList({ schoolId, school, session, gradingSystem, academicSettings, restrictedClassId }: ClassMarkListProps) {
   const [classes, setClasses] = useState<Class[]>([]);
   const [streams, setStreams] = useState<Stream[]>([]);
   const [subjects, setSubjects] = useState<Subject[]>([]);
@@ -48,8 +49,13 @@ export default function ClassMarkList({ schoolId, school, session, gradingSystem
     // Fetch Classes
     const unsubClasses = onSnapshot(query(collection(db, 'schools', schoolId, 'classes')), (snap) => {
       const data = snap.docs.map(d => ({ id: d.id, ...d.data() } as Class));
-      setClasses(data);
-      if (data.length > 0 && !selectedClassId) setSelectedClassId(data[0].id);
+      if (restrictedClassId) {
+        setClasses(data.filter(c => c.id === restrictedClassId));
+        setSelectedClassId(restrictedClassId);
+      } else {
+        setClasses(data);
+        if (data.length > 0 && !selectedClassId) setSelectedClassId(data[0].id);
+      }
     });
 
     // Fetch Streams
@@ -216,7 +222,8 @@ export default function ClassMarkList({ schoolId, school, session, gradingSystem
             <select
               value={selectedClassId}
               onChange={(e) => setSelectedClassId(e.target.value)}
-              className="w-full px-4 py-2 bg-gray-50 border border-gray-100 rounded-xl text-sm font-bold focus:border-primary outline-none"
+              disabled={!!restrictedClassId}
+              className="w-full px-4 py-2 bg-gray-50 border border-gray-100 rounded-xl text-sm font-bold focus:border-primary outline-none disabled:opacity-50"
             >
               {classes.map(c => (
                 <option key={c.id} value={c.id}>{c.name}</option>
