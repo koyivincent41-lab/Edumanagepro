@@ -104,7 +104,15 @@ export interface School {
   invoiceFooter?: string;
   receiptFooter?: string;
   attendanceSettings?: AttendanceSettings;
+  academicSettings?: AcademicSettings;
   totalPaid?: number;
+}
+
+export interface AcademicSettings {
+  enableRanking: boolean;
+  rankingBasis: 'total' | 'average';
+  passMark: number;
+  updatedAt: string;
 }
 
 export interface SubscriptionHistory {

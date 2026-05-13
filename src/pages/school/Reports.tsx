@@ -25,6 +25,7 @@ import { Invoice, Payment, Student, Parent, School, Class } from '../../types';
 import { exportToCSV, exportToPDF, exportToExcel, exportToWord } from '../../lib/reportUtils';
 import { toast } from 'sonner';
 import { useBranch } from '../../context/BranchContext';
+import ExamAnalysisDashboard from './Reports/ExamAnalysis/ExamAnalysisDashboard';
 
 type ReportType = 
   | 'receivables' 
@@ -39,7 +40,8 @@ type ReportType =
   | 'credit_balance' 
   | 'collection_class' 
   | 'collection_term' 
-  | 'collection_month';
+  | 'collection_month'
+  | 'exam_analysis';
 
 export default function Reports({ schoolId, school }: { schoolId: string; school: School | null }) {
   const { currentBranch } = useBranch();
@@ -148,6 +150,7 @@ export default function Reports({ schoolId, school }: { schoolId: string; school
     { id: 'collection_class', name: 'Collection by Class', icon: BarChart3, desc: 'Revenue breakdown by class level.' },
     { id: 'collection_term', name: 'Collection by Term', icon: Calendar, desc: 'Revenue breakdown by academic term.' },
     { id: 'collection_month', name: 'Collection by Month', icon: Calendar, desc: 'Revenue breakdown by month.' },
+    { id: 'exam_analysis', name: 'Examination Analysis', icon: GraduationCap, desc: 'Academic performance dashboard and reports.' },
   ];
 
   const getReportData = () => {
@@ -545,7 +548,9 @@ export default function Reports({ schoolId, school }: { schoolId: string; school
               </div>
             </div>
 
-            {reportData.length > 0 ? (
+            {activeReport === 'exam_analysis' ? (
+              <ExamAnalysisDashboard schoolId={schoolId} school={school} />
+            ) : reportData.length > 0 ? (
               <div className="overflow-x-auto">
                 <table className="min-w-[700px] w-full text-left">
                   <thead>

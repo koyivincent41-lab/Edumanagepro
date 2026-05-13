@@ -34,11 +34,9 @@ import { useBranch } from '../../context/BranchContext';
 
 const parentSchema = z.object({
   fullName: z.string().min(3, 'Full name must be at least 3 characters'),
-  email: z.string().email('Invalid email address').or(z.literal('')),
   phone: z.string().min(10, 'Phone number must be at least 10 characters'),
   address: z.string().min(5, 'Address must be at least 5 characters').or(z.literal('')),
   username: z.string().min(3, 'Username must be at least 3 characters'),
-  password: z.string().min(6, 'Password must be at least 6 characters').optional(),
   status: z.enum(['active', 'inactive']),
 });
 
@@ -93,7 +91,6 @@ export default function Parents({ schoolId }: { schoolId: string }) {
     if (editingParent) {
       reset({
         fullName: editingParent.fullName,
-        email: editingParent.email,
         phone: editingParent.phone,
         address: editingParent.address,
         status: editingParent.status || 'active',
@@ -101,7 +98,6 @@ export default function Parents({ schoolId }: { schoolId: string }) {
     } else {
       reset({
         fullName: '',
-        email: '',
         phone: '',
         address: '',
         status: 'active',
@@ -119,34 +115,13 @@ export default function Parents({ schoolId }: { schoolId: string }) {
         });
         toast.success('Parent updated successfully');
       } else {
-        // Create Auth User using secondary app
-        const secondaryApp = getApps().find(app => app.name === 'secondary') || initializeApp(firebaseConfig, 'secondary');
-        const secondaryAuth = getAuth(secondaryApp);
-        
-        const email = data.email || `${data.username}@school.com`;
-        const userCredential = await createUserWithEmailAndPassword(secondaryAuth, email, data.password || 'Password123!');
-        const user = userCredential.user;
-
         // Create Parent Document
         const newParentId = Math.floor(1000 + Math.random() * 9000).toString();
         await addDoc(collection(db, 'schools', schoolId, 'parents'), {
           ...data,
           parentId: newParentId,
-          uid: user.uid,
           schoolId,
           ...(currentBranch ? { branchId: currentBranch.id } : {}),
-          status: 'active',
-          createdAt: new Date().toISOString(),
-        });
-        
-        // Create UserProfile for Role
-        await setDoc(doc(db, 'users', user.uid), {
-          uid: user.uid,
-          schoolId,
-          ...(currentBranch ? { branchId: currentBranch.id } : {}),
-          fullName: data.fullName,
-          email: email,
-          role: 'parent',
           status: 'active',
           createdAt: new Date().toISOString(),
         });
@@ -594,29 +569,6 @@ export default function Parents({ schoolId }: { schoolId: string }) {
                     placeholder="parent_username"
                   />
                   {errors.username && <p className="mt-1 text-xs text-red-500">{errors.username.message}</p>}
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Password</label>
-                  <input
-                    {...register('password')}
-                    type="password"
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/10 outline-none transition-all"
-                    placeholder="••••••••"
-                  />
-                  {errors.password && <p className="mt-1 text-xs text-red-500">{errors.password.message}</p>}
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
-                  <input
-                    {...register('email')}
-                    type="email"
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/10 outline-none transition-all"
-                    placeholder="email@example.com"
-                  />
-                  {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>}
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Phone Number</label>

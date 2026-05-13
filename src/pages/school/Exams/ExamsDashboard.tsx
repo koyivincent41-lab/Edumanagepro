@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { School } from '../../../types';
-import { Calendar, Award, Lock } from 'lucide-react';
+import { Calendar, Award, Lock, FileText } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import { db } from '../../../firebase';
@@ -55,6 +55,7 @@ export default function ExamsDashboard({ schoolId, school }: { schoolId: string,
 
   const stats = [
     { name: 'Exam Sessions', value: examSessionsCount.toString(), icon: Calendar, color: 'text-white', bg: 'bg-white/20', cardBg: 'bg-blue-600', link: '/dashboard/exams/sessions' },
+    { name: 'Class Mark List', value: 'View', icon: FileText, color: 'text-white', bg: 'bg-white/20', cardBg: 'bg-green-600', link: '/dashboard/exams/marklist' },
     { name: 'Report Cards', value: reportCardsCount.toString(), icon: Award, color: 'text-white', bg: 'bg-white/20', cardBg: 'bg-orange-600', link: '/dashboard/exams/results' },
     { name: 'Access Control', value: 'Manage', icon: Lock, color: 'text-white', bg: 'bg-white/20', cardBg: 'bg-purple-600', link: '/dashboard/exams/access-control' },
   ];

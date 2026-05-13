@@ -20,7 +20,6 @@ const secondaryAuth = getAuth(secondaryApp);
 const employeeSchema = z.object({
   fullName: z.string().min(2, 'Full name is required'),
   phone: z.string().min(10, 'Phone number is required'),
-  email: z.string().email('Invalid email address'),
   nationalId: z.string().min(1, 'National ID is required'),
   gender: z.enum(['male', 'female', 'other']),
   jobTitle: z.string().min(1, 'Job title is required'),
@@ -28,7 +27,6 @@ const employeeSchema = z.object({
   employmentDate: z.string().min(1, 'Employment date is required'),
   status: z.enum(['active', 'inactive', 'suspended']),
   username: z.string().min(4, 'Username must be at least 4 characters'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
   profilePhoto: z.string().optional(),
   isClassTeacher: z.boolean().optional(),
   classTeacherAssignment: z.string().optional(),
@@ -57,7 +55,6 @@ export default function EmployeeRegistrationForm({ school, employee, onClose, on
     defaultValues: employee ? {
       fullName: employee.fullName,
       phone: employee.phone,
-      email: employee.email,
       nationalId: employee.nationalId,
       gender: employee.gender,
       jobTitle: employee.jobTitle,
@@ -65,7 +62,6 @@ export default function EmployeeRegistrationForm({ school, employee, onClose, on
       employmentDate: employee.dateOfEmployment,
       status: employee.status,
       username: employee.username,
-      password: '', // Password not editable here for security
       isClassTeacher: employee.isClassTeacher || false,
       classTeacherAssignment: employee.classTeacherAssignment || '',
       employmentType: employee.employmentType,
@@ -198,43 +194,16 @@ export default function EmployeeRegistrationForm({ school, employee, onClose, on
 
     setLoading(true);
     try {
-      const bcrypt = await import('bcryptjs');
-      let passwordHash = employee?.passwordHash;
-      let firebaseUid = (employee as any)?.firebaseUid;
-
-      // Handle Firebase Auth Synchronization for NEW employees
-      if (!employee && data.email && data.password) {
-        try {
-          const userCredential = await createUserWithEmailAndPassword(secondaryAuth, data.email, data.password);
-          firebaseUid = userCredential.user.uid;
-        } catch (authError: any) {
-          console.error('Firebase Auth creation error:', authError);
-          if (authError.code === 'auth/email-already-in-use') {
-            toast.error('This email is already in use by another account');
-            setLoading(false);
-            return;
-          } else if (authError.code === 'auth/weak-password') {
-            toast.error('Password is too weak. Please use at least 6 characters');
-            setLoading(false);
-            return;
-          }
-          throw authError;
-        }
-      }
-
-      if (data.password) {
-        passwordHash = await bcrypt.hash(data.password, 10);
-      }
+      let firebaseUid = (employee as any)?.firebaseUid || null;
       
-      const { password, employmentDate, ...employeeData } = data;
+      const { employmentDate, ...employeeData } = data;
       const staffNumber = employee?.staffNumber || generateStaffNumber();
       
       const employeePayload: any = {
         ...employeeData,
         dateOfEmployment: employmentDate,
         designation: data.jobTitle, 
-        passwordHash,
-        firebaseUid, // Link to Firebase Auth
+        firebaseUid,
         staffNumber,
         schoolId: school.id,
         ...(currentBranch ? { branchId: currentBranch.id } : {}),
@@ -264,7 +233,6 @@ export default function EmployeeRegistrationForm({ school, employee, onClose, on
         if (firebaseUid) {
           const userRef = doc(db, 'users', firebaseUid);
           await setDoc(userRef, {
-            email: data.email,
             fullName: data.fullName,
             role: 'employee',
             status: 'active',
@@ -397,12 +365,6 @@ export default function EmployeeRegistrationForm({ school, employee, onClose, on
             <label className="text-xs font-bold text-gray-500 uppercase">Phone Number</label>
             <input {...register('phone')} placeholder="Phone Number" className="w-full p-2 border rounded" />
             {errors.phone && <p className="text-red-500 text-xs">{errors.phone.message}</p>}
-          </div>
-          
-          <div className="space-y-1">
-            <label className="text-xs font-bold text-gray-500 uppercase">Email Address</label>
-            <input {...register('email')} placeholder="Email" className="w-full p-2 border rounded" />
-            {errors.email && <p className="text-red-500 text-xs">{errors.email.message}</p>}
           </div>
           
           <div className="space-y-1">
@@ -554,11 +516,6 @@ export default function EmployeeRegistrationForm({ school, employee, onClose, on
                 <label className="text-xs font-bold text-gray-500 uppercase">Username</label>
                 <input {...register('username')} placeholder="Username" className="w-full p-2 border rounded" />
                 {errors.username && <p className="text-red-500 text-xs">{errors.username.message}</p>}
-              </div>
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-gray-500 uppercase">Password</label>
-                <input type="password" {...register('password')} placeholder="Password" className="w-full p-2 border rounded" />
-                {errors.password && <p className="text-red-500 text-xs">{errors.password.message}</p>}
               </div>
             </div>
           </div>
