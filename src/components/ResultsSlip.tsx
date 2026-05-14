@@ -79,7 +79,8 @@ export default function ResultsSlip({ student, examSessionId, schoolId, initialA
 
   let finalGrade = '';
   if (gradingSystem && gradingSystem.bands) {
-    const band = gradingSystem.bands.find(b => average >= b.minScore && average <= b.maxScore);
+    const roundedAverage = Math.round(average);
+    const band = gradingSystem.bands.find(b => roundedAverage >= b.minScore && roundedAverage <= b.maxScore);
     if (band) finalGrade = band.gradeName;
   }
 

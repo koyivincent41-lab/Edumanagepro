@@ -21,7 +21,6 @@ import {
 } from 'lucide-react';
 import { collection, onSnapshot, doc, addDoc, updateDoc, deleteDoc, query, where, getDocs, setDoc } from 'firebase/firestore';
 import { db, auth } from '../../firebase';
-import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
 import { initializeApp, getApps } from 'firebase/app';
 import firebaseConfig from '../../../firebase-applet-config.json';
 import { Parent, Student, Class, Stream, Invoice, Payment } from '../../types';
@@ -157,7 +156,6 @@ export default function Parents({ schoolId }: { schoolId: string }) {
     const headers = [
       'Parent Full Name',
       'Phone',
-      'Email',
       'Address',
       'Student Name',
       'Admission Number',
@@ -232,7 +230,6 @@ export default function Parents({ schoolId }: { schoolId: string }) {
                   fullName: row['Parent Full Name'] || 'Unknown Parent',
                   parentId: newParentUniqueId,
                   phone: phone,
-                  email: row['Email'] || '',
                   address: row['Address'] || '',
                   schoolId,
                   ...(currentBranch ? { branchId: currentBranch.id } : {}),
@@ -303,12 +300,10 @@ export default function Parents({ schoolId }: { schoolId: string }) {
       const parentByDisplayId: Record<string, Parent> = {};
       const parentById: Record<string, Parent> = {};
       const parentByPhone: Record<string, Parent> = {};
-      const parentByEmail: Record<string, Parent> = {};
 
       allParents.forEach(p => {
         if (p.parentId) parentByDisplayId[p.parentId] = p;
         if (p.phone) parentByPhone[p.phone.trim()] = p;
-        if (p.email) parentByEmail[p.email.toLowerCase().trim()] = p;
         parentById[p.id] = p;
       });
 
@@ -317,7 +312,6 @@ export default function Parents({ schoolId }: { schoolId: string }) {
       // 1. Link UIDs to parents if missing
       for (const user of allParentUsers) {
         const parentDoc = allParents.find(p => 
-          (p.email && p.email.toLowerCase().trim() === user.email?.toLowerCase().trim()) ||
           (p.phone && p.phone.trim() === user.phone?.trim())
         );
 
@@ -335,7 +329,7 @@ export default function Parents({ schoolId }: { schoolId: string }) {
       for (const student of allStudents) {
         let correctParentId = student.parentId;
         
-        // If parentId doesn't match an actual doc ID, check display ID, Phone or Email
+        // If parentId doesn't match an actual doc ID, check display ID or Phone
         if (!parentById[student.parentId]) {
            const byDisplay = parentByDisplayId[student.parentId];
            const byPhone = parentByPhone[student.parentId.trim()];
@@ -522,12 +516,6 @@ export default function Parents({ schoolId }: { schoolId: string }) {
                 <Phone className="h-4 w-4 text-gray-400" />
                 {parent.phone}
               </div>
-              {parent.email && (
-                <div className="flex items-center gap-3 text-sm text-gray-600">
-                  <Mail className="h-4 w-4 text-gray-400" />
-                  {parent.email}
-                </div>
-              )}
               {parent.address && (
                 <div className="flex items-center gap-3 text-sm text-gray-600">
                   <MapPin className="h-4 w-4 text-gray-400" />
@@ -542,14 +530,14 @@ export default function Parents({ schoolId }: { schoolId: string }) {
       {/* Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white w-[calc(100%-2rem)] md:w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="p-4 md:p-8 border-b border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
+          <div className="bg-white w-[calc(100%-2rem)] md:w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200">
+            <div className="p-4 md:p-8 border-b border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0 shrink-0">
               <h2 className="text-xl md:text-2xl font-bold text-gray-900">{editingParent ? 'Edit Parent' : 'Add New Parent'}</h2>
               <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-gray-100 rounded-xl transition-colors">
                 <X className="h-6 w-6" />
               </button>
             </div>
-            <form onSubmit={handleSubmit(onSubmit)} className="p-4 md:p-8 space-y-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="p-4 md:p-8 space-y-6 overflow-y-auto">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
                 <input

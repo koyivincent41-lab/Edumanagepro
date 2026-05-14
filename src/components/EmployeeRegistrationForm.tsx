@@ -5,17 +5,12 @@ import * as z from 'zod';
 import { db } from '../firebase';
 import { collection, addDoc, onSnapshot, query, where, doc, updateDoc, getDocs, writeBatch, setDoc } from 'firebase/firestore';
 import { getApps, initializeApp } from 'firebase/app';
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import firebaseConfig from '../../firebase-applet-config.json';
 import { toast } from 'sonner';
 import { Loader2, X } from 'lucide-react';
 import { School, SalaryStructure, Class, Employee } from '../types';
 import { handleFirestoreError, OperationType } from '../lib/firestoreErrorHandler';
 import { useBranch } from '../context/BranchContext';
-
-// Initialize secondary Firebase app for creating employees without affecting admin session
-const secondaryApp = getApps().find(app => app.name === 'EmployeeCreation') || initializeApp(firebaseConfig, 'EmployeeCreation');
-const secondaryAuth = getAuth(secondaryApp);
 
 const employeeSchema = z.object({
   fullName: z.string().min(2, 'Full name is required'),

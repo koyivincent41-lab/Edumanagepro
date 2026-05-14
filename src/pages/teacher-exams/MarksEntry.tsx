@@ -276,7 +276,7 @@ const EditLearnerModal = ({ student, onClose, teacher, selectedExamSessionId, se
   const getGrade = (score: number | '') => {
     if (score === '' || isNaN(Number(score))) return '-';
     if (!gradingSystem || !gradingSystem.bands) return '-';
-    const s = Number(score);
+    const s = Math.round(Number(score));
     const band = gradingSystem.bands.find(b => s >= b.minScore && s <= b.maxScore);
     return band ? band.gradeName : '-';
   };

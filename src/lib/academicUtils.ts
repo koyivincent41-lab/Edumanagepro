@@ -2,7 +2,8 @@ import { GradingSystem, ExamResult } from '../types';
 
 export function getGradeFromScore(score: number, gradingSystem: GradingSystem | null) {
   if (!gradingSystem || !gradingSystem.bands) return { grade: 'N/A', remarks: '', isPass: false };
-  const band = gradingSystem.bands.find(b => score >= b.minScore && score <= b.maxScore);
+  const roundedScore = Math.round(score);
+  const band = gradingSystem.bands.find(b => roundedScore >= b.minScore && roundedScore <= b.maxScore);
   return {
     grade: band?.gradeName || 'N/A',
     remarks: band?.remarks || '',

@@ -110,7 +110,8 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
 
   const getGrade = (score: number) => {
     if (!gradingSystem || !gradingSystem.bands) return '';
-    const band = gradingSystem.bands.find(b => score >= b.minScore && score <= b.maxScore);
+    const roundedScore = Math.round(score);
+    const band = gradingSystem.bands.find(b => roundedScore >= b.minScore && roundedScore <= b.maxScore);
     return band ? band.gradeName : '';
   };
 
