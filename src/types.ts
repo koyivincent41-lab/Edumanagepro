@@ -258,6 +258,10 @@ export interface Student {
   vehicleId?: string;
   routeId?: string;
   studentPin?: string;
+  parentName?: string;
+  parentPhone?: string;
+  parentEmail?: string;
+  bloodGroup?: string;
   createdAt: string;
 }
 
