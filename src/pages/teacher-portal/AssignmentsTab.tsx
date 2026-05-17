@@ -61,7 +61,7 @@ export default function AssignmentsTab({ teacher }: AssignmentsTabProps) {
     subject: '',
     classId: '',
     dueDate: '',
-    status: 'Active' as const,
+    status: 'Active' as 'Draft' | 'Active' | 'Closed',
     attachmentUrl: ''
   });
 

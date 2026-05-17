@@ -160,8 +160,14 @@ export default function LiveClassesTab({ teacher }: LiveClassesTabProps) {
         body: JSON.stringify({ topic, date, time, duration })
       });
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to create Zoom meeting');
+        let errorMsg = 'Failed to create Zoom meeting';
+        try {
+          const errorData = await response.json();
+          errorMsg = errorData.error || errorMsg;
+        } catch(e) {
+          errorMsg = await response.text();
+        }
+        throw new Error(errorMsg);
       }
       return await response.json();
     } catch (error: any) {
@@ -205,9 +211,10 @@ export default function LiveClassesTab({ teacher }: LiveClassesTabProps) {
       setShowCreateModal(false);
       setFormData({ topic: '', subject: '', classId: '', date: '', time: '', duration: 45 });
       fetchLiveClasses();
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      toast.error('Failed to schedule class', { id: 'zoom' });
+      const msg = error.message || 'Failed to schedule class';
+      toast.error(msg, { id: 'zoom', duration: 8000 });
     }
   };
 

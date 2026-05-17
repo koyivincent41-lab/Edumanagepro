@@ -174,9 +174,9 @@ async function startServer() {
     }
 
     try {
-      const accountId = process.env.ZOOM_ACCOUNT_ID || 'Qn8ZVok_SnWBQ8kCSLFbWA';
-      const clientId = process.env.ZOOM_CLIENT_ID || 'NoGv1HepRM2zH_fsk2g8Jw';
-      const clientSecret = process.env.ZOOM_CLIENT_SECRET || 'ZkMW7bFjok8NqxN1zeXHmIpiNdBW5hGD';
+      const accountId = (process.env.ZOOM_ACCOUNT_ID || 'Qn8ZVok_SnWBQ8kCSLFbWA').trim();
+      const clientId = (process.env.ZOOM_CLIENT_ID || 'NoGv1HepRM2zH_fsk2g8Jw').trim();
+      const clientSecret = (process.env.ZOOM_CLIENT_SECRET || 'ZkMW7bFjok8NqxN1zeXHmIpiNdBW5hGD').trim();
 
       // 1. Get Zoom Token
       const tokenUrl = `https://zoom.us/oauth/token?grant_type=account_credentials&account_id=${accountId}`;
@@ -191,10 +191,15 @@ async function startServer() {
       if (!tokenResponse.ok) {
         const errText = await tokenResponse.text();
         console.error("Zoom Token Auth Error:", errText);
-        let errorMsg = "Failed to authenticate with Zoom API";
+        let errorMsg = "Zoom API Error";
         try {
           const parsed = JSON.parse(errText);
-          if (parsed.reason) errorMsg += `: ${parsed.reason}`;
+          if (parsed.reason) {
+            errorMsg += `: ${parsed.reason}`;
+            if (parsed.reason.includes('disabled by the developer')) {
+              errorMsg = "Your Zoom API App is currently disabled. Please go to marketplace.zoom.us, navigate to your App, and enable it.";
+            }
+          }
         } catch (e) {
           errorMsg += `: ${errText}`;
         }

@@ -30,6 +30,8 @@ import EmployeePaySlip from './pages/public/EmployeePaySlip';
 import SuperAdminLogin from './pages/super-admin/Login';
 import SuperAdminDashboard from './pages/super-admin/Dashboard';
 import ParentLogin from './pages/parent-portal/Login';
+import StudentLogin from './pages/public/StudentLogin';
+import StudentPortalLayout from './pages/student-portal/Layout';
 import ParentDashboard from './pages/parent-portal/Dashboard';
 import MyChildren from './pages/parent-portal/MyChildren';
 import Invoices from './pages/parent-portal/Invoices';
@@ -145,6 +147,8 @@ export default function App() {
         <Route path="/terms-of-service" element={<TermsOfService />} />
         <Route path="/super-admin/login" element={<SuperAdminLogin profile={profile} />} />
         <Route path="/parent-portal/login" element={<ParentLogin profile={profile} />} />
+        <Route path="/student-login" element={<StudentLogin />} />
+        <Route path="/student-portal/*" element={<StudentPortalLayout />} />
         <Route path="/teacher-portal/login" element={<TeacherExamsLogin />} />
         <Route path="/teacher-portal/dashboard/*" element={<TeacherExamsDashboard />} />
 
