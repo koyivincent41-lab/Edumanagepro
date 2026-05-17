@@ -166,6 +166,90 @@ async function startServer() {
     }
   });
 
+  app.post("/api/zoom/meeting", async (req, res) => {
+    const { topic, date, time, duration } = req.body;
+
+    if (!topic || !date || !time || !duration) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    try {
+      const accountId = process.env.ZOOM_ACCOUNT_ID || 'Qn8ZVok_SnWBQ8kCSLFbWA';
+      const clientId = process.env.ZOOM_CLIENT_ID || 'NoGv1HepRM2zH_fsk2g8Jw';
+      const clientSecret = process.env.ZOOM_CLIENT_SECRET || 'ZkMW7bFjok8NqxN1zeXHmIpiNdBW5hGD';
+
+      // 1. Get Zoom Token
+      const tokenUrl = `https://zoom.us/oauth/token?grant_type=account_credentials&account_id=${accountId}`;
+      const tokenResponse = await fetch(tokenUrl, {
+        method: "POST",
+        headers: {
+          Authorization: `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString("base64")}`,
+          "Content-Type": "application/x-www-form-urlencoded"
+        }
+      });
+
+      if (!tokenResponse.ok) {
+        const errText = await tokenResponse.text();
+        console.error("Zoom Token Auth Error:", errText);
+        let errorMsg = "Failed to authenticate with Zoom API";
+        try {
+          const parsed = JSON.parse(errText);
+          if (parsed.reason) errorMsg += `: ${parsed.reason}`;
+        } catch (e) {
+          errorMsg += `: ${errText}`;
+        }
+        throw new Error(errorMsg);
+      }
+
+      const { access_token } = await tokenResponse.json() as any;
+
+      // 2. Create Meeting (using 'me' which resolves to the account owner for S2S OAuth)
+      const meetingStart = `${date}T${time}:00Z`;
+      const meetingResponse = await fetch(`https://api.zoom.us/v2/users/me/meetings`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          topic,
+          type: 2, // Scheduled meeting
+          start_time: meetingStart,
+          duration: Number(duration),
+          settings: {
+            host_video: true,
+            participant_video: false,
+            join_before_host: true,
+            jbh_time: 0,
+            mute_upon_entry: true,
+            auto_recording: "cloud"
+          }
+        })
+      });
+
+      if (!meetingResponse.ok) {
+        const errData = await meetingResponse.json() as any;
+        console.error("Zoom meeting creation error:", errData);
+        if (errData.code === 4711) {
+           throw new Error(`Your Zoom API credentials do not have the required scopes to create meetings. Please go to Zoom App Marketplace > Your App > Scopes and add "meeting:write:admin" and "user:read:admin".`);
+        }
+        throw new Error(errData.message || "Failed to create Zoom meeting");
+      }
+
+      const meetingData = await meetingResponse.json() as any;
+
+      res.status(200).json({
+        joinUrl: meetingData.join_url,
+        startUrl: meetingData.start_url,
+        meetingId: meetingData.id
+      });
+
+    } catch (error: any) {
+      console.error("Zoom API Error:", error);
+      res.status(500).json({ error: error.message || "Failed to generate zoom link" });
+    }
+  });
+
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({

@@ -40,6 +40,8 @@ import AccountSettings from './pages/parent-portal/AccountSettings';
 import LearnerAttendanceParent from './pages/parent-portal/LearnerAttendanceParent';
 import TransportTracking from './pages/parent-portal/TransportTracking';
 import ExaminationResults from './pages/parent-portal/ExaminationResults';
+import LiveClassesParent from './pages/parent-portal/LiveClasses';
+
 import ParentProtectedRoute from './components/ParentProtectedRoute';
 import SuperAdminProtectedRoute from './components/SuperAdminProtectedRoute';
 import SchoolProtectedRoute from './components/SchoolProtectedRoute';
@@ -50,8 +52,8 @@ import StudentsModule from './pages/school/Students';
 import InvoicesModule from './pages/school/Invoices';
 import SettingsModule from './pages/school/Settings';
 
-import TeacherExamsLogin from './pages/teacher-exams/Login';
-import TeacherExamsDashboard from './pages/teacher-exams/Dashboard';
+import TeacherExamsLogin from './pages/teacher-portal/Login';
+import TeacherExamsDashboard from './pages/teacher-portal/Dashboard';
 
 import { BranchProvider } from './context/BranchContext';
 
@@ -143,8 +145,8 @@ export default function App() {
         <Route path="/terms-of-service" element={<TermsOfService />} />
         <Route path="/super-admin/login" element={<SuperAdminLogin profile={profile} />} />
         <Route path="/parent-portal/login" element={<ParentLogin profile={profile} />} />
-        <Route path="/teacher-exams/login" element={<TeacherExamsLogin />} />
-        <Route path="/teacher-exams/dashboard/*" element={<TeacherExamsDashboard />} />
+        <Route path="/teacher-portal/login" element={<TeacherExamsLogin />} />
+        <Route path="/teacher-portal/dashboard/*" element={<TeacherExamsDashboard />} />
 
         <Route 
           path="/super-admin/*" 
@@ -232,6 +234,14 @@ export default function App() {
           element={
             <ParentProtectedRoute profile={profile} user={user} loading={loading}>
               <AccountSettings profile={profile!} />
+            </ParentProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/parent-portal/live-classes" 
+          element={
+            <ParentProtectedRoute profile={profile} user={user} loading={loading}>
+              <LiveClassesParent profile={profile!} />
             </ParentProtectedRoute>
           } 
         />

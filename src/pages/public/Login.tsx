@@ -53,9 +53,9 @@ export default function Login({ profile }: { profile: UserProfile | null }) {
         }));
         
         if (activeTab === 'attendance') {
-           navigate('/teacher-exams/dashboard', { state: { tab: 'learner_attendance' } });
+           navigate('/teacher-portal/dashboard', { state: { tab: 'learner_attendance' } });
         } else {
-           navigate('/teacher-exams/dashboard');
+           navigate('/teacher-portal/dashboard');
         }
       } else {
         navigate('/dashboard');
@@ -110,9 +110,9 @@ export default function Login({ profile }: { profile: UserProfile | null }) {
 
       toast.success('Login successful');
       if (activeTab === 'attendance') {
-        navigate('/teacher-exams/dashboard', { state: { tab: 'learner_attendance' } });
+        navigate('/teacher-portal/dashboard', { state: { tab: 'learner_attendance' } });
       } else {
-        navigate('/teacher-exams/dashboard');
+        navigate('/teacher-portal/dashboard');
       }
     } catch (error: any) {
       console.error('Login error:', error);
