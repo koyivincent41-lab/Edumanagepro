@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { collection, query, where, getDocs } from 'firebase/firestore';
-import { db } from '../../firebase';
-import { Assignment, AssignmentSubmission } from '../../types';
+import { db } from '@/firebase';
+import { Assignment, AssignmentSubmission } from '@/types';
 import { BookOpen, Calendar, Clock, Lock, CheckCircle, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 

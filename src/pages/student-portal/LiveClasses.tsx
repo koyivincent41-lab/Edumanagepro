@@ -8,7 +8,7 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { collection, query, where, getDocs } from 'firebase/firestore';
-import { db } from '../../firebase';
+import { db } from '@/firebase';
 import { toast } from 'sonner';
 
 export default function StudentLiveClasses({ session }: { session: any }) {

@@ -30,8 +30,6 @@ import EmployeePaySlip from './pages/public/EmployeePaySlip';
 import SuperAdminLogin from './pages/super-admin/Login';
 import SuperAdminDashboard from './pages/super-admin/Dashboard';
 import ParentLogin from './pages/parent-portal/Login';
-import StudentLogin from './pages/public/StudentLogin';
-import StudentPortalLayout from './pages/student-portal/Layout';
 import ParentDashboard from './pages/parent-portal/Dashboard';
 import MyChildren from './pages/parent-portal/MyChildren';
 import Invoices from './pages/parent-portal/Invoices';
@@ -42,8 +40,6 @@ import AccountSettings from './pages/parent-portal/AccountSettings';
 import LearnerAttendanceParent from './pages/parent-portal/LearnerAttendanceParent';
 import TransportTracking from './pages/parent-portal/TransportTracking';
 import ExaminationResults from './pages/parent-portal/ExaminationResults';
-import LiveClassesParent from './pages/parent-portal/LiveClasses';
-
 import ParentProtectedRoute from './components/ParentProtectedRoute';
 import SuperAdminProtectedRoute from './components/SuperAdminProtectedRoute';
 import SchoolProtectedRoute from './components/SchoolProtectedRoute';
@@ -54,8 +50,8 @@ import StudentsModule from './pages/school/Students';
 import InvoicesModule from './pages/school/Invoices';
 import SettingsModule from './pages/school/Settings';
 
-import TeacherExamsLogin from './pages/teacher-portal/Login';
-import TeacherExamsDashboard from './pages/teacher-portal/Dashboard';
+import TeacherExamsLogin from './pages/teacher-exams/Login';
+import TeacherExamsDashboard from './pages/teacher-exams/Dashboard';
 
 import { BranchProvider } from './context/BranchContext';
 
@@ -147,10 +143,8 @@ export default function App() {
         <Route path="/terms-of-service" element={<TermsOfService />} />
         <Route path="/super-admin/login" element={<SuperAdminLogin profile={profile} />} />
         <Route path="/parent-portal/login" element={<ParentLogin profile={profile} />} />
-        <Route path="/student-login" element={<StudentLogin />} />
-        <Route path="/student-portal/*" element={<StudentPortalLayout />} />
-        <Route path="/teacher-portal/login" element={<TeacherExamsLogin />} />
-        <Route path="/teacher-portal/dashboard/*" element={<TeacherExamsDashboard />} />
+        <Route path="/teacher-exams/login" element={<TeacherExamsLogin />} />
+        <Route path="/teacher-exams/dashboard/*" element={<TeacherExamsDashboard />} />
 
         <Route 
           path="/super-admin/*" 
@@ -238,14 +232,6 @@ export default function App() {
           element={
             <ParentProtectedRoute profile={profile} user={user} loading={loading}>
               <AccountSettings profile={profile!} />
-            </ParentProtectedRoute>
-          } 
-        />
-        <Route 
-          path="/parent-portal/live-classes" 
-          element={
-            <ParentProtectedRoute profile={profile} user={user} loading={loading}>
-              <LiveClassesParent profile={profile!} />
             </ParentProtectedRoute>
           } 
         />

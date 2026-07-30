@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { collection, query, where, getDocs, doc, setDoc, updateDoc, deleteDoc, addDoc, getDoc } from 'firebase/firestore';
-import { db } from '../../firebase';
-import { Class, Student } from '../../types';
+import { db } from '@/firebase';
+import { Class, Student } from '@/types';
 import { BookOpen, Calendar, Clock, Plus, Edit2, Trash2, CheckCircle, XCircle, AlertCircle, Search, FileText, Upload, User as UserIcon, X, Check } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
@@ -91,18 +91,19 @@ export default function AssignmentsTab({ teacher }: AssignmentsTabProps) {
     try {
       const teacherClassesMap = new Map<string, Class>();
 
-      // 1. Query classes where this teacher is the class teacher
-      const classTeacherQuery = query(
-        collection(db, 'schools', teacher.schoolId, 'classes'),
-        where('classTeacherId', '==', teacher.id)
-      );
-      const classTeacherSnapshot = await getDocs(classTeacherQuery);
-      
-      classTeacherSnapshot.docs.forEach(doc => {
-        teacherClassesMap.set(doc.id, { id: doc.id, ...doc.data() } as Class);
+      // 1. Fetch all classes for the school once to avoid N+1 queries
+      const allClassesQuery = query(collection(db, 'schools', teacher.schoolId, 'classes'));
+      const allClassesSnap = await getDocs(allClassesQuery);
+      const allClasses = allClassesSnap.docs.map(d => ({ id: d.id, ...d.data() } as Class));
+
+      // 2. Map classes where teacher is the class teacher
+      allClasses.forEach(cls => {
+        if (cls.classTeacherId === teacher.id) {
+          teacherClassesMap.set(cls.id, cls);
+        }
       });
 
-      // 2. Query class_subjects where this teacher teaches a subject
+      // 3. Map classes where teacher teaches a specific subject
       const subjectTeacherQuery = query(
         collection(db, 'class_subjects'),
         where('schoolId', '==', teacher.schoolId),
@@ -110,14 +111,12 @@ export default function AssignmentsTab({ teacher }: AssignmentsTabProps) {
       );
       const subjectTeacherSnapshot = await getDocs(subjectTeacherQuery);
       
-      // Fetch the class details for those class_subjects if not already in the map
       for (const csDoc of subjectTeacherSnapshot.docs) {
         const classId = csDoc.data().classId;
         if (classId && !teacherClassesMap.has(classId)) {
-          const classDocRef = doc(db, 'schools', teacher.schoolId, 'classes', classId);
-          const classDocSnap = await getDoc(classDocRef);
-          if (classDocSnap.exists()) {
-            teacherClassesMap.set(classId, { id: classId, ...classDocSnap.data() } as Class);
+          const cls = allClasses.find(c => c.id === classId);
+          if (cls) {
+            teacherClassesMap.set(classId, cls);
           }
         }
       }

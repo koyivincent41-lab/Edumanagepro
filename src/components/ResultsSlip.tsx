@@ -155,8 +155,7 @@ export default function ResultsSlip({ student, examSessionId, schoolId, initialA
       }
 
       pdf.addImage(dataUrl, 'PNG', 10, 10, finalWidth, finalHeight);
-      const fileName = `${student.fullName.replace(/\s+/g, '_')}_${(examSession?.term || 'Term').replace(/\s+/g, '')}_Results.pdf`;
-      pdf.save(fileName);
+      pdf.save(`ResultsSlip_${student.admissionNumber}_${examSession?.examType || 'Exam'}.pdf`);
     } catch (error) {
       console.error('Error generating PDF:', error);
     }

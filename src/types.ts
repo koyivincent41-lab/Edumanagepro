@@ -82,7 +82,6 @@ export interface School {
   country: string;
   currency: string;
   schoolNumber?: string;
-  schoolHandle?: string;
   academicYear: string;
   currentTerm?: Term;
   packageId: string;
@@ -257,7 +256,6 @@ export interface Student {
   usesTransport?: boolean;
   vehicleId?: string;
   routeId?: string;
-  studentPin?: string;
   parentName?: string;
   parentPhone?: string;
   parentEmail?: string;
@@ -671,37 +669,33 @@ export interface StudentSubject {
 
 export interface Assignment {
   id: string;
-  teacherId: string;
   schoolId: string;
+  branchId?: string;
+  classId: string;
+  subjectId: string;
+  subject?: string;
   title: string;
   description: string;
-  subject: string;
-  classId: string;
-  className: string;
   dueDate: string;
-  status: 'Draft' | 'Active' | 'Closed';
+  teacherId: string;
+  teacherName?: string;
+  questions?: { id: string; text: string; type?: string; [key: string]: any }[];
   attachmentUrl?: string;
-  questions?: AssignmentQuestion[];
+  status: 'active' | 'closed';
   createdAt: string;
-}
-
-export interface AssignmentQuestion {
-  id: string;
-  type: 'multiple_choice' | 'essay';
-  text: string;
-  options?: string[]; // For multiple choice
+  updatedAt: string;
 }
 
 export interface AssignmentSubmission {
   id: string;
   assignmentId: string;
   studentId: string;
-  studentName: string;
-  answers: Record<string, string>; // questionId -> answer
+  studentName?: string;
+  fileUrl?: string;
+  content?: string;
+  answers?: Record<string, string>;
   submittedAt: string;
-  status: 'submitted' | 'graded';
   grade?: string;
   feedback?: string;
-  createdAt: string;
-  updatedAt: string;
+  status: 'submitted' | 'graded' | 'late';
 }

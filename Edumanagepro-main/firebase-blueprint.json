@@ -1,0 +1,205 @@
+{
+  "entities": {
+    "Employee": {
+      "title": "Employee",
+      "description": "Represents a staff member in the school.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "schoolId": { "type": "string" },
+        "fullName": { "type": "string" },
+        "staffNumber": { "type": "string" },
+        "phone": { "type": "string" },
+        "email": { "type": "string" },
+        "nationalId": { "type": "string" },
+        "gender": { "type": "string" },
+        "jobTitle": { "type": "string" },
+        "department": { "type": "string" },
+        "employmentDate": { "type": "string", "format": "date" },
+        "status": { "type": "string", "enum": ["active", "inactive", "suspended"] },
+        "username": { "type": "string" },
+        "passwordHash": { "type": "string" }
+      },
+      "required": ["fullName", "staffNumber", "username", "passwordHash", "schoolId"]
+    },
+    "AttendanceRecord": {
+      "title": "AttendanceRecord",
+      "description": "Represents an employee's clock-in/out action.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "employeeId": { "type": "string" },
+        "schoolId": { "type": "string" },
+        "date": { "type": "string", "format": "date" },
+        "actionType": { "type": "string", "enum": ["clock-in", "clock-out"] },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "latitude": { "type": "number" },
+        "longitude": { "type": "number" },
+        "verificationMethod": { "type": "string" },
+        "verificationSuccess": { "type": "boolean" },
+        "attendanceStatus": { "type": "string" }
+      },
+      "required": ["employeeId", "schoolId", "date", "actionType", "timestamp"]
+    },
+    "AttendanceSettings": {
+      "title": "AttendanceSettings",
+      "description": "Configures attendance rules for a school.",
+      "type": "object",
+      "properties": {
+        "schoolId": { "type": "string" },
+        "latitude": { "type": "number" },
+        "longitude": { "type": "number" },
+        "radiusMeters": { "type": "number" },
+        "clockInStart": { "type": "string" },
+        "clockInEnd": { "type": "string" },
+        "clockOutStart": { "type": "string" },
+        "clockOutEnd": { "type": "string" },
+        "lateThresholdMinutes": { "type": "number" },
+        "earlyDepartureThresholdMinutes": { "type": "number" },
+        "requireGPS": { "type": "boolean" },
+        "requireFingerprint": { "type": "boolean" },
+        "requireSelfie": { "type": "boolean" },
+        "oncePerSession": { "type": "boolean" }
+      },
+      "required": ["schoolId", "latitude", "longitude", "radiusMeters"]
+    },
+    "GradingBand": {
+      "title": "GradingBand",
+      "description": "Represents a single grade band in a grading system.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "gradeName": { "type": "string" },
+        "minScore": { "type": "number" },
+        "maxScore": { "type": "number" },
+        "remarks": { "type": "string" }
+      },
+      "required": ["id", "gradeName", "minScore", "maxScore"]
+    },
+    "GradingSystem": {
+      "title": "GradingSystem",
+      "description": "Represents the grading system for a school or branch.",
+      "type": "object",
+      "properties": {
+        "schoolId": { "type": "string" },
+        "branchId": { "type": "string" },
+        "bands": {
+          "type": "array",
+          "items": { "$ref": "GradingBand" }
+        },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["schoolId", "bands"]
+    },
+    "Assignment": {
+      "title": "Assignment",
+      "description": "An assignment issued by a teacher.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "teacherId": { "type": "string" },
+        "schoolId": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "subject": { "type": "string" },
+        "classId": { "type": "string" },
+        "className": { "type": "string" },
+        "dueDate": { "type": "string" },
+        "status": { "type": "string", "enum": ["Draft", "Active", "Closed"] },
+        "attachmentUrl": { "type": "string" },
+        "questions": { "type": "array" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["teacherId", "schoolId", "title", "classId", "status"]
+    },
+    "StudentAssignmentSubmission": {
+      "title": "StudentAssignmentSubmission",
+      "description": "A student's submission for an assignment.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "assignmentId": { "type": "string" },
+        "studentId": { "type": "string" },
+        "studentName": { "type": "string" },
+        "answers": { "type": "object" },
+        "submittedAt": { "type": "string" },
+        "status": { "type": "string", "enum": ["submitted", "graded"] },
+        "grade": { "type": "string" },
+        "feedback": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["assignmentId", "studentId", "answers", "status"]
+    },
+    "ExamSession": {
+      "title": "ExamSession",
+      "description": "An examination session (e.g., Term 1 2026).",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "schoolId": { "type": "string" },
+        "examName": { "type": "string" },
+        "term": { "type": "string" },
+        "academicYear": { "type": "string" },
+        "examType": { "type": "string" },
+        "status": { "type": "string" },
+        "applicableSubjects": { "type": "array" }
+      },
+      "required": ["schoolId", "examName", "term", "academicYear"]
+    },
+    "ExamResult": {
+      "title": "ExamResult",
+      "description": "A single subject mark for a student in an exam session.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "schoolId": { "type": "string" },
+        "studentId": { "type": "string" },
+        "classId": { "type": "string" },
+        "subjectId": { "type": "string" },
+        "examSessionId": { "type": "string" },
+        "examsCategory": { "type": "string" },
+        "scoreObtained": { "type": "number" },
+        "maximumScore": { "type": "number" },
+        "gradeGenerated": { "type": "string" },
+        "academicYear": { "type": "string" },
+        "term": { "type": "string" }
+      },
+      "required": ["schoolId", "studentId", "subjectId", "examSessionId", "scoreObtained"]
+    }
+  },
+  "firestore": {
+    "/employees/{employeeId}": {
+      "schema": { "$ref": "Employee" },
+      "description": "Stores employee profiles and credentials."
+    },
+    "/attendance/{recordId}": {
+      "schema": { "$ref": "AttendanceRecord" },
+      "description": "Stores individual attendance clock-in/out records."
+    },
+    "/attendance_settings/{schoolId}": {
+      "schema": { "$ref": "AttendanceSettings" },
+      "description": "Stores attendance configuration for a school."
+    },
+    "/grading_systems/{docId}": {
+      "schema": { "$ref": "GradingSystem" },
+      "description": "Stores grading system configuration for a school or branch."
+    },
+    "/assignments/{id}": {
+      "schema": { "$ref": "Assignment" },
+      "description": "Stores assignments issued by teachers."
+    },
+    "/student_assignment_submissions/{id}": {
+      "schema": { "$ref": "StudentAssignmentSubmission" },
+      "description": "Stores student assignment answers and state."
+    },
+    "/exam_sessions/{id}": {
+      "schema": { "$ref": "ExamSession" },
+      "description": "Stores examination sessions."
+    },
+    "/exam_results/{id}": {
+      "schema": { "$ref": "ExamResult" },
+      "description": "Stores individual subject marks."
+    }
+  }
+}

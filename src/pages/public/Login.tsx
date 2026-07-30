@@ -53,9 +53,9 @@ export default function Login({ profile }: { profile: UserProfile | null }) {
         }));
         
         if (activeTab === 'attendance') {
-           navigate('/teacher-portal/dashboard', { state: { tab: 'learner_attendance' } });
+           navigate('/teacher-exams/dashboard', { state: { tab: 'learner_attendance' } });
         } else {
-           navigate('/teacher-portal/dashboard');
+           navigate('/teacher-exams/dashboard');
         }
       } else {
         navigate('/dashboard');
@@ -110,9 +110,9 @@ export default function Login({ profile }: { profile: UserProfile | null }) {
 
       toast.success('Login successful');
       if (activeTab === 'attendance') {
-        navigate('/teacher-portal/dashboard', { state: { tab: 'learner_attendance' } });
+        navigate('/teacher-exams/dashboard', { state: { tab: 'learner_attendance' } });
       } else {
-        navigate('/teacher-portal/dashboard');
+        navigate('/teacher-exams/dashboard');
       }
     } catch (error: any) {
       console.error('Login error:', error);
@@ -384,15 +384,11 @@ export default function Login({ profile }: { profile: UserProfile | null }) {
             )}
 
             <div className="mt-10 pt-8 border-t border-gray-100 dark:border-gray-800 text-center space-y-4">
-              <div className="flex justify-center flex-wrap gap-4">
+              <div className="flex justify-center gap-4">
                 <Link to="/payslip" className="text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-maroon transition-colors flex items-center gap-2">
                   <FileText className="h-3 w-3" />
                   Pay Slips
                 </Link>
-                <span className="text-gray-200 dark:text-gray-800">|</span>
-                <Link to="/student-login" className="text-[10px] font-black uppercase tracking-widest text-maroon hover:underline decoration-2 underline-offset-4 transition-all">Student Portal</Link>
-                <span className="text-gray-200 dark:text-gray-800">|</span>
-                <Link to="/parent-portal/login" className="text-[10px] font-black uppercase tracking-widest text-maroon hover:underline decoration-2 underline-offset-4 transition-all">Parent Portal</Link>
                 <span className="text-gray-200 dark:text-gray-800">|</span>
                 <Link to="/register" className="text-[10px] font-black uppercase tracking-widest text-maroon hover:underline decoration-2 underline-offset-4 transition-all">Create Account</Link>
               </div>

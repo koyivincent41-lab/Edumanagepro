@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { collection, query, where, getDocs } from 'firebase/firestore';
-import { db } from '../../firebase';
-import { ExamSession, ExamResult, Student } from '../../types';
+import { db } from '@/firebase';
+import { ExamSession, ExamResult, Student } from '@/types';
 import { Award, Eye, Download, Search, AlertCircle, FileText, ChevronRight } from 'lucide-react';
-import ResultsSlip from '../../components/ResultsSlip';
+import ResultsSlip from '@/components/ResultsSlip';
 
 interface ResultsProps {
   session: any;

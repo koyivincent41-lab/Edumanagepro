@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { GraduationCap, LogOut, School as SchoolIcon, Calendar, Edit3, FileText, LayoutDashboard, Users, BookOpen, Menu, X, Video } from 'lucide-react';
 import MarksEntry from './MarksEntry';
-import ExamRecordsBrowser from '../../components/ExamRecordsBrowser';
-import ReportFormBrowser from '../../components/ReportFormBrowser';
-import DigitalClock from '../../components/DigitalClock';
-import ThemeToggle from '../../components/ThemeToggle';
+import ExamRecordsBrowser from '@/components/ExamRecordsBrowser';
+import ReportFormBrowser from '@/components/ReportFormBrowser';
+import DigitalClock from '@/components/DigitalClock';
+import ThemeToggle from '@/components/ThemeToggle';
 
 import LearnerAttendanceTeacher from './LearnerAttendanceTeacher';
 import TeacherClassMarkList from './TeacherClassMarkList';

@@ -56,7 +56,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
                 <Link
                   key={link.path}
                   to={link.path}
-                  className={`text-xs font-bold uppercase tracking-widest transition-all hover:text-maroon dark:hover:text-maroon-400 ${
+                  className={`text-sm font-bold uppercase tracking-widest transition-all hover:text-maroon dark:hover:text-maroon-400 ${
                     isActive(link.path) ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400'
                   }`}
                 >
@@ -161,20 +161,6 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
                         </Link>
 
                         <Link
-                          to="/student-login"
-                          onClick={() => setIsLoginDropdownOpen(false)}
-                          className="flex items-center gap-3 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors group border-b border-gray-50 dark:border-gray-800"
-                        >
-                          <div className="p-2 bg-purple-50 dark:bg-purple-900/20 rounded-lg group-hover:bg-purple-600 group-hover:text-white transition-colors">
-                            <GraduationCap className="w-5 h-5 text-purple-600 group-hover:text-white" />
-                          </div>
-                          <div>
-                            <p className="text-sm font-bold text-gray-900 dark:text-white">Student Portal</p>
-                            <p className="text-[10px] text-gray-400 uppercase tracking-wider">Access Your Courses</p>
-                          </div>
-                        </Link>
-
-                        <Link
                           to="/parent-portal/login"
                           onClick={() => setIsLoginDropdownOpen(false)}
                           className="flex items-center gap-3 p-4 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors group"
@@ -194,7 +180,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
 
                 <Link
                   to="/register"
-                  className="px-4 md:px-8 py-3 text-[10px] font-black uppercase tracking-widest text-white bg-maroon rounded-xl shadow-xl shadow-maroon/20 hover:scale-105 transition-all"
+                  className="px-4 md:px-8 py-3 text-xs font-black uppercase tracking-widest text-white bg-maroon rounded-xl shadow-xl shadow-maroon/20 hover:scale-105 transition-all"
                 >
                   Register School
                 </Link>
@@ -282,14 +268,6 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
                     >
                       <Users className="w-5 h-5 text-blue-600" />
                       <span className="text-sm font-bold">Employees</span>
-                    </Link>
-                    <Link
-                      to="/student-login"
-                      className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      <GraduationCap className="w-5 h-5 text-purple-600" />
-                      <span className="text-sm font-bold">Student Portal</span>
                     </Link>
                     <Link
                       to="/parent-portal/login"

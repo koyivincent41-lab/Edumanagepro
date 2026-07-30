@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ParentLayout from '../../components/ParentLayout';
 import { UserProfile } from '../../types';
-import { Users, DollarSign, FileText, Receipt, Lock, ArrowRight, Loader2, History, Bell, Calendar, Video } from 'lucide-react';
+import { Users, DollarSign, FileText, Receipt, Lock, ArrowRight, Loader2, History, Bell, Calendar } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { db } from '../../firebase';
 import { collection, query, where, getDocs, orderBy, limit, doc, getDoc, onSnapshot } from 'firebase/firestore';
@@ -14,7 +14,6 @@ export default function ParentDashboard({ profile }: { profile: UserProfile }) {
     invoiceCount: 0,
     receiptCount: 0,
     recentPayments: [] as any[],
-    upcomingLiveClassesCount: 0,
     currency: 'USD',
     schoolName: 'EduManagePro',
     primaryColor: '#800000',
@@ -31,7 +30,6 @@ export default function ParentDashboard({ profile }: { profile: UserProfile }) {
     let unsubTotalPayments: () => void;
     let unsubPayments: () => void;
     let unsubInvoices: () => void;
-    let unsubLiveClasses: () => void;
 
     const setupListeners = async () => {
       try {
@@ -77,28 +75,6 @@ export default function ParentDashboard({ profile }: { profile: UserProfile }) {
         );
         unsubChildren = onSnapshot(childrenQuery, (snap) => {
           setData(prev => ({ ...prev, childrenCount: snap.size }));
-          
-          if (snap.size > 0) {
-            const classIds = snap.docs.map(d => d.data().classId).filter(Boolean);
-            if (classIds.length > 0) {
-              const liveClassesQuery = query(
-                collection(db, 'live_classes'),
-                where('schoolId', '==', profile.schoolId!),
-                where('classId', 'in', classIds.slice(0, 10)) // Support for up to 10 classes
-              );
-              unsubLiveClasses = onSnapshot(liveClassesQuery, (lcSnap) => {
-                 const now = new Date();
-                 let upcomingCount = 0;
-                 lcSnap.forEach(d => {
-                   const lc = d.data();
-                   const classStart = new Date(`${lc.date}T${lc.time}`);
-                   const classEnd = new Date(classStart.getTime() + lc.duration * 60000);
-                   if (now <= classEnd) upcomingCount++;
-                 });
-                 setData(prev => ({ ...prev, upcomingLiveClassesCount: upcomingCount }));
-              });
-            }
-          }
         });
 
         // Listen to all paid payments for total count
@@ -161,7 +137,6 @@ export default function ParentDashboard({ profile }: { profile: UserProfile }) {
       if (unsubTotalPayments) unsubTotalPayments();
       if (unsubPayments) unsubPayments();
       if (unsubInvoices) unsubInvoices();
-      if (unsubLiveClasses) unsubLiveClasses();
     };
   }, [profile]);
 
@@ -183,7 +158,6 @@ export default function ParentDashboard({ profile }: { profile: UserProfile }) {
     { name: 'Inbox', path: '/parent-portal/inbox', icon: Bell },
     { name: 'View My Children', path: '/parent-portal/children', icon: Users },
     { name: 'Learner Attendance', path: '/parent-portal/attendance', icon: Calendar },
-    { name: 'Live Classes', path: '/parent-portal/live-classes', icon: Video },
     { name: 'Examination Results', path: '/parent-portal/examination-results', icon: FileText },
     { name: 'View Invoices', path: '/parent-portal/invoices', icon: FileText },
     { name: 'View Receipts', path: '/parent-portal/receipts', icon: Receipt },
@@ -219,7 +193,7 @@ export default function ParentDashboard({ profile }: { profile: UserProfile }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-10">
         {summaryCards.map((card, index) => {
           const Icon = card.icon;
           return (
@@ -235,25 +209,6 @@ export default function ParentDashboard({ profile }: { profile: UserProfile }) {
           );
         })}
       </div>
-
-      {data.upcomingLiveClassesCount > 0 && (
-        <div className="mb-8">
-          <Link to="/parent-portal/live-classes" className="flex items-center justify-between bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 p-4 md:p-6 rounded-3xl group hover:shadow-lg transition-all">
-            <div className="flex items-center gap-4">
-               <div className="p-3 bg-blue-100 dark:bg-blue-800 rounded-2xl">
-                 <Video className="h-6 w-6 text-blue-600 dark:text-blue-400 animate-pulse" />
-               </div>
-               <div>
-                  <h3 className="text-lg font-black text-blue-900 dark:text-blue-100">Upcoming Live Classes</h3>
-                  <p className="text-sm font-medium text-blue-700 dark:text-blue-300">You have {data.upcomingLiveClassesCount} upcoming or ongoing live class(es) for your children.</p>
-               </div>
-            </div>
-             <div className="p-3 bg-white dark:bg-gray-800 rounded-xl group-hover:bg-blue-600 group-hover:text-white transition-colors">
-               <ArrowRight className="h-5 w-5 text-blue-600 dark:text-blue-400 group-hover:text-white" />
-             </div>
-          </Link>
-        </div>
-      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 mb-10">
         <div className="lg:col-span-2">

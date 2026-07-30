@@ -17,9 +17,10 @@ import {
   Download,
   FileSpreadsheet,
   CreditCard,
-  IdCard
+  IdCard,
+  RefreshCw
 } from 'lucide-react';
-import { collection, onSnapshot, doc, addDoc, updateDoc, deleteDoc, query, where, getDoc, getDocs, writeBatch, setDoc, collectionGroup } from 'firebase/firestore';
+import { collection, onSnapshot, doc, addDoc, updateDoc, deleteDoc, query, where, getDoc, getDocs, writeBatch, setDoc, limit, startAfter } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { Student, Parent, Class, Stream, School, Package, Vehicle, Route } from '../../types';
 import { toast } from 'sonner';
@@ -49,11 +50,9 @@ type StudentForm = z.infer<typeof studentSchema>;
 
 export default function Students({ schoolId, school }: { schoolId: string; school: School | null }) {
   const navigate = useNavigate();
-  const { currentBranch } = useBranch();
+  const { currentBranch, classes, streams } = useBranch();
   const [students, setStudents] = useState<Student[]>([]);
   const [parents, setParents] = useState<Parent[]>([]);
-  const [classes, setClasses] = useState<Class[]>([]);
-  const [streams, setStreams] = useState<Stream[]>([]);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [routes, setRoutes] = useState<Route[]>([]);
   const [loading, setLoading] = useState(true);
@@ -67,6 +66,9 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
   const [searchTerm, setSearchTerm] = useState('');
   const [activePackage, setActivePackage] = useState<Package | null>(null);
   const [invoices, setInvoices] = useState<any[]>([]);
+  
+  const [lastVisible, setLastVisible] = useState<any>(null);
+  const [hasMore, setHasMore] = useState(true);
 
   const {
     register,
@@ -95,6 +97,83 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
   const selectedClassId = watch('classId');
   const usesTransportValue = watch('usesTransport');
 
+  const fetchStudentsData = async (isLoadMore = false) => {
+    if (!schoolId) return;
+    setLoading(true);
+
+    let studentsQuery = query(
+      collection(db, 'schools', schoolId, 'students'),
+      where('academicYear', '==', school?.academicYear || ''),
+      limit(50)
+    );
+    if (currentBranch) {
+      studentsQuery = query(studentsQuery, where('branchId', '==', currentBranch.id));
+    }
+    if (isLoadMore && lastVisible) {
+      studentsQuery = query(studentsQuery, startAfter(lastVisible));
+    }
+
+    try {
+      const snap = await getDocs(studentsQuery);
+      const newStudents = snap.docs.map(d => ({ id: d.id, ...d.data() } as Student));
+      
+      let allStudents = newStudents;
+      if (isLoadMore) {
+        setStudents(prev => {
+          allStudents = [...prev, ...newStudents];
+          return allStudents;
+        });
+      } else {
+        setStudents(newStudents);
+      }
+      
+      setLastVisible(snap.docs[snap.docs.length - 1]);
+      setHasMore(snap.docs.length === 50);
+
+      // Fetch parents for these students
+      const parentIds = [...new Set(newStudents.map(s => s.parentId).filter(Boolean))];
+      if (parentIds.length > 0) {
+        const pChunks = [];
+        for (let i = 0; i < parentIds.length; i += 10) {
+          pChunks.push(parentIds.slice(i, i + 10));
+        }
+        const pPromises = pChunks.map(chunk => 
+          getDocs(query(collection(db, 'schools', schoolId, 'parents'), where('__name__', 'in', chunk)))
+        );
+        const pSnaps = await Promise.all(pPromises);
+        const newParents = pSnaps.flatMap(s => s.docs.map(d => ({ id: d.id, ...d.data() } as Parent)));
+        setParents(prev => {
+          const merged = [...prev];
+          newParents.forEach(np => { if (!merged.find(p => p.id === np.id)) merged.push(np); });
+          return merged;
+        });
+      }
+
+      // Fetch invoices for these students
+      const studentIds = newStudents.map(s => s.id);
+      if (studentIds.length > 0) {
+        const iChunks = [];
+        for (let i = 0; i < studentIds.length; i += 10) {
+          iChunks.push(studentIds.slice(i, i + 10));
+        }
+        const iPromises = iChunks.map(chunk => 
+          getDocs(query(collection(db, 'schools', schoolId, 'invoices'), where('studentId', 'in', chunk)))
+        );
+        const iSnaps = await Promise.all(iPromises);
+        const newInvoices = iSnaps.flatMap(s => s.docs.map(d => ({ id: d.id, ...d.data() } as any)));
+        setInvoices(prev => {
+          const merged = [...prev];
+          newInvoices.forEach(ni => { if (!merged.find(i => i.id === ni.id)) merged.push(ni); });
+          return merged;
+        });
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (!schoolId) return;
     
@@ -105,49 +184,7 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
       });
     }
 
-    // Subscriptions
-    let studentsQuery = query(
-      collection(db, 'schools', schoolId, 'students'),
-      where('academicYear', '==', school?.academicYear || '')
-    );
-    if (currentBranch) {
-      studentsQuery = query(studentsQuery, where('branchId', '==', currentBranch.id));
-    }
-
-    const unsubStudents = onSnapshot(
-      studentsQuery, 
-      (snap) => {
-        setStudents(snap.docs.map(d => ({ id: d.id, ...d.data() } as Student)));
-        setLoading(false);
-      }
-    );
-
-    let parentsQuery = query(collection(db, 'schools', schoolId, 'parents'));
-    if (currentBranch) parentsQuery = query(parentsQuery, where('branchId', '==', currentBranch.id));
-    const unsubParents = onSnapshot(parentsQuery, (snap) => {
-      setParents(snap.docs.map(d => ({ id: d.id, ...d.data() } as Parent)));
-    });
-
-    let classesQuery = query(collection(db, 'schools', schoolId, 'classes'));
-    if (currentBranch) classesQuery = query(classesQuery, where('branchId', '==', currentBranch.id));
-    const unsubClasses = onSnapshot(classesQuery, (snap) => {
-      setClasses(snap.docs.map(d => ({ id: d.id, ...d.data() } as Class)));
-    });
-
-    let streamsQuery = query(collection(db, 'schools', schoolId, 'streams'));
-    if (currentBranch) streamsQuery = query(streamsQuery, where('branchId', '==', currentBranch.id));
-    const unsubStreams = onSnapshot(streamsQuery, (snap) => {
-      setStreams(snap.docs.map(d => ({ id: d.id, ...d.data() } as Stream)));
-    });
-
-    let invoicesQuery = query(collection(db, 'schools', schoolId, 'invoices'));
-    if (currentBranch) invoicesQuery = query(invoicesQuery, where('branchId', '==', currentBranch.id));
-    const unsubInvoices = onSnapshot(
-      invoicesQuery,
-      (snap) => {
-        setInvoices(snap.docs.map(d => ({ id: d.id, ...d.data() } as any)));
-      }
-    );
+    if (!lastVisible) fetchStudentsData();
 
     let vehiclesQuery = query(collection(db, 'schools', schoolId, 'vehicles'));
     if (currentBranch) vehiclesQuery = query(vehiclesQuery, where('branchId', '==', currentBranch.id));
@@ -162,11 +199,6 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
     });
 
     return () => {
-      unsubStudents();
-      unsubParents();
-      unsubClasses();
-      unsubStreams();
-      unsubInvoices();
       unsubVehicles();
       unsubRoutes();
     };
@@ -236,27 +268,8 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
         if (!data.admissionNumber) {
           data.admissionNumber = `ADM-${(school?.studentCount || 0) + 1}`;
         }
-        let generatedPin;
-        let isUnique = false;
-        while (!isUnique) {
-          generatedPin = Math.floor(1000 + Math.random() * 9000).toString(); // 4 digits
-          // Check locally first
-          if (!students.some(s => s.studentPin === generatedPin)) {
-            try {
-              const q = query(collectionGroup(db, 'students'), where('studentPin', '==', generatedPin));
-              const snap = await getDocs(q);
-              if (snap.empty) isUnique = true;
-            } catch (e) {
-              // If collectionGroup fails, just trust local uniqueness for now
-              console.warn("Global uniqueness check failed, falling back to local:", e);
-              isUnique = true;
-            }
-          }
-        }
-
         await addDoc(collection(db, 'schools', schoolId, 'students'), {
           ...data,
-          studentPin: generatedPin,
           assignedSubjects,
           schoolId,
           ...(currentBranch ? { branchId: currentBranch.id } : {}),
@@ -303,56 +316,6 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
     const invoiceBalance = studentInvoices.reduce((sum, inv) => sum + (inv.balanceDue || 0), 0);
     return initialArrears + invoiceBalance;
   };
-
-  useEffect(() => {
-    const autoAssignIds = async () => {
-      if (!schoolId || !students.length) return;
-      
-      // Target students with NO ID or IDs that are NOT exactly 4 digits
-      const missing = students.filter(s => !s.studentPin || s.studentPin.length !== 4);
-      if (missing.length === 0) return;
-
-      // Process in small batches
-      const batchToProcess = missing.slice(0, 20);
-      
-      try {
-        const batch = writeBatch(db);
-        let updatedCount = 0;
-        
-        for (const student of batchToProcess) {
-          let newPin;
-          let isUnique = false;
-          let attempts = 0;
-          
-          while (!isUnique && attempts < 15) {
-            newPin = Math.floor(1000 + Math.random() * 9000).toString();
-            if (!students.some(s => s.studentPin === newPin)) {
-              isUnique = true;
-            }
-            attempts++;
-          }
-          
-          if (newPin) {
-            batch.update(doc(db, 'schools', schoolId, 'students', student.id), {
-              studentPin: newPin,
-              updatedAt: new Date().toISOString()
-            });
-            updatedCount++;
-          }
-        }
-        
-        if (updatedCount > 0) {
-          await batch.commit();
-          console.log(`Auto-assigned/Updated 4-digit IDs for ${updatedCount} students`);
-        }
-      } catch (error) {
-        console.error("Error in auto-assigning student IDs:", error);
-      }
-    };
-
-    const timeout = setTimeout(autoAssignIds, 3000);
-    return () => clearTimeout(timeout);
-  }, [students, schoolId]);
 
   const filteredStudents = students.filter(s => 
     s.fullName.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -416,7 +379,6 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
 
         try {
           const newlyCreatedParents: Record<string, string> = {};
-          const newlyCreatedPins = new Set<string>();
           
           for (const row of data) {
             try {
@@ -473,21 +435,6 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
               const subjectsSnap = await getDocs(subjectsQuery);
               const assignedSubjects = subjectsSnap.docs.map(d => d.data().subjectId);
 
-              // 4. Generate Unique ID
-              let generatedPin;
-              let isUnique = false;
-              let attempts = 0;
-              while (!isUnique && attempts < 10) {
-                generatedPin = Math.floor(1000 + Math.random() * 9000).toString(); // 4 digits
-                if (!newlyCreatedPins.has(generatedPin)) {
-                  if (!students.some(s => s.studentPin === generatedPin)) {
-                    isUnique = true;
-                  }
-                }
-                attempts++;
-              }
-              newlyCreatedPins.add(generatedPin);
-
               await addDoc(collection(db, 'schools', schoolId, 'students'), {
                 admissionNumber: row['Admission Number'] || `ADM-${Math.random().toString(36).substr(2, 5).toUpperCase()}`,
                 fullName: row['Full Name'],
@@ -496,7 +443,6 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
                 classId: cls.id,
                 streamId: strm.id,
                 parentId: parentId,
-                studentPin: generatedPin,
                 arrears: parseFloat(row['Initial Arrears']) || 0,
                 assignedSubjects,
                 schoolId,
@@ -575,57 +521,6 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
             </button>
           </div>
         </div>
-        {students.some(s => !s.studentPin || s.studentPin.length !== 4) && (
-          <div className="mt-4 flex items-center justify-between p-3 bg-amber-500/20 border border-amber-500/50 rounded-xl">
-            <div className="flex items-center gap-2">
-              <AlertCircle className="h-5 w-5 text-amber-100" />
-              <p className="text-sm font-medium text-amber-50">Some students need 4-digit Portal IDs.</p>
-            </div>
-            <button
-              onClick={async () => {
-                const missing = students.filter(s => !s.studentPin || s.studentPin.length !== 4);
-                setLoading(true);
-                try {
-                  let currentBatch = writeBatch(db);
-                  let count = 0;
-                  
-                  for (const student of missing) {
-                    let newPin;
-                    let isUnique = false;
-                    while (!isUnique) {
-                      newPin = Math.floor(1000 + Math.random() * 9000).toString(); // 4 digits
-                      if (!students.some(s => s.studentPin === newPin)) isUnique = true;
-                    }
-                    
-                    currentBatch.update(doc(db, 'schools', schoolId, 'students', student.id), {
-                      studentPin: newPin,
-                      updatedAt: new Date().toISOString()
-                    });
-                    count++;
-                    
-                    if (count % 400 === 0) { // Batch limit is 500, using 400 to be safe
-                      await currentBatch.commit();
-                      currentBatch = writeBatch(db);
-                    }
-                  }
-                  
-                  if (count % 400 !== 0) {
-                    await currentBatch.commit();
-                  }
-                  toast.success(`Successfully updated IDs for ${count} students`);
-                } catch (error: any) {
-                  console.error("Error generating IDs:", error);
-                  toast.error(`Failed to update IDs: ${error.message}`);
-                } finally {
-                  setLoading(false);
-                }
-              }}
-              className="px-4 py-2 bg-amber-500 text-white font-bold rounded-lg text-xs"
-            >
-              Update Portal IDs
-            </button>
-          </div>
-        )}
       </div>
 
       {/* Limit Info Card */}
@@ -659,7 +554,6 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
               <tr className="bg-gray-50">
                 <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Student</th>
                 <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Adm No.</th>
-                <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Portal ID</th>
                 <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Class / Stream</th>
                 <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider text-center">Outstanding Balance</th>
                 <th className="px-4 md:px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-wider">Parent</th>
@@ -685,11 +579,6 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
                       </div>
                     </td>
                     <td className="px-4 md:px-6 py-4 text-sm font-medium text-gray-600">{student.admissionNumber}</td>
-                    <td className="px-4 md:px-6 py-4">
-                      <span className="font-mono text-sm font-bold text-primary bg-primary/5 px-2 py-1 rounded-lg">
-                        {student.studentPin || '---'}
-                      </span>
-                    </td>
                     <td className="px-4 md:px-6 py-4">
                       <p className="text-sm font-bold text-gray-900">{cls?.name || 'N/A'}</p>
                       <p className="text-xs text-gray-500">{strm?.name || 'N/A'}</p>
@@ -751,6 +640,19 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
         </div>
       </div>
 
+      {hasMore && (
+        <div className="flex justify-center mt-8">
+          <button
+            onClick={() => fetchStudentsData(true)}
+            disabled={loading}
+            className="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl transition-all flex items-center gap-2 disabled:opacity-50"
+          >
+            {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <RefreshCw className="h-5 w-5" />}
+            Load More Students
+          </button>
+        </div>
+      )}
+
       {/* Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
@@ -809,50 +711,6 @@ export default function Students({ schoolId, school }: { schoolId: string; schoo
                     </div>
                   )}
                 </div>
-                {editingStudent && (
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Student Portal ID</label>
-                    <div className="flex items-center gap-3">
-                      <div className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 flex items-center justify-between">
-                        <span className="font-mono text-lg font-bold tracking-widest text-gray-900">
-                          {editingStudent.studentPin || 'NOT SET'}
-                        </span>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={async () => {
-                          let newPin;
-                          let isUnique = false;
-                          let attempts = 0;
-                          while (!isUnique && attempts < 20) {
-                            newPin = Math.floor(1000 + Math.random() * 9000).toString();
-                            if (!students.some(s => s.studentPin === newPin)) isUnique = true;
-                            attempts++;
-                          }
-
-                          try {
-                            await updateDoc(doc(db, 'schools', schoolId, 'students', editingStudent.id), {
-                              studentPin: newPin,
-                              updatedAt: new Date().toISOString(),
-                            });
-                            setEditingStudent({ ...editingStudent, studentPin: newPin! });
-                            toast.success('Student ID regenerated successfully');
-                          } catch (error) {
-                            toast.error('Failed to regenerate ID');
-                          }
-                        }}
-                        className="px-4 py-3 bg-white border border-gray-200 text-primary font-bold rounded-xl shadow-sm hover:bg-gray-50 transition-all flex items-center gap-2"
-                        title="Regenerate ID"
-                      >
-                        <AlertCircle className="h-4 w-4" />
-                        Regenerate
-                      </button>
-                    </div>
-                    <p className="mt-1 text-xs text-amber-600 font-medium">
-                      Share this Unique ID with the student for portal login.
-                    </p>
-                  </div>
-                )}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">

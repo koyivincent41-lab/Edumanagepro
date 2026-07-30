@@ -194,8 +194,7 @@ export default function PublicSchoolWebsite() {
                 <li><Link to={`/s/${slug}`} className="text-gray-400 hover:text-white transition-colors">Home</Link></li>
                 <li><Link to={`/s/${slug}/about`} className="text-gray-400 hover:text-white transition-colors">About Us</Link></li>
                 <li><Link to={`/s/${slug}/contact`} className="text-gray-400 hover:text-white transition-colors">Contact</Link></li>
-                <li><Link to="/student-login" className="text-gray-400 hover:text-white transition-colors">Student Portal</Link></li>
-                <li><Link to="/parent-portal/login" className="text-gray-400 hover:text-white transition-colors">Parent Portal</Link></li>
+                <li><Link to="/login" className="text-gray-400 hover:text-white transition-colors">Parent Portal</Link></li>
               </ul>
             </div>
             
