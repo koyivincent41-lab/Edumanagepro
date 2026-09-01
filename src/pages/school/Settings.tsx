@@ -248,6 +248,14 @@ export default function SettingsPage({ school }: { school: School | null }) {
     ? { background: `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})` }
     : { backgroundColor: primaryColor };
 
+  if (!school) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
   return (
     <div 
       className="max-w-4xl mx-auto space-y-4 lg:space-y-8"
