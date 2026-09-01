@@ -6,7 +6,8 @@ import { Student } from '../types';
 interface ExamAccessSettings {
   automationEnabled: boolean;
   globalDefaults: {
-    'Openar Exams': boolean;
+    'Openar Exams'?: boolean;
+    'Opener Exams'?: boolean;
     'Midterm Exams': boolean;
     'End Term Exams': boolean;
     'Report Forms': boolean;
@@ -103,7 +104,7 @@ export function useExamAccess(schoolId: string, parentId: string) {
     loadAccessData();
   }, [schoolId, parentId]);
 
-  const checkAccess = (studentId: string, examTypeCategory: 'Openar Exams' | 'Midterm Exams' | 'End Term Exams' | 'Report Forms'): boolean => {
+  const checkAccess = (studentId: string, examTypeCategory: 'Openar Exams' | 'Opener Exams' | 'Midterm Exams' | 'End Term Exams' | 'Report Forms'): boolean => {
     // 1. Parent Override
     if (parentOverride === 'allowed') return true;
     if (parentOverride === 'blocked') return false;
@@ -122,6 +123,9 @@ export function useExamAccess(schoolId: string, parentId: string) {
 
     // 4. Global Defaults
     if (accessSettings && accessSettings.globalDefaults) {
+      if (examTypeCategory === 'Openar Exams' || examTypeCategory === 'Opener Exams') {
+        return accessSettings.globalDefaults['Opener Exams'] ?? accessSettings.globalDefaults['Openar Exams'] ?? true;
+      }
       return accessSettings.globalDefaults[examTypeCategory] ?? true;
     }
 

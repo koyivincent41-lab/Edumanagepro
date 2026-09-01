@@ -127,7 +127,7 @@ export default function ExamSessionForm({
             <div className="space-y-1">
               <label className="text-xs font-bold text-gray-500 uppercase">Exam Type</label>
               <select {...register('examType')} className="w-full p-2 border rounded">
-                <option value="Openar">Openar</option>
+                <option value="Opener">Opener</option>
                 <option value="Midterm">Midterm</option>
                 <option value="End Term">End Term</option>
               </select>

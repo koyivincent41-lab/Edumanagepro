@@ -613,8 +613,8 @@ export interface ExamResult {
   academicYear: string;
   term: Term | string;
   examSessionId: string;
-  examType: 'Openar' | 'Midterm' | 'End Term' | string;
-  examsCategory?: 'Openar Exams' | 'Open Exams' | 'Midterm Exams' | 'End Term Exams';
+  examType: 'Openar' | 'Opener' | 'Midterm' | 'End Term' | string;
+  examsCategory?: 'Openar Exams' | 'Opener Exams' | 'Open Exams' | 'Midterm Exams' | 'End Term Exams';
   teacherId?: string;
   teacherUserId?: string;
   classId: string;

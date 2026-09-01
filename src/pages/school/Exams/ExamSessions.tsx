@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { School, ExamSession } from '../../../types';
-import { collection, query, where, onSnapshot, addDoc, updateDoc, doc, deleteDoc, getDocs, writeBatch } from 'firebase/firestore';
+import { collection, query, where, onSnapshot, addDoc, updateDoc, doc, getDoc, deleteDoc, getDocs, writeBatch } from 'firebase/firestore';
 import { db } from '../../../firebase';
 import { useBranch } from '../../../context/BranchContext';
 import { handleFirestoreError, OperationType } from '../../../lib/firestoreErrorHandler';
@@ -17,6 +17,23 @@ export default function ExamSessions({ schoolId, school }: { schoolId: string, s
   const [selectedSession, setSelectedSession] = useState<ExamSession | null>(null);
   const [sessionToDelete, setSessionToDelete] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [localSchool, setLocalSchool] = useState<School | null>(school);
+
+  useEffect(() => {
+    if (school) {
+      setLocalSchool(school);
+      return;
+    }
+    if (!schoolId) return;
+    const unsubscribe = onSnapshot(doc(db, 'schools', schoolId), (snapshot) => {
+      if (snapshot.exists()) {
+        setLocalSchool({ id: snapshot.id, ...snapshot.data() } as School);
+      }
+    }, (error) => {
+      handleFirestoreError(error, OperationType.GET, `schools/${schoolId}`);
+    });
+    return () => unsubscribe();
+  }, [schoolId, school]);
 
   useEffect(() => {
     let q = query(collection(db, 'exam_sessions'), where('schoolId', '==', schoolId));
@@ -70,7 +87,7 @@ export default function ExamSessions({ schoolId, school }: { schoolId: string, s
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-xl md:text-2xl font-bold text-white">Exam Sessions</h1>
+        <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">Exam Sessions</h1>
         <button
           onClick={() => setShowForm(true)}
           className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm font-bold"
@@ -95,50 +112,56 @@ export default function ExamSessions({ schoolId, school }: { schoolId: string, s
         </div>
       ) : (
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-          <table className="min-w-[700px] w-full text-left">
-            <thead>
-              <tr className="bg-gray-50 border-b border-gray-100 text-xs font-bold text-gray-500 uppercase">
-                <th className="p-4">Exam Name</th>
-                <th className="p-4">Type</th>
-                <th className="p-4">Term/Year</th>
-                <th className="p-4">Status</th>
-                <th className="p-4 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sessions.map(session => (
-                <tr key={session.id} className="border-b border-gray-50 hover:bg-gray-50/50">
-                  <td className="p-4 font-medium text-gray-900">{session.examName}</td>
-                  <td className="p-4 text-gray-600">{session.examType}</td>
-                  <td className="p-4 text-gray-600">{session.term} - {session.academicYear}</td>
-                  <td className="p-4">
-                    <span className={`px-2 py-1 rounded-full text-xs font-bold ${
-                      session.status === 'Open' ? 'bg-green-100 text-green-700' :
-                      session.status === 'Closed' ? 'bg-red-100 text-red-700' :
-                      session.status === 'Published' ? 'bg-blue-100 text-blue-700' :
-                      'bg-gray-100 text-gray-700'
-                    }`}>
-                      {session.status}
-                    </span>
-                  </td>
-                  <td className="p-4 text-right flex justify-end gap-2">
-                    <button 
-                      onClick={() => setSelectedSession(session)}
-                      className="p-2 text-gray-400 hover:text-primary transition-colors"
-                    >
-                      <Edit className="w-4 h-4" />
-                    </button>
-                    <button 
-                      onClick={() => setSessionToDelete(session.id)}
-                      className="p-2 text-gray-400 hover:text-red-600 transition-colors"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="min-w-[700px] w-full text-left">
+              <thead>
+                <tr className="bg-gray-50 border-b border-gray-100 text-xs font-bold text-gray-500 uppercase">
+                  <th className="p-4">Exam Name</th>
+                  <th className="p-4">Type</th>
+                  <th className="p-4">Term/Year</th>
+                  <th className="p-4">Status</th>
+                  <th className="p-4 text-right">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {sessions.map(session => (
+                  <tr key={session.id} className="border-b border-gray-50 hover:bg-gray-50/50">
+                    <td className="p-4 font-medium text-gray-900">{session.examName}</td>
+                    <td className="p-4 text-gray-600">{session.examType}</td>
+                    <td className="p-4 text-gray-600">{session.term} - {session.academicYear}</td>
+                    <td className="p-4">
+                      <span className={`px-2 py-1 rounded-full text-xs font-bold ${
+                        session.status === 'Open' ? 'bg-green-100 text-green-700' :
+                        session.status === 'Closed' ? 'bg-red-100 text-red-700' :
+                        session.status === 'Published' ? 'bg-blue-100 text-blue-700' :
+                        'bg-gray-100 text-gray-700'
+                      }`}>
+                        {session.status}
+                      </span>
+                    </td>
+                    <td className="p-4 text-right">
+                      <div className="flex justify-end gap-2 relative z-10">
+                        <button 
+                          onClick={() => setSelectedSession(session)}
+                          className="p-2 text-gray-400 hover:text-primary transition-colors"
+                          title="Edit Session"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button 
+                          onClick={() => setSessionToDelete(session.id)}
+                          className="p-2 text-gray-400 hover:text-red-600 transition-colors"
+                          title="Delete Session"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 
@@ -152,9 +175,13 @@ export default function ExamSessions({ schoolId, school }: { schoolId: string, s
         isLoading={isDeleting}
       />
 
-      {(showForm || selectedSession) && school && (
+      {(showForm || selectedSession) && (
         <ExamSessionForm
-          school={school}
+          school={localSchool || ({
+            id: schoolId,
+            academicYear: school?.academicYear || new Date().getFullYear().toString(),
+            currentTerm: school?.currentTerm || 'Term 1'
+          } as School)}
           session={selectedSession}
           onClose={() => {
             setShowForm(false);

@@ -13,7 +13,7 @@ type ExamCategory = 'Opener' | 'Midterm' | 'End Term';
 
 const CATEGORIES: ExamCategory[] = ['Opener', 'Midterm', 'End Term'];
 const CATEGORY_MAP: Record<ExamCategory, string> = {
-  'Opener': 'Openar Exams',
+  'Opener': 'Opener Exams',
   'Midterm': 'Midterm Exams',
   'End Term': 'End Term Exams'
 };

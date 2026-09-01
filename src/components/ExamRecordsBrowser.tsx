@@ -7,7 +7,7 @@ import ResultsSlip from './ResultsSlip';
 
 interface ExamRecordsBrowserProps {
   schoolId: string;
-  examsCategory: 'Openar Exams' | 'Midterm Exams' | 'End Term Exams';
+  examsCategory: 'Opener Exams' | 'Openar Exams' | 'Midterm Exams' | 'End Term Exams';
 }
 
 interface GroupedRecord {
@@ -43,7 +43,8 @@ export default function ExamRecordsBrowser({ schoolId, examsCategory }: ExamReco
           .map(d => ({ id: d.id, ...d.data() } as ExamResult))
           .filter(r => {
             if (r.examsCategory === examsCategory) return true;
-            if (examsCategory === 'Openar Exams' && (r.examType === 'Openar' || r.examType === 'Opener')) return true;
+            if ((examsCategory === 'Openar Exams' || examsCategory === 'Opener Exams') && (r.examsCategory === 'Openar Exams' || r.examsCategory === 'Opener Exams')) return true;
+            if ((examsCategory === 'Openar Exams' || examsCategory === 'Opener Exams') && (r.examType === 'Openar' || r.examType === 'Opener')) return true;
             if (examsCategory === 'Midterm Exams' && r.examType === 'Midterm') return true;
             if (examsCategory === 'End Term Exams' && r.examType === 'End Term') return true;
             return false;
@@ -133,6 +134,8 @@ export default function ExamRecordsBrowser({ schoolId, examsCategory }: ExamReco
     r.examName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const displayCategory = (examsCategory === 'Openar Exams' || examsCategory === 'Opener Exams') ? 'Opener Exams' : examsCategory;
+
   return (
     <div className="space-y-6">
       {loading ? (
@@ -140,7 +143,7 @@ export default function ExamRecordsBrowser({ schoolId, examsCategory }: ExamReco
       ) : records.length > 0 ? (
         <div className="space-y-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
-            <h3 className="text-lg font-black text-gray-900">Stored {examsCategory} Records</h3>
+            <h3 className="text-lg font-black text-gray-900">Stored {displayCategory} Records</h3>
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
               <input type="text" placeholder="Search learner or exam..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="pl-9 pr-4 py-2 bg-white border border-gray-200 rounded-lg outline-none text-sm w-64" />
@@ -195,7 +198,7 @@ export default function ExamRecordsBrowser({ schoolId, examsCategory }: ExamReco
         </div>
       ) : (
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center">
-          <p className="text-gray-500 font-medium">No records found for {examsCategory}.</p>
+          <p className="text-gray-500 font-medium">No records found for {displayCategory}.</p>
         </div>
       )}
 

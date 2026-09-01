@@ -80,7 +80,7 @@ export default function parentExaminationResults({ profile }: { profile: UserPro
             className={`flex items-center gap-2 px-5 py-3 rounded-xl font-bold transition-all ${activeTab === 'opener' ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'}`}
           >
             <LayoutDashboard className="h-5 w-5" />
-            Open Exams
+            Opener Exams
           </button>
           <button 
             onClick={() => setActiveTab('midterm')}
@@ -108,10 +108,10 @@ export default function parentExaminationResults({ profile }: { profile: UserPro
         {activeTab === 'opener' && (
           <>
             <div className="mb-6">
-              <h2 className="text-xl font-black text-gray-900 dark:text-white">Open Exams Records</h2>
-              <p className="text-gray-500 dark:text-gray-400">View and download stored results for Open Exams for your children.</p>
+              <h2 className="text-xl font-black text-gray-900 dark:text-white">Opener Exams Records</h2>
+              <p className="text-gray-500 dark:text-gray-400">View and download stored results for Opener Exams for your children.</p>
             </div>
-            <ParentExamRecordsBrowser schoolId={profile.schoolId!} parentId={parentId} examsCategory="Openar Exams" />
+            <ParentExamRecordsBrowser schoolId={profile.schoolId!} parentId={parentId} examsCategory="Opener Exams" />
           </>
         )}
 

@@ -9,6 +9,7 @@ interface ExamAccessSettings {
   automationEnabled: boolean;
   globalDefaults: {
     'Openar Exams': boolean;
+    'Opener Exams': boolean;
     'Midterm Exams': boolean;
     'End Term Exams': boolean;
     'Report Forms': boolean;
@@ -38,6 +39,7 @@ export default function ExamAccessControl({ schoolId }: { schoolId: string }) {
     automationEnabled: false,
     globalDefaults: {
       'Openar Exams': true,
+      'Opener Exams': true,
       'Midterm Exams': true,
       'End Term Exams': true,
       'Report Forms': true,
@@ -68,7 +70,13 @@ export default function ExamAccessControl({ schoolId }: { schoolId: string }) {
       const settingsRef = doc(db, 'schools', schoolId, 'exam_access_settings', 'master');
       const settingsSnap = await getDoc(settingsRef);
       if (settingsSnap.exists()) {
-        setSettings(settingsSnap.data() as ExamAccessSettings);
+        const loaded = settingsSnap.data() as ExamAccessSettings;
+        if (loaded.globalDefaults) {
+          const val = loaded.globalDefaults['Openar Exams'] ?? loaded.globalDefaults['Opener Exams'] ?? true;
+          loaded.globalDefaults['Openar Exams'] = val;
+          loaded.globalDefaults['Opener Exams'] = val;
+        }
+        setSettings(loaded);
       }
 
       // Load Overrides
@@ -322,23 +330,32 @@ export default function ExamAccessControl({ schoolId }: { schoolId: string }) {
             </div>
 
             <div className="space-y-4">
-              {(Object.keys(settings.globalDefaults) as Array<keyof typeof settings.globalDefaults>).map(examType => (
-                <div key={examType} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-                  <span className="font-medium text-gray-900">{examType}</span>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input 
-                      type="checkbox" 
-                      className="sr-only peer" 
-                      checked={settings.globalDefaults[examType]} 
-                      onChange={(e) => setSettings(p => ({
-                        ...p, 
-                        globalDefaults: { ...p.globalDefaults, [examType]: e.target.checked }
-                      }))} 
-                    />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                  </label>
-                </div>
-              ))}
+              {(Object.keys(settings.globalDefaults) as Array<keyof typeof settings.globalDefaults>)
+                .filter(examType => examType !== 'Openar Exams')
+                .map(examType => (
+                  <div key={examType} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                    <span className="font-medium text-gray-900">{examType}</span>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input 
+                        type="checkbox" 
+                        className="sr-only peer" 
+                        checked={settings.globalDefaults[examType]} 
+                        onChange={(e) => setSettings(p => {
+                          const val = e.target.checked;
+                          const updatedDefaults = { ...p.globalDefaults, [examType]: val };
+                          if (examType === 'Opener Exams') {
+                            updatedDefaults['Openar Exams'] = val;
+                          }
+                          return {
+                            ...p,
+                            globalDefaults: updatedDefaults
+                          };
+                        })} 
+                      />
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                    </label>
+                  </div>
+                ))}
             </div>
 
             <div className="pt-4 flex justify-end">

@@ -221,10 +221,10 @@ export default function Dashboard() {
             {activeTab === 'opener' && (
               <>
                 <div className="mb-6">
-                  <h2 className="text-xl md:text-2xl font-black text-gray-900 dark:text-white">Openar Exams Records</h2>
-                  <p className="text-gray-500">View, download, and print stored results for Openar Exams.</p>
+                  <h2 className="text-xl md:text-2xl font-black text-gray-900 dark:text-white">Opener Exams Records</h2>
+                  <p className="text-gray-500">View, download, and print stored results for Opener Exams.</p>
                 </div>
-                <ExamRecordsBrowser schoolId={teacher.schoolId} examsCategory="Openar Exams" />
+                <ExamRecordsBrowser schoolId={teacher.schoolId} examsCategory="Opener Exams" />
               </>
             )}
 

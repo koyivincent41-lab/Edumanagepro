@@ -71,7 +71,7 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
         const resSnap = await getDocs(resQ);
         const allTermResults = resSnap.docs.map(d => ({ id: d.id, ...d.data() } as ExamResult));
 
-        const openerRes = allTermResults.filter(r => r.examsCategory === 'Openar Exams' || r.examType === 'Openar' || r.examType === 'Opener');
+        const openerRes = allTermResults.filter(r => r.examsCategory === 'Openar Exams' || r.examsCategory === 'Opener Exams' || r.examType === 'Openar' || r.examType === 'Opener');
         const midtermRes = allTermResults.filter(r => r.examsCategory === 'Midterm Exams' || r.examType === 'Midterm');
         const endTermRes = allTermResults.filter(r => r.examsCategory === 'End Term Exams' || r.examType === 'End Term');
 
@@ -384,7 +384,7 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
           <thead>
             <tr style={{ backgroundColor: school?.primaryColor ? `${school.primaryColor}20` : '#f3f4f6' }}>
               <th className={`${tablePaddingClass} text-left border-b-2 border-gray-300 font-bold`}>Subject</th>
-              <th className={`${tablePaddingClass} text-right border-b-2 border-gray-300 font-bold`}>Openar</th>
+              <th className={`${tablePaddingClass} text-right border-b-2 border-gray-300 font-bold`}>Opener</th>
               <th className={`${tablePaddingClass} text-right border-b-2 border-gray-300 font-bold`}>Midterm</th>
               <th className={`${tablePaddingClass} text-right border-b-2 border-gray-300 font-bold`}>End Term</th>
               <th className={`${tablePaddingClass} text-right border-b-2 border-gray-300 font-bold`}>Total</th>
@@ -425,7 +425,7 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
               <h3 className="text-center font-bold text-gray-700 mb-1 uppercase tracking-wider text-[10px]">Term Summary</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 text-center">
                 <div className="space-y-0.5">
-                  <p className="text-gray-500 font-medium text-[8px] uppercase">Openar</p>
+                  <p className="text-gray-500 font-medium text-[8px] uppercase">Opener</p>
                   <p className={`${isVeryCompact ? 'text-sm' : 'text-base'} font-bold`}>{openerTotal} <span className="text-[8px] text-gray-400 font-normal">/ {maxPossiblePerExam}</span></p>
                   <p className="text-[10px] text-gray-600">Mean: <span className="font-semibold">{openerMean.toFixed(1)}%</span></p>
                 </div>
@@ -583,7 +583,7 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
               <thead>
                 <tr style={{ backgroundColor: school?.primaryColor ? `${school.primaryColor}20` : '#f3f4f6' }}>
                   <th className={`${tablePaddingClass} text-left border-b-2 border-gray-300 font-bold`}>Subject</th>
-                  <th className={`${tablePaddingClass} text-right border-b-2 border-gray-300 font-bold`}>Openar</th>
+                  <th className={`${tablePaddingClass} text-right border-b-2 border-gray-300 font-bold`}>Opener</th>
                   <th className={`${tablePaddingClass} text-right border-b-2 border-gray-300 font-bold`}>Midterm</th>
                   <th className={`${tablePaddingClass} text-right border-b-2 border-gray-300 font-bold`}>End Term</th>
                   <th className={`${tablePaddingClass} text-right border-b-2 border-gray-300 font-bold`}>Total</th>
@@ -619,7 +619,7 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
                   <h3 className="text-center font-bold text-gray-700 mb-1 uppercase tracking-wider text-[10px]">Term Summary</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 text-center">
                     <div className="space-y-0.5">
-                      <p className="text-gray-500 font-medium text-[8px] uppercase">Openar</p>
+                      <p className="text-gray-500 font-medium text-[8px] uppercase">Opener</p>
                       <p className={`${isVeryCompact ? 'text-sm' : 'text-base'} font-bold`}>{openerTotal} <span className="text-[8px] text-gray-400 font-normal">/ {maxPossiblePerExam}</span></p>
                       <p className="text-[10px] text-gray-600">Mean: <span className="font-semibold">{openerMean.toFixed(1)}%</span></p>
                     </div>

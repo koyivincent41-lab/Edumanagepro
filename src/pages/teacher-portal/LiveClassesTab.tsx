@@ -3,7 +3,7 @@ import { collection, query, where, getDocs, doc, setDoc, deleteDoc, addDoc, getD
 import { db } from '@/firebase';
 import { Class } from '@/types';
 import { Video, Calendar, Clock, Plus, Trash2, ExternalLink, Users, AlertCircle, X, Search } from 'lucide-react';
-import { toast } from 'react-hot-toast';
+import { toast } from 'sonner';
 
 interface LiveClass {
   id?: string;

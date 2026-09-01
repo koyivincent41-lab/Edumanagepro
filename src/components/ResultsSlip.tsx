@@ -86,9 +86,9 @@ export default function ResultsSlip({ student, examSessionId, schoolId, initialA
 
   let displayExamType = examSession?.examType || 'Exam';
   if (results.length > 0 && results[0].examsCategory) {
-    displayExamType = results[0].examsCategory;
+    displayExamType = results[0].examsCategory === 'Openar Exams' ? 'Opener Exams' : results[0].examsCategory;
   } else if (examSession?.examType) {
-    if (examSession.examType === 'Openar' || examSession.examType === 'Opener') displayExamType = 'Openar Exams';
+    if (examSession.examType === 'Openar' || examSession.examType === 'Opener') displayExamType = 'Opener Exams';
     else if (examSession.examType === 'Midterm') displayExamType = 'Midterm Exams';
     else if (examSession.examType === 'End Term') displayExamType = 'End Term Exams';
   }

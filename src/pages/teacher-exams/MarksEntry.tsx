@@ -26,7 +26,7 @@ export default function MarksEntry({ teacher }: { teacher: any }) {
   const [examSessions, setExamSessions] = useState<ExamSession[]>([]);
   const [selectedClassId, setSelectedClassId] = useState('');
   const [selectedExamSessionId, setSelectedExamSessionId] = useState('');
-  const [selectedExamsCategory, setSelectedExamsCategory] = useState<'Openar Exams' | 'Midterm Exams' | 'End Term Exams' | ''>('');
+  const [selectedExamsCategory, setSelectedExamsCategory] = useState<'Opener Exams' | 'Openar Exams' | 'Midterm Exams' | 'End Term Exams' | ''>('');
   const [selectedTerm, setSelectedTerm] = useState<string>('');
   const [selectedAcademicYear, setSelectedAcademicYear] = useState(teacher.academicYear || '2026');
   
@@ -122,7 +122,7 @@ export default function MarksEntry({ teacher }: { teacher: any }) {
             <label className="block text-[9px] md:text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Exams Category</label>
             <select value={selectedExamsCategory} onChange={(e) => setSelectedExamsCategory(e.target.value as any)} className="w-full p-2.5 md:p-3.5 bg-gray-50 border border-gray-200 rounded-xl md:rounded-2xl text-xs md:text-sm focus:ring-4 focus:ring-maroon/5 outline-none transition-all font-bold text-gray-700 cursor-pointer">
               <option value="">-- Choose Category --</option>
-              <option value="Openar Exams">Openar Exams</option>
+              <option value="Opener Exams">Opener Exams</option>
               <option value="Midterm Exams">Midterm Exams</option>
               <option value="End Term Exams">End Term Exams</option>
             </select>

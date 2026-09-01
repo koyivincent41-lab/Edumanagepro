@@ -3,7 +3,7 @@ import { collection, query, where, getDocs, doc, setDoc, updateDoc, deleteDoc, a
 import { db } from '@/firebase';
 import { Class, Student } from '@/types';
 import { BookOpen, Calendar, Clock, Plus, Edit2, Trash2, CheckCircle, XCircle, AlertCircle, Search, FileText, Upload, User as UserIcon, X, Check } from 'lucide-react';
-import { toast } from 'react-hot-toast';
+import { toast } from 'sonner';
 
 interface Assignment {
   id?: string;

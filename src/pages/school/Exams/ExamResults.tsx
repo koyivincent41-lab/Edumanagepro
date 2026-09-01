@@ -22,7 +22,7 @@ export default function ExamResults({ schoolId, school }: { schoolId: string, sc
           className={`flex items-center gap-2 px-5 py-3 rounded-xl font-bold transition-all ${activeTab === 'opener' ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'}`}
         >
           <LayoutDashboard className="h-5 w-5" />
-          Openar Exams
+          Opener Exams
         </button>
         <button 
           onClick={() => setActiveTab('midterm')}
@@ -50,10 +50,10 @@ export default function ExamResults({ schoolId, school }: { schoolId: string, sc
       {activeTab === 'opener' && (
         <>
           <div className="mb-6">
-            <h2 className="text-xl font-black text-white">Openar Exams Records</h2>
-            <p className="text-gray-300">View, download, and print stored results for Openar Exams.</p>
+            <h2 className="text-xl font-black text-white">Opener Exams Records</h2>
+            <p className="text-gray-300">View, download, and print stored results for Opener Exams.</p>
           </div>
-          <ExamRecordsBrowser schoolId={schoolId} examsCategory="Openar Exams" />
+          <ExamRecordsBrowser schoolId={schoolId} examsCategory="Opener Exams" />
         </>
       )}
 
