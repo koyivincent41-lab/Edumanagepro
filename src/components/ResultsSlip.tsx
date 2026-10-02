@@ -6,6 +6,7 @@ import { X, Download, Printer } from 'lucide-react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { toPng } from 'html-to-image';
+import { printElement } from '../lib/printUtils';
 
 export default function ResultsSlip({ student, examSessionId, schoolId, initialAction = 'view', onClose }: { student: Student, examSessionId: string, schoolId: string, initialAction?: 'view' | 'download' | 'print', onClose: () => void }) {
   const [school, setSchool] = useState<School | null>(null);
@@ -162,103 +163,17 @@ export default function ResultsSlip({ student, examSessionId, schoolId, initialA
   };
 
   const handlePrint = () => {
-    const printArea = document.getElementById('results-slip-print-area');
-    if (!printArea) {
-      window.print();
-      return;
-    }
-
-    try {
-      let iframe = document.getElementById('results-slip-print-iframe') as HTMLIFrameElement;
-      if (iframe) {
-        iframe.remove();
-      }
-
-      iframe = document.createElement('iframe');
-      iframe.id = 'results-slip-print-iframe';
-      iframe.setAttribute(
-        'style',
-        'position:fixed;top:0;left:0;width:0;height:0;border:none;visibility:hidden;z-index:-9999;'
-      );
-      document.body.appendChild(iframe);
-
-      const iframeDoc = iframe.contentWindow?.document;
-      if (!iframeDoc) {
-        window.print();
-        return;
-      }
-
-      const styleSheets = Array.from(document.querySelectorAll('link[rel="stylesheet"], style'))
-        .map(el => el.outerHTML)
-        .join('\n');
-
-      iframeDoc.open();
-      iframeDoc.write(`
-        <!DOCTYPE html>
-        <html lang="en">
-          <head>
-            <meta charset="utf-8" />
-            <title>${student.fullName} - Results Slip</title>
-            ${styleSheets}
-            <style>
-              @page {
-                size: A4 portrait;
-                margin: 8mm;
-              }
-              *, *::before, *::after {
-                box-sizing: border-box;
-              }
-              html, body {
-                margin: 0 !important;
-                padding: 0 !important;
-                background: #ffffff !important;
-                color: #000000 !important;
-                width: 100% !important;
-                height: auto !important;
-                overflow: visible !important;
-                font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-              }
-              .isolated-slip-wrapper {
-                width: 100% !important;
-                max-width: 794px !important;
-                margin: 0 auto !important;
-                padding: 10px !important;
-                background: #ffffff !important;
-              }
-            </style>
-          </head>
-          <body>
-            <div class="isolated-slip-wrapper">
-              ${printArea.innerHTML}
-            </div>
-          </body>
-        </html>
-      `);
-      iframeDoc.close();
-
-      setTimeout(() => {
-        try {
-          iframe.contentWindow?.focus();
-          iframe.contentWindow?.print();
-        } catch (err) {
-          console.warn('Iframe print failed, falling back to window.print():', err);
-          window.print();
-        }
-      }, 350);
-    } catch (e) {
-      console.error('Error initiating print via iframe:', e);
-      window.print();
-    }
+    printElement('results-slip-print-area', `${student.fullName} - Results Slip`);
   };
 
   useEffect(() => {
     if (!loading) {
       if (initialAction === 'download') {
-        handleDownload();
+        const timer = setTimeout(handleDownload, 500);
+        return () => clearTimeout(timer);
       } else if (initialAction === 'print') {
-        setTimeout(() => {
-          handlePrint();
-        }, 500);
+        const timer = setTimeout(handlePrint, 500);
+        return () => clearTimeout(timer);
       }
     }
   }, [loading, initialAction]);

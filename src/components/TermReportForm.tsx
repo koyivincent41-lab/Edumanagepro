@@ -5,6 +5,7 @@ import { School, Student, Class, Stream, ExamSession, ExamResult, GradingSystem,
 import { X, Download, Printer, Loader2, AlertTriangle } from 'lucide-react';
 import { toPng } from 'html-to-image';
 import jsPDF from 'jspdf';
+import { printElement } from '../lib/printUtils';
 
 interface TermReportFormProps {
   student: Student;
@@ -261,94 +262,7 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
   }, [finalMean, student.id, student.fullName, term, academicYear, combinedResults.length]);
 
   const handlePrint = () => {
-    const printArea = document.getElementById('report-form-print-area');
-    if (!printArea) {
-      window.print();
-      return;
-    }
-
-    try {
-      // Remove any existing print iframe
-      let iframe = document.getElementById('term-report-print-iframe') as HTMLIFrameElement;
-      if (iframe) {
-        iframe.remove();
-      }
-
-      iframe = document.createElement('iframe');
-      iframe.id = 'term-report-print-iframe';
-      iframe.setAttribute(
-        'style',
-        'position:fixed;top:0;left:0;width:0;height:0;border:none;visibility:hidden;z-index:-9999;'
-      );
-      document.body.appendChild(iframe);
-
-      const iframeDoc = iframe.contentWindow?.document;
-      if (!iframeDoc) {
-        window.print();
-        return;
-      }
-
-      // Collect all active stylesheets and style blocks
-      const styleSheets = Array.from(document.querySelectorAll('link[rel="stylesheet"], style'))
-        .map(el => el.outerHTML)
-        .join('\n');
-
-      iframeDoc.open();
-      iframeDoc.write(`
-        <!DOCTYPE html>
-        <html lang="en">
-          <head>
-            <meta charset="utf-8" />
-            <title>${student.fullName} - Term Report Form</title>
-            ${styleSheets}
-            <style>
-              @page {
-                size: A4 portrait;
-                margin: 6mm;
-              }
-              *, *::before, *::after {
-                box-sizing: border-box;
-              }
-              html, body {
-                margin: 0 !important;
-                padding: 0 !important;
-                background: #ffffff !important;
-                color: #000000 !important;
-                width: 100% !important;
-                height: auto !important;
-                overflow: visible !important;
-                font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-              }
-              .isolated-print-wrapper {
-                width: 100% !important;
-                max-width: 794px !important;
-                margin: 0 auto !important;
-                background: #ffffff !important;
-              }
-            </style>
-          </head>
-          <body>
-            <div class="isolated-print-wrapper">
-              ${printArea.innerHTML}
-            </div>
-          </body>
-        </html>
-      `);
-      iframeDoc.close();
-
-      setTimeout(() => {
-        try {
-          iframe.contentWindow?.focus();
-          iframe.contentWindow?.print();
-        } catch (err) {
-          console.warn('Iframe print failed, falling back to window.print():', err);
-          window.print();
-        }
-      }, 350);
-    } catch (e) {
-      console.error('Error initiating print via iframe:', e);
-      window.print();
-    }
+    printElement('report-form-print-area', `${student.fullName} - Term Report Form - ${term} ${academicYear}`);
   };
 
   const handleDownload = async () => {
@@ -412,9 +326,11 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
   useEffect(() => {
     if (!loading) {
       if (initialAction === 'print') {
-        setTimeout(handlePrint, 500);
+        const timer = setTimeout(handlePrint, 500);
+        return () => clearTimeout(timer);
       } else if (initialAction === 'download') {
-        setTimeout(handleDownload, 500);
+        const timer = setTimeout(handleDownload, 500);
+        return () => clearTimeout(timer);
       }
     }
   }, [loading, initialAction]);
