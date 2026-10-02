@@ -268,7 +268,7 @@ export default function ResultsSlip({ student, examSessionId, schoolId, initialA
             </div>
           </div>
 
-          <table className="min-w-[700px] w-full mb-8 border-collapse">
+          <table className="min-w-[700px] w-full mb-8 border-collapse text-[18px]">
             <thead>
               <tr style={{ backgroundColor: school?.primaryColor ? `${school.primaryColor}20` : '#f3f4f6' }}>
                 <th className="p-3 text-left border-b-2 border-gray-300 font-bold">Subject</th>

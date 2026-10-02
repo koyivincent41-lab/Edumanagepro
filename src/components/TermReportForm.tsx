@@ -160,12 +160,12 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
   const finalMean = numSubjects > 0 ? finalTotal / (numSubjects * 3) : 0;
   const finalGrade = getGrade(finalMean);
 
-  // Dynamic sizing logic to ensure it fits on one page
+  // Dynamic sizing logic
   const isCompact = numSubjects > 5;
   const isVeryCompact = numSubjects > 7;
 
-  const tableTextClass = isVeryCompact ? 'text-[9px]' : isCompact ? 'text-[10px]' : 'text-xs';
-  const tablePaddingClass = isVeryCompact ? 'p-0.5' : isCompact ? 'p-1' : 'p-2';
+  const tableTextClass = 'text-[18px]';
+  const tablePaddingClass = 'py-2 px-3';
   const sectionGapClass = isVeryCompact ? 'gap-1' : isCompact ? 'gap-2' : 'gap-4';
   const summaryPaddingClass = isVeryCompact ? 'p-1' : isCompact ? 'p-2' : 'p-4';
   const commentGapClass = isVeryCompact ? 'gap-2' : isCompact ? 'gap-3' : 'gap-6';
