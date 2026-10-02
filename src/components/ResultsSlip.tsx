@@ -162,7 +162,93 @@ export default function ResultsSlip({ student, examSessionId, schoolId, initialA
   };
 
   const handlePrint = () => {
-    window.print();
+    const printArea = document.getElementById('results-slip-print-area');
+    if (!printArea) {
+      window.print();
+      return;
+    }
+
+    try {
+      let iframe = document.getElementById('results-slip-print-iframe') as HTMLIFrameElement;
+      if (iframe) {
+        iframe.remove();
+      }
+
+      iframe = document.createElement('iframe');
+      iframe.id = 'results-slip-print-iframe';
+      iframe.setAttribute(
+        'style',
+        'position:fixed;top:0;left:0;width:0;height:0;border:none;visibility:hidden;z-index:-9999;'
+      );
+      document.body.appendChild(iframe);
+
+      const iframeDoc = iframe.contentWindow?.document;
+      if (!iframeDoc) {
+        window.print();
+        return;
+      }
+
+      const styleSheets = Array.from(document.querySelectorAll('link[rel="stylesheet"], style'))
+        .map(el => el.outerHTML)
+        .join('\n');
+
+      iframeDoc.open();
+      iframeDoc.write(`
+        <!DOCTYPE html>
+        <html lang="en">
+          <head>
+            <meta charset="utf-8" />
+            <title>${student.fullName} - Results Slip</title>
+            ${styleSheets}
+            <style>
+              @page {
+                size: A4 portrait;
+                margin: 8mm;
+              }
+              *, *::before, *::after {
+                box-sizing: border-box;
+              }
+              html, body {
+                margin: 0 !important;
+                padding: 0 !important;
+                background: #ffffff !important;
+                color: #000000 !important;
+                width: 100% !important;
+                height: auto !important;
+                overflow: visible !important;
+                font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+              }
+              .isolated-slip-wrapper {
+                width: 100% !important;
+                max-width: 794px !important;
+                margin: 0 auto !important;
+                padding: 10px !important;
+                background: #ffffff !important;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="isolated-slip-wrapper">
+              ${printArea.innerHTML}
+            </div>
+          </body>
+        </html>
+      `);
+      iframeDoc.close();
+
+      setTimeout(() => {
+        try {
+          iframe.contentWindow?.focus();
+          iframe.contentWindow?.print();
+        } catch (err) {
+          console.warn('Iframe print failed, falling back to window.print():', err);
+          window.print();
+        }
+      }, 350);
+    } catch (e) {
+      console.error('Error initiating print via iframe:', e);
+      window.print();
+    }
   };
 
   useEffect(() => {
@@ -183,20 +269,62 @@ export default function ResultsSlip({ student, examSessionId, schoolId, initialA
     <>
       <style type="text/css" media="print">
         {`
-          body * {
-            visibility: hidden;
-          }
-          .print-area, .print-area * {
-            visibility: visible;
-          }
-          .print-area {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-          }
           @page {
-            margin: 20mm;
+            size: A4 portrait;
+            margin: 8mm;
+          }
+          html, body {
+            overflow: visible !important;
+            height: auto !important;
+            background: #ffffff !important;
+            color: #000000 !important;
+          }
+          body * {
+            visibility: hidden !important;
+          }
+          #results-slip-print-area, #results-slip-print-area *,
+          .print-area, .print-area * {
+            visibility: visible !important;
+          }
+          .print-area,
+          #results-slip-print-area {
+            position: absolute !important;
+            left: 0 !important;
+            top: 0 !important;
+            width: 100% !important;
+            min-height: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            display: block !important;
+            background: #ffffff !important;
+          }
+          .slip-modal-backdrop {
+            position: static !important;
+            background: transparent !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            overflow: visible !important;
+            height: auto !important;
+            max-height: none !important;
+            display: block !important;
+            inset: auto !important;
+          }
+          .slip-modal-box {
+            position: static !important;
+            background: transparent !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            overflow: visible !important;
+            height: auto !important;
+            max-height: none !important;
+            box-shadow: none !important;
+            border: none !important;
+            display: block !important;
+            width: 100% !important;
+            max-width: none !important;
+          }
+          .print\\:hidden {
+            display: none !important;
           }
         `}
       </style>
@@ -214,8 +342,8 @@ export default function ResultsSlip({ student, examSessionId, schoolId, initialA
           }
         `}
       </style>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm print:p-0 print:bg-white print:block print:relative print:inset-auto">
-        <div className="bg-white rounded-3xl shadow-2xl w-[calc(100%-2rem)] md:w-full max-w-3xl p-4 md:p-8 max-h-[90vh] overflow-y-auto print:shadow-none print:max-w-none print:max-h-none print:p-0 print:overflow-visible">
+      <div className="slip-modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm print:p-0 print:bg-white print:block print:static print:inset-auto">
+        <div className="slip-modal-box bg-white rounded-3xl shadow-2xl w-[calc(100%-2rem)] md:w-full max-w-3xl p-4 md:p-8 max-h-[90vh] overflow-y-auto print:shadow-none print:max-w-none print:max-h-none print:p-0 print:overflow-visible print:static">
           <div className="flex justify-between items-center mb-6 print:hidden">
           <h2 className="text-xl font-black">Results Slip Preview</h2>
           <div className="flex gap-2">

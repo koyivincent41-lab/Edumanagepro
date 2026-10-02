@@ -1,5 +1,6 @@
 {
   "name": "EduManagePro",
   "description": "A comprehensive multi-tenant SaaS school management and fee invoicing platform.",
-  "requestFramePermissions": ["geolocation", "camera"]
+  "requestFramePermissions": ["geolocation", "camera"],
+  "capabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

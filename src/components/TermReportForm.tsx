@@ -261,7 +261,94 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
   }, [finalMean, student.id, student.fullName, term, academicYear, combinedResults.length]);
 
   const handlePrint = () => {
-    window.print();
+    const printArea = document.getElementById('report-form-print-area');
+    if (!printArea) {
+      window.print();
+      return;
+    }
+
+    try {
+      // Remove any existing print iframe
+      let iframe = document.getElementById('term-report-print-iframe') as HTMLIFrameElement;
+      if (iframe) {
+        iframe.remove();
+      }
+
+      iframe = document.createElement('iframe');
+      iframe.id = 'term-report-print-iframe';
+      iframe.setAttribute(
+        'style',
+        'position:fixed;top:0;left:0;width:0;height:0;border:none;visibility:hidden;z-index:-9999;'
+      );
+      document.body.appendChild(iframe);
+
+      const iframeDoc = iframe.contentWindow?.document;
+      if (!iframeDoc) {
+        window.print();
+        return;
+      }
+
+      // Collect all active stylesheets and style blocks
+      const styleSheets = Array.from(document.querySelectorAll('link[rel="stylesheet"], style'))
+        .map(el => el.outerHTML)
+        .join('\n');
+
+      iframeDoc.open();
+      iframeDoc.write(`
+        <!DOCTYPE html>
+        <html lang="en">
+          <head>
+            <meta charset="utf-8" />
+            <title>${student.fullName} - Term Report Form</title>
+            ${styleSheets}
+            <style>
+              @page {
+                size: A4 portrait;
+                margin: 6mm;
+              }
+              *, *::before, *::after {
+                box-sizing: border-box;
+              }
+              html, body {
+                margin: 0 !important;
+                padding: 0 !important;
+                background: #ffffff !important;
+                color: #000000 !important;
+                width: 100% !important;
+                height: auto !important;
+                overflow: visible !important;
+                font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+              }
+              .isolated-print-wrapper {
+                width: 100% !important;
+                max-width: 794px !important;
+                margin: 0 auto !important;
+                background: #ffffff !important;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="isolated-print-wrapper">
+              ${printArea.innerHTML}
+            </div>
+          </body>
+        </html>
+      `);
+      iframeDoc.close();
+
+      setTimeout(() => {
+        try {
+          iframe.contentWindow?.focus();
+          iframe.contentWindow?.print();
+        } catch (err) {
+          console.warn('Iframe print failed, falling back to window.print():', err);
+          window.print();
+        }
+      }, 350);
+    } catch (e) {
+      console.error('Error initiating print via iframe:', e);
+      window.print();
+    }
   };
 
   const handleDownload = async () => {
@@ -555,16 +642,65 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
     <>
       <style type="text/css" media="print">
         {`
-          body * { visibility: hidden !important; }
-          .print-area, .print-area * { visibility: visible !important; }
-          .print-area { 
+          @page { 
+            size: A4 portrait; 
+            margin: 6mm; 
+          }
+          html, body {
+            overflow: visible !important;
+            height: auto !important;
+            background: #ffffff !important;
+            color: #000000 !important;
+          }
+          body * { 
+            visibility: hidden !important; 
+          }
+          #report-form-print-area, 
+          #report-form-print-area *, 
+          .print-area, 
+          .print-area * { 
+            visibility: visible !important; 
+          }
+          .print-area,
+          #report-form-print-area { 
             position: absolute !important; 
             left: 0 !important; 
             top: 0 !important; 
             width: 100% !important; 
-            min-height: 100% !important; 
+            min-height: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            display: block !important;
+            background: #ffffff !important;
           }
-          @page { size: A4 portrait; margin: 6mm; }
+          .report-modal-backdrop {
+            position: static !important;
+            background: transparent !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            overflow: visible !important;
+            height: auto !important;
+            max-height: none !important;
+            display: block !important;
+            inset: auto !important;
+          }
+          .report-modal-box {
+            position: static !important;
+            background: transparent !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            overflow: visible !important;
+            height: auto !important;
+            max-height: none !important;
+            box-shadow: none !important;
+            border: none !important;
+            display: block !important;
+            width: 100% !important;
+            max-width: none !important;
+          }
+          .print\\:hidden { 
+            display: none !important; 
+          }
         `}
       </style>
       <style>
@@ -586,8 +722,8 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
           }
         `}
       </style>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm print:p-0 print:bg-white print:block print:relative print:inset-auto">
-        <div className="bg-white rounded-3xl shadow-2xl w-[calc(100%-2rem)] md:w-full max-w-4xl p-4 md:p-8 max-h-[92vh] overflow-y-auto print:shadow-none print:max-w-none print:max-h-none print:p-0 print:overflow-visible">
+      <div className="report-modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm print:p-0 print:bg-white print:block print:static print:inset-auto">
+        <div className="report-modal-box bg-white rounded-3xl shadow-2xl w-[calc(100%-2rem)] md:w-full max-w-4xl p-4 md:p-8 max-h-[92vh] overflow-y-auto print:shadow-none print:max-w-none print:max-h-none print:p-0 print:overflow-visible print:static">
           <div className="flex justify-between items-center mb-6 print:hidden">
             <h2 className="text-xl font-black">Term Report Form Preview</h2>
             <div className="flex gap-2">
