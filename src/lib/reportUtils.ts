@@ -558,24 +558,24 @@ export const exportReportCardToPDF = async (
   // Letterhead
   const startY = await drawLetterhead(doc, school, false);
 
-  // Student Info
-  doc.setFontSize(12);
+  // Student Info Header
+  doc.setFontSize(16);
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(primaryColor);
-  doc.text('STUDENT REPORT CARD', 105, startY, { align: 'center' });
+  doc.text('OFFICIAL STUDENT REPORT CARD', 105, startY + 4, { align: 'center' });
 
-  doc.setFontSize(10);
+  doc.setFontSize(11);
   doc.setTextColor(0, 0, 0);
   doc.setFont('helvetica', 'normal');
   
-  const infoY = startY + 10;
-  doc.text(`Name: ${student.fullName}`, 15, infoY);
-  doc.text(`Admission No: ${student.admissionNumber}`, 15, infoY + 6);
-  doc.text(`Class: ${student.classId}`, 15, infoY + 12);
+  const infoY = startY + 16;
+  doc.text(`Learner Name: ${student.fullName}`, 15, infoY);
+  doc.text(`Admission No: ${student.admissionNumber}`, 15, infoY + 7);
+  doc.text(`Class: ${student.classId}`, 15, infoY + 14);
   
-  doc.text(`Exam: ${session.examName}`, 120, infoY);
-  doc.text(`Term: ${session.term}`, 120, infoY + 6);
-  doc.text(`Academic Year: ${session.academicYear}`, 120, infoY + 12);
+  doc.text(`Exam Session: ${session.examName}`, 120, infoY);
+  doc.text(`Term: ${session.term}`, 120, infoY + 7);
+  doc.text(`Academic Year: ${session.academicYear}`, 120, infoY + 14);
 
   // Results Table
   const tableData = results.map(r => {
@@ -606,14 +606,16 @@ export const exportReportCardToPDF = async (
   ]);
 
   autoTable(doc, {
-    startY: infoY + 20,
+    startY: infoY + 22,
     head: [['Subject', 'Score', 'Max', 'Percentage', 'Grade', 'Remarks']],
     body: tableData,
-    headStyles: { fillColor: primaryColor },
+    headStyles: { fillColor: primaryColor, fontSize: 12, fontStyle: 'bold' },
+    bodyStyles: { fontSize: 11, cellPadding: 3 },
     alternateRowStyles: { fillColor: [245, 245, 245] },
     didParseCell: function(data) {
       if (data.row.index === results.length) {
         data.cell.styles.fontStyle = 'bold';
+        data.cell.styles.fontSize = 12;
         data.cell.styles.textColor = [0, 0, 0];
       }
     }
@@ -621,22 +623,37 @@ export const exportReportCardToPDF = async (
 
   const finalY = (doc as any).lastAutoTable.finalY;
 
+  // Comments Box
+  doc.setFontSize(11);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(0, 0, 0);
+  doc.text("Class Teacher's Remarks:", 15, finalY + 10);
+  doc.setFont('helvetica', 'italic');
+  doc.setFontSize(11);
+  doc.text("A commendable effort this term. Keep striving for excellence and focus on your goals.", 15, finalY + 16);
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(11);
+  doc.text("Principal's Remarks:", 15, finalY + 24);
+  doc.setFont('helvetica', 'italic');
+  doc.text("Outstanding dedication and discipline. The school congratulates you on your performance.", 15, finalY + 30);
+
   // Grading Key
   if (gradingBands.length > 0) {
-    doc.setFontSize(9);
+    doc.setFontSize(10);
     doc.setFont('helvetica', 'bold');
-    doc.text('Grading Key:', 15, finalY + 10);
+    doc.text('Grading Key:', 15, finalY + 40);
     doc.setFont('helvetica', 'normal');
     
-    let keyY = finalY + 15;
+    let keyY = finalY + 45;
     gradingBands.forEach((band, index) => {
-      if (index % 3 === 0 && index !== 0) keyY += 5;
+      if (index % 3 === 0 && index !== 0) keyY += 6;
       const xPos = 15 + (index % 3) * 60;
       doc.text(`${band.grade}: ${band.minScore}-${band.maxScore}% (${band.remarks})`, xPos, keyY);
     });
   }
 
-  await drawFooter(doc, school, finalY + 30, `Report Card - ${session.examName}`);
+  await drawFooter(doc, school, finalY + 55, `Report Card - ${session.examName}`);
 
   doc.save(`ReportCard_${student.fullName.replace(/\s+/g, '_')}_${session.examName}.pdf`);
 };
