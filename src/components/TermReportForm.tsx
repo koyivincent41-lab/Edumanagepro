@@ -349,7 +349,7 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
   }
 
   const renderReportCardContent = () => (
-    <div className="flex flex-col justify-between w-full h-full min-h-[1050px] text-gray-900 font-sans bg-white p-2">
+    <div className="flex flex-col justify-between w-full max-w-full h-full min-h-[1050px] text-gray-900 font-sans bg-white p-1 md:p-2 box-border">
       {/* 1. School Branding & Letterhead */}
       <div>
         {school && (
@@ -383,14 +383,14 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
         )}
 
         {/* 2. Official Header Banner */}
-        <div className="border-y-2 border-gray-900 py-2 mb-3 bg-gray-50/90 text-center">
+        <div className="border-y-2 border-gray-900 py-2 mb-3 bg-gray-50/90 text-center w-full">
           <h2 className="text-2xl md:text-3xl font-black tracking-[0.25em] text-gray-950 uppercase">
             Official Report Form
           </h2>
         </div>
 
         {/* 3. Student Profile & Exam Meta */}
-        <div className="flex justify-between items-start mb-3 text-base md:text-[17px] text-gray-800">
+        <div className="flex justify-between items-start mb-3 text-base md:text-[17px] text-gray-800 w-full">
           <div className="space-y-1.5 flex-1 pr-3">
             <p><span className="font-bold text-gray-600">Serial Number:</span> <span className="font-mono font-black text-gray-950 text-base">{serialNumber}</span></p>
             <p><span className="font-bold text-gray-600">Exam Type:</span> <span className="font-bold text-gray-900">End Term Report</span></p>
@@ -413,7 +413,7 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
         </div>
 
         {/* 4. Marks Table - 18px Font Size */}
-        <div className="mb-3">
+        <div className="mb-3 w-full">
           <table className="w-full border-collapse text-[18px]">
             <thead>
               <tr style={{ backgroundColor: school?.primaryColor ? `${school.primaryColor}22` : '#f3f4f6' }}>
@@ -455,13 +455,13 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
 
         {/* 5. Summary & Final Mean / Grade Section */}
         {combinedResults.length > 0 && (
-          <div className="space-y-3 mb-3">
+          <div className="space-y-3 mb-3 w-full">
             {/* Term Summary */}
-            <div className="bg-gray-50 p-3.5 rounded-2xl border border-gray-200">
+            <div className="bg-gray-50 p-3.5 rounded-2xl border border-gray-200 w-full">
               <h3 className="text-center font-black text-gray-800 mb-2 uppercase tracking-wider text-sm md:text-base">
                 Term Summary Breakdown
               </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 text-center">
+              <div className="grid grid-cols-1 sm:grid-cols-3 print:grid-cols-3 gap-3 text-center">
                 <div className="space-y-1">
                   <p className="text-gray-500 font-bold text-xs md:text-sm uppercase tracking-wider">Opener Exams</p>
                   <p className="text-2xl md:text-3xl font-black text-gray-900">{openerTotal} <span className="text-xs text-gray-500 font-normal">/ {maxPossiblePerExam}</span></p>
@@ -481,7 +481,7 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
             </div>
 
             {/* Final Grade & Seal */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="flex flex-col sm:flex-row print:flex-row items-center justify-between gap-3 w-full">
               <div className="bg-gray-100/90 p-3.5 rounded-2xl border-2 border-gray-300 flex-1 flex items-center justify-around w-full">
                 <div className="text-center px-4">
                   <p className="text-gray-600 font-bold uppercase text-xs md:text-sm tracking-wider mb-0.5">Final Mean Score</p>
@@ -514,22 +514,22 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
       </div>
 
       {/* 6. Comments & Dates Section - Enlarged */}
-      <div className="mt-3 pt-3 border-t-2 border-gray-300 space-y-3.5 text-base md:text-lg">
-        <div className="flex flex-col gap-1.5">
+      <div className="mt-3 pt-3 border-t-2 border-gray-300 space-y-3.5 text-base md:text-lg w-full">
+        <div className="flex flex-col gap-1.5 w-full">
           <span className="font-black text-gray-950 text-lg md:text-xl">Class Teacher's Remarks:</span>
-          <div className="border-b-2 border-gray-400 border-dashed pb-2 px-3 text-gray-950 italic font-serif leading-relaxed text-[17px] md:text-[18px] min-h-[46px] flex items-center">
+          <div className="border-b-2 border-gray-400 border-dashed pb-2 px-3 text-gray-950 italic font-serif leading-relaxed text-[17px] md:text-[18px] min-h-[46px] flex items-center w-full">
             {teacherComment}
           </div>
         </div>
 
-        <div className="flex flex-col gap-1.5">
+        <div className="flex flex-col gap-1.5 w-full">
           <span className="font-black text-gray-950 text-lg md:text-xl">Principal's / Headteacher's Remarks:</span>
-          <div className="border-b-2 border-gray-400 border-dashed pb-2 px-3 text-gray-950 italic font-serif leading-relaxed text-[17px] md:text-[18px] min-h-[46px] flex items-center">
+          <div className="border-b-2 border-gray-400 border-dashed pb-2 px-3 text-gray-950 italic font-serif leading-relaxed text-[17px] md:text-[18px] min-h-[46px] flex items-center w-full">
             {principalComment}
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 print:grid-cols-2 gap-4 pt-2 w-full">
           <div className="flex items-end">
             <span className="font-bold text-gray-950 whitespace-nowrap mr-2 text-base md:text-lg">Term Closing Date:</span>
             <div className="flex-1 border-b-2 border-gray-400 border-dashed pb-1 font-bold"></div>
@@ -540,7 +540,7 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 print:grid-cols-2 gap-4 pt-2 w-full">
           <div className="flex items-end">
             <span className="font-bold text-gray-950 whitespace-nowrap mr-2 text-base">Principal's Signature:</span>
             <div className="flex-1 border-b-2 border-gray-400 border-dashed pb-1"></div>
@@ -556,7 +556,7 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
 
   if (isBulkPrint) {
     return (
-      <div className="bulk-report-card-page relative bg-white w-full mx-auto" style={{ pageBreakAfter: 'always', breakAfter: 'page' }}>
+      <div className="bulk-report-card-page relative bg-white w-full max-w-full m-0 p-0" style={{ pageBreakAfter: 'always', breakAfter: 'page' }}>
         {renderReportCardContent()}
       </div>
     );
@@ -568,11 +568,15 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
         {`
           @page { 
             size: A4 portrait; 
-            margin: 6mm; 
+            margin: 6mm 8mm; 
           }
           html, body {
             overflow: visible !important;
             height: auto !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
             background: #ffffff !important;
             color: #000000 !important;
           }
@@ -588,11 +592,13 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
             left: 0 !important; 
             top: 0 !important; 
             width: 100% !important; 
+            max-width: 100% !important;
             min-height: 100% !important;
             margin: 0 !important;
             padding: 0 !important;
             display: block !important;
             background: #ffffff !important;
+            box-sizing: border-box !important;
           }
           .report-modal-backdrop {
             position: static !important;
@@ -604,6 +610,8 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
             max-height: none !important;
             display: block !important;
             inset: auto !important;
+            width: 100% !important;
+            max-width: 100% !important;
           }
           .report-modal-box {
             position: static !important;
@@ -617,7 +625,7 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
             border: none !important;
             display: block !important;
             width: 100% !important;
-            max-width: none !important;
+            max-width: 100% !important;
           }
           .print\\:hidden { 
             display: none !important; 
@@ -644,7 +652,7 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
         `}
       </style>
       <div className="report-modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm print:p-0 print:bg-white print:block print:static print:inset-auto">
-        <div className="report-modal-box bg-white rounded-3xl shadow-2xl w-[calc(100%-2rem)] md:w-full max-w-4xl p-4 md:p-8 max-h-[92vh] overflow-y-auto print:shadow-none print:max-w-none print:max-h-none print:p-0 print:overflow-visible print:static">
+        <div className="report-modal-box bg-white rounded-3xl shadow-2xl w-[calc(100%-2rem)] md:w-full max-w-5xl p-4 md:p-8 max-h-[92vh] overflow-y-auto print:shadow-none print:max-w-none print:max-h-none print:p-0 print:overflow-visible print:static">
           <div className="flex justify-between items-center mb-6 print:hidden">
             <h2 className="text-xl font-black">Term Report Form Preview</h2>
             <div className="flex gap-2">
@@ -661,7 +669,7 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
           </div>
           
           {/* Printable Area - renders the exact unified large content */}
-          <div className="print-area relative bg-white w-full mx-auto" id="report-form-print-area">
+          <div className="print-area relative bg-white w-full max-w-full m-0 p-0" id="report-form-print-area">
             {renderReportCardContent()}
           </div>
         </div>

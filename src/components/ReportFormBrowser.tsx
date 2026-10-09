@@ -327,11 +327,11 @@ export default function ReportFormBrowser({ schoolId, isAdmin = false }: ReportF
                 </div>
               )}
               
-              <div id="bulk-print-render-container" className="bulk-print-container space-y-8">
+              <div id="bulk-print-render-container" className="bulk-print-container space-y-8 print:space-y-0 w-full max-w-full">
                 {bulkPrintStudents.map((student, idx) => (
                   <div 
                     key={student.id} 
-                    className="bulk-card-wrapper bg-white p-4 md:p-8 rounded-3xl shadow-sm border border-gray-100 print:m-0 print:p-0 print:shadow-none print:border-none print:block"
+                    className="bulk-card-wrapper bg-white p-4 md:p-8 rounded-3xl shadow-sm border border-gray-100 print:m-0 print:p-0 print:shadow-none print:border-none print:rounded-none print:block print:w-full print:max-w-full"
                   >
                     {/* Header badge visible in screen modal */}
                     <div className="flex items-center justify-between pb-3 mb-4 border-b border-gray-100 print:hidden">

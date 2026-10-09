@@ -28,8 +28,8 @@ export const printElement = (elementId: string, documentTitle: string = 'Report 
       iframe.style.position = 'fixed';
       iframe.style.top = '-9999px';
       iframe.style.left = '-9999px';
-      iframe.style.width = '800px';
-      iframe.style.height = '1150px';
+      iframe.style.width = '100%';
+      iframe.style.height = '100%';
       iframe.style.border = 'none';
       iframe.style.opacity = '0';
       iframe.style.pointerEvents = 'none';
@@ -72,7 +72,7 @@ export const printElement = (elementId: string, documentTitle: string = 'Report 
             <style>
               @page {
                 size: A4 portrait;
-                margin: 6mm;
+                margin: 6mm 8mm;
               }
               *, *::before, *::after {
                 box-sizing: border-box !important;
@@ -86,6 +86,7 @@ export const printElement = (elementId: string, documentTitle: string = 'Report 
                 background: #ffffff !important;
                 color: #000000 !important;
                 width: 100% !important;
+                max-width: 100% !important;
                 height: auto !important;
                 min-height: 100% !important;
                 overflow: visible !important;
@@ -93,11 +94,13 @@ export const printElement = (elementId: string, documentTitle: string = 'Report 
               }
               .standalone-print-root {
                 width: 100% !important;
-                max-width: 794px !important;
-                margin: 0 auto !important;
+                max-width: 100% !important;
+                min-width: 100% !important;
+                margin: 0 !important;
                 padding: 0 !important;
                 background: #ffffff !important;
                 display: block !important;
+                box-sizing: border-box !important;
               }
               .bulk-card-wrapper,
               .bulk-report-card-page {
@@ -108,10 +111,23 @@ export const printElement = (elementId: string, documentTitle: string = 'Report 
                 margin: 0 !important;
                 padding: 0 !important;
                 width: 100% !important;
-                max-width: 794px !important;
+                max-width: 100% !important;
+                min-width: 100% !important;
                 background: #ffffff !important;
                 display: block !important;
                 position: relative !important;
+                box-sizing: border-box !important;
+                border: none !important;
+                box-shadow: none !important;
+                border-radius: 0 !important;
+              }
+              #report-form-print-area,
+              .print-area {
+                width: 100% !important;
+                max-width: 100% !important;
+                min-width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
                 box-sizing: border-box !important;
               }
               .bulk-card-wrapper:last-child,
@@ -125,6 +141,9 @@ export const printElement = (elementId: string, documentTitle: string = 'Report 
               img {
                 max-width: 100% !important;
                 display: block;
+              }
+              table {
+                width: 100% !important;
               }
             </style>
           </head>
