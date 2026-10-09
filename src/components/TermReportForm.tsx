@@ -274,11 +274,10 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
       
       const dataUrl = await toPng(element, {
         quality: 1.0,
-        pixelRatio: 2.5,
+        pixelRatio: 2.0,
         backgroundColor: '#ffffff',
         style: {
           width: '794px',
-          minHeight: '1123px',
           boxSizing: 'border-box',
         }
       });
@@ -303,19 +302,15 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
       const imgProps = pdf.getImageProperties(dataUrl);
       const imgRatio = imgProps.width / imgProps.height;
 
-      let finalWidth = printableWidth;
-      let finalHeight = printableWidth / imgRatio;
+      // Always maintain the full 194mm printable width across A4 paper
+      const finalWidth = printableWidth; // 194mm
+      const finalHeight = printableWidth / imgRatio;
 
-      if (finalHeight > printableHeight) {
-        finalHeight = printableHeight;
-        finalWidth = printableHeight * imgRatio;
-      }
-
-      // Center horizontally and vertically within the A4 page
-      const xOffset = (pdfWidth - finalWidth) / 2;
-      const yOffset = (pdfHeight - finalHeight) / 2;
+      const xOffset = marginX; // 8mm left margin
+      // Center vertically if it fits within printableHeight, otherwise align to top margin
+      const yOffset = finalHeight < printableHeight ? Math.max(marginY, (pdfHeight - finalHeight) / 2) : marginY;
       
-      pdf.addImage(dataUrl, 'PNG', xOffset, yOffset, finalWidth, finalHeight, undefined, 'FAST');
+      pdf.addImage(dataUrl, 'PNG', xOffset, yOffset, finalWidth, Math.min(finalHeight, printableHeight), undefined, 'FAST');
       pdf.save(`${student.fullName.replace(/\s+/g, '_')}_Report_Form_${term}_${academicYear}.pdf`);
     } catch (error) {
       console.error('Error generating PDF:', error);
@@ -352,12 +347,12 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
     <div className="report-card flex flex-col w-full max-w-full text-gray-900 font-sans bg-white p-0 box-border">
       {/* 1. School Branding & Letterhead */}
       {school && (
-        <div className="text-center mb-6">
+        <div className="text-center mb-4 w-full">
           {school.logo && (
             <img 
               src={school.logo} 
               alt="School Logo" 
-              className="h-20 mx-auto mb-3 object-contain" 
+              className="h-16 mx-auto mb-2 object-contain" 
             />
           )}
           <h1 
@@ -382,15 +377,15 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
       )}
 
       {/* 2. Divider & REPORT FORM Title */}
-      <div className="border-b-2 border-gray-800 pb-3 mb-6 w-full text-center">
+      <div className="border-b-2 border-gray-800 pb-2 mb-4 w-full text-center">
         <h2 className="text-xl md:text-2xl font-black tracking-widest text-gray-950 uppercase">
           REPORT FORM
         </h2>
       </div>
 
       {/* 3. Student Profile & Exam Meta Information */}
-      <div className="flex justify-between items-start mb-6 text-sm text-gray-800 w-full">
-        <div className="space-y-1.5 flex-1 pr-4">
+      <div className="flex justify-between items-start mb-4 text-sm text-gray-800 w-full">
+        <div className="space-y-1 flex-1 pr-4">
           <p><span className="font-bold text-gray-600">Serial Number:</span> <span className="font-mono font-semibold text-gray-950">{serialNumber}</span></p>
           <p><span className="font-bold text-gray-600">Exam Type:</span> <span className="text-gray-900">End Term Report</span></p>
           <p><span className="font-bold text-gray-600">Term:</span> <span className="text-gray-900">{term}</span></p>
@@ -403,7 +398,7 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
           </div>
         )}
 
-        <div className="space-y-1.5 text-right flex-1 pl-4">
+        <div className="space-y-1 text-right flex-1 pl-4">
           <p className="break-words"><span className="font-bold text-gray-600">Learner Name:</span> <span className="font-bold text-base md:text-lg text-gray-950">{student.fullName}</span></p>
           <p className="break-words"><span className="font-bold text-gray-600">Admission Number:</span> <span className="text-gray-900">{student.admissionNumber}</span></p>
           <p className="break-words"><span className="font-bold text-gray-600">Class:</span> <span className="text-gray-900">{studentClass?.name || '—'}</span></p>
@@ -412,30 +407,30 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
       </div>
 
       {/* 4. Marks Table */}
-      <div className="mb-6 w-full">
-        <table className="w-full border-collapse">
+      <div className="mb-4 w-full">
+        <table className="w-full border-collapse border border-gray-300">
           <thead>
             <tr style={{ backgroundColor: school?.primaryColor ? `${school.primaryColor}20` : '#f3f4f6' }}>
-              <th className="p-3 text-left border-b-2 border-gray-300 font-bold text-sm">Subject</th>
-              <th className="p-3 text-right border-b-2 border-gray-300 font-bold text-sm whitespace-nowrap">Opener</th>
-              <th className="p-3 text-right border-b-2 border-gray-300 font-bold text-sm whitespace-nowrap">Midterm</th>
-              <th className="p-3 text-right border-b-2 border-gray-300 font-bold text-sm whitespace-nowrap">End Term</th>
-              <th className="p-3 text-right border-b-2 border-gray-300 font-bold text-sm whitespace-nowrap">Total</th>
-              <th className="p-3 text-right border-b-2 border-gray-300 font-bold text-sm whitespace-nowrap">Average</th>
-              <th className="p-3 text-right border-b-2 border-gray-300 font-bold text-sm whitespace-nowrap">Grade</th>
+              <th className="p-2.5 text-left border border-gray-300 font-bold text-sm w-[34%]">Subject</th>
+              <th className="p-2.5 text-right border border-gray-300 font-bold text-sm whitespace-nowrap w-[11%]">Opener</th>
+              <th className="p-2.5 text-right border border-gray-300 font-bold text-sm whitespace-nowrap w-[11%]">Midterm</th>
+              <th className="p-2.5 text-right border border-gray-300 font-bold text-sm whitespace-nowrap w-[11%]">End Term</th>
+              <th className="p-2.5 text-right border border-gray-300 font-bold text-sm whitespace-nowrap w-[11%]">Total</th>
+              <th className="p-2.5 text-right border border-gray-300 font-bold text-sm whitespace-nowrap w-[11%]">Average</th>
+              <th className="p-2.5 text-right border border-gray-300 font-bold text-sm whitespace-nowrap w-[11%]">Grade</th>
             </tr>
           </thead>
           <tbody>
             {combinedResults.length > 0 ? (
               combinedResults.map(r => (
-                <tr key={r.subjectId} className="border-b border-gray-200">
-                  <td className="p-3 text-sm font-medium text-gray-900">{r.subjectName}</td>
-                  <td className="p-3 text-right text-sm text-gray-700">{r.opener}</td>
-                  <td className="p-3 text-right text-sm text-gray-700">{r.midterm}</td>
-                  <td className="p-3 text-right text-sm text-gray-700">{r.endTerm}</td>
-                  <td className="p-3 text-right text-sm font-bold text-gray-950">{r.total}</td>
-                  <td className="p-3 text-right text-sm font-bold text-gray-900">{r.average.toFixed(1)}%</td>
-                  <td className="p-3 text-right text-sm font-bold" style={{ color: school?.primaryColor || '#000000' }}>{r.grade}</td>
+                <tr key={r.subjectId} className="border border-gray-300">
+                  <td className="p-2.5 border border-gray-300 text-sm font-medium text-gray-900">{r.subjectName}</td>
+                  <td className="p-2.5 border border-gray-300 text-right text-sm text-gray-700">{r.opener}</td>
+                  <td className="p-2.5 border border-gray-300 text-right text-sm text-gray-700">{r.midterm}</td>
+                  <td className="p-2.5 border border-gray-300 text-right text-sm text-gray-700">{r.endTerm}</td>
+                  <td className="p-2.5 border border-gray-300 text-right text-sm font-bold text-gray-950">{r.total}</td>
+                  <td className="p-2.5 border border-gray-300 text-right text-sm font-bold text-gray-900">{r.average.toFixed(1)}%</td>
+                  <td className="p-2.5 border border-gray-300 text-right text-sm font-bold" style={{ color: school?.primaryColor || '#000000' }}>{r.grade}</td>
                 </tr>
               ))
             ) : (
@@ -454,30 +449,30 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
 
       {/* 5. Summary Section & Stamp */}
       {combinedResults.length > 0 && (
-        <div className="flex flex-row items-center justify-between gap-4 mb-6 w-full">
-          <div className="bg-gray-50 p-4 md:p-6 rounded-xl border border-gray-200 relative z-10 flex-1">
+        <div className="flex flex-row items-center justify-between gap-4 mb-4 w-full">
+          <div className="bg-gray-50 p-4 rounded-xl border border-gray-200 relative z-10 flex-1">
             <div className="grid grid-cols-3 gap-4 text-center">
               <div>
-                <p className="text-gray-500 font-medium mb-1 text-xs md:text-sm">Total Score</p>
-                <p className="text-xl md:text-2xl font-black text-gray-900">{finalTotal} <span className="text-sm text-gray-400 font-normal">/ {maxPossiblePerExam * 3}</span></p>
+                <p className="text-gray-500 font-medium mb-1 text-xs">Total Score</p>
+                <p className="text-xl font-black text-gray-900">{finalTotal} <span className="text-xs text-gray-400 font-normal">/ {maxPossiblePerExam * 3}</span></p>
               </div>
               <div>
-                <p className="text-gray-500 font-medium mb-1 text-xs md:text-sm">Average / Mean</p>
-                <p className="text-xl md:text-2xl font-black text-gray-900">{finalMean.toFixed(2)}%</p>
+                <p className="text-gray-500 font-medium mb-1 text-xs">Average / Mean</p>
+                <p className="text-xl font-black text-gray-900">{finalMean.toFixed(2)}%</p>
               </div>
               <div>
-                <p className="text-gray-500 font-medium mb-1 text-xs md:text-sm">Final Grade</p>
-                <p className="text-xl md:text-2xl font-black" style={{ color: school?.primaryColor || '#000000' }}>{finalGrade || '—'}</p>
+                <p className="text-gray-500 font-medium mb-1 text-xs">Final Grade</p>
+                <p className="text-xl font-black" style={{ color: school?.primaryColor || '#000000' }}>{finalGrade || '—'}</p>
               </div>
             </div>
           </div>
 
           {/* School Seal */}
           <div 
-            className="w-32 h-32 shrink-0 rounded-full border-[4px] border-double flex items-center justify-center p-1 opacity-80 rotate-[-15deg] pointer-events-none" 
+            className="w-28 h-28 shrink-0 rounded-full border-[3px] border-double flex items-center justify-center p-1 opacity-80 rotate-[-12deg] pointer-events-none" 
             style={{ borderColor: school?.primaryColor || '#1e3a8a', color: school?.primaryColor || '#1e3a8a' }}
           >
-            <div className="w-full h-full rounded-full border border-dashed flex flex-col items-center justify-center text-center p-2 relative bg-white">
+            <div className="w-full h-full rounded-full border border-dashed flex flex-col items-center justify-center text-center p-1.5 relative bg-white">
               <div className="font-black text-[7px] uppercase tracking-wider mb-0.5 border-b border-current pb-0.5 w-full truncate px-1">{school?.name}</div>
               <div className="font-bold text-[6px] uppercase text-gray-600">REPORT FORM</div>
               <div className="font-bold text-[6px] uppercase mt-0.5">Adm: {student.admissionNumber}</div>
@@ -490,23 +485,23 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
       )}
 
       {/* 6. Comments & Dates Section */}
-      <div className="space-y-4 pt-4 border-t border-gray-200 text-sm w-full">
+      <div className="space-y-3 pt-3 border-t border-gray-200 text-sm w-full">
         <div>
-          <p className="font-bold text-gray-800 mb-1">Class Teacher's Comment:</p>
-          <div className="border-b border-dotted border-gray-400 pb-1 text-gray-700 italic min-h-[26px] flex items-center">
+          <p className="font-bold text-gray-800 mb-0.5">Class Teacher's Comment:</p>
+          <div className="border-b border-dotted border-gray-400 pb-1 text-gray-700 italic min-h-[24px] flex items-center">
             {teacherComment}
           </div>
         </div>
 
         <div>
-          <p className="font-bold text-gray-800 mb-1">Principal's Comment:</p>
-          <div className="border-b border-dotted border-gray-400 pb-1 text-gray-700 italic min-h-[26px] flex items-center">
+          <p className="font-bold text-gray-800 mb-0.5">Principal's Comment:</p>
+          <div className="border-b border-dotted border-gray-400 pb-1 text-gray-700 italic min-h-[24px] flex items-center">
             {principalComment}
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-8 pt-4">
-          <div className="space-y-4">
+        <div className="grid grid-cols-2 gap-8 pt-2">
+          <div className="space-y-3">
             <div className="flex items-end">
               <span className="font-medium text-gray-700 whitespace-nowrap mr-2">Term Closing Date:</span>
               <div className="flex-1 border-b border-dotted border-gray-400"></div>
@@ -516,7 +511,7 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
               <div className="flex-1 border-b border-dotted border-gray-400"></div>
             </div>
           </div>
-          <div className="space-y-4">
+          <div className="space-y-3">
             <div className="flex items-end">
               <span className="font-medium text-gray-700 whitespace-nowrap mr-2">Next Term Opening Date:</span>
               <div className="flex-1 border-b border-dotted border-gray-400"></div>
@@ -567,25 +562,24 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
             visibility: visible !important; 
           }
           .report-card,
-          #report-form-print-area { 
-            position: absolute !important; 
-            left: 0 !important; 
-            top: 0 !important; 
+          #report-form-print-area,
+          .print-area { 
+            position: static !important; 
             width: 100% !important; 
-            max-width: none !important;
-            min-width: 100% !important;
-            margin: 0 auto !important;
-            padding: 0 !important;
-            display: block !important;
-            background: #ffffff !important;
-            box-sizing: border-box !important;
+            max-width: 100% !important; 
+            min-width: 100% !important; 
+            margin: 0 !important; 
+            padding: 0 !important; 
+            display: block !important; 
+            background: #ffffff !important; 
+            box-sizing: border-box !important; 
           }
           .report-card table,
           #report-form-print-area table {
             width: 100% !important;
             max-width: 100% !important;
+            min-width: 100% !important;
             border-collapse: collapse !important;
-            table-layout: fixed !important;
             box-sizing: border-box !important;
           }
           .report-card th,
@@ -617,9 +611,11 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
             max-height: none !important;
             box-shadow: none !important;
             border: none !important;
+            border-radius: 0 !important;
             display: block !important;
             width: 100% !important;
             max-width: 100% !important;
+            min-width: 100% !important;
           }
           .print\\:hidden { 
             display: none !important; 
@@ -630,14 +626,12 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
         {`
           .pdf-exporting {
             width: 794px !important; /* Exactly standard A4 width at 96 DPI */
-            min-height: 1123px !important; /* Exactly standard A4 height at 96 DPI */
             max-width: none !important;
-            padding: 24px 28px !important;
+            padding: 12px 16px !important;
             box-sizing: border-box !important;
             background: #ffffff !important;
             display: flex !important;
             flex-direction: column !important;
-            justify-content: space-between !important;
             position: relative !important;
             left: 0 !important;
             top: 0 !important;
@@ -645,8 +639,8 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
           }
         `}
       </style>
-      <div className="report-modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm print:p-0 print:bg-white print:block print:static print:inset-auto">
-        <div className="report-modal-box bg-white rounded-3xl shadow-2xl w-[calc(100%-2rem)] md:w-full max-w-5xl p-4 md:p-8 max-h-[92vh] overflow-y-auto print:shadow-none print:max-w-none print:max-h-none print:p-0 print:overflow-visible print:static">
+      <div className="report-modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/60 backdrop-blur-sm print:p-0 print:bg-white print:block print:static print:inset-auto">
+        <div className="report-modal-box bg-white rounded-3xl shadow-2xl w-full max-w-4xl xl:max-w-5xl p-4 sm:p-6 md:p-8 max-h-[94vh] overflow-y-auto print:shadow-none print:max-w-none print:max-h-none print:p-0 print:overflow-visible print:static">
           <div className="flex justify-between items-center mb-6 print:hidden">
             <h2 className="text-xl font-black">Term Report Form Preview</h2>
             <div className="flex gap-2">

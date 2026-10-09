@@ -406,12 +406,13 @@ export default function ReportFormBrowser({ schoolId, isAdmin = false }: ReportF
                 position: relative !important;
                 display: block !important;
                 width: 100% !important;
-                max-width: 794px !important;
+                max-width: 100% !important;
+                min-width: 100% !important;
                 page-break-after: always !important;
                 break-after: page !important;
                 page-break-inside: avoid !important;
                 break-inside: avoid !important;
-                margin: 0 auto !important;
+                margin: 0 !important;
                 padding: 0 !important;
                 border: none !important;
                 box-shadow: none !important;

@@ -53,8 +53,8 @@ export const printElement = (elementId: string, documentTitle: string = 'Report 
           let css = el.innerHTML;
           // Strip out global visibility hidden rules and conflicting absolute positioning that cause blank or single-page prints
           css = css.replace(/body\s*\*\s*\{\s*visibility\s*:\s*hidden[^}]*\}/gi, '');
-          css = css.replace(/\.print-area\s*\{[^}]*position\s*:\s*absolute[^}]*\}/gi, '');
-          css = css.replace(/#report-form-print-area\s*\{[^}]*position\s*:\s*absolute[^}]*\}/gi, '');
+          css = css.replace(/position\s*:\s*absolute\s*!important/gi, 'position: static !important');
+          css = css.replace(/position\s*:\s*absolute/gi, 'position: static');
           return `<style>${css}</style>`;
         })
         .join('\n');
@@ -87,6 +87,7 @@ export const printElement = (elementId: string, documentTitle: string = 'Report 
                 color: #000000 !important;
                 width: 100% !important;
                 max-width: 100% !important;
+                min-width: 100% !important;
                 height: auto !important;
                 overflow: visible !important;
                 font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -95,10 +96,11 @@ export const printElement = (elementId: string, documentTitle: string = 'Report 
               .report-card,
               #report-form-print-area,
               .print-area {
+                position: static !important;
                 width: 100% !important;
-                max-width: none !important;
+                max-width: 100% !important;
                 min-width: 100% !important;
-                margin: 0 auto !important;
+                margin: 0 !important;
                 padding: 0 !important;
                 background: #ffffff !important;
                 display: block !important;
@@ -129,6 +131,7 @@ export const printElement = (elementId: string, documentTitle: string = 'Report 
               table {
                 width: 100% !important;
                 max-width: 100% !important;
+                min-width: 100% !important;
                 border-collapse: collapse !important;
                 box-sizing: border-box !important;
               }
@@ -156,7 +159,7 @@ export const printElement = (elementId: string, documentTitle: string = 'Report 
             </style>
           </head>
           <body>
-            <div class="standalone-print-root report-card">
+            <div class="standalone-print-root w-full">
               ${printArea.innerHTML}
             </div>
           </body>

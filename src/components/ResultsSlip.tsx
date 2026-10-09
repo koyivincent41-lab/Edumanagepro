@@ -141,21 +141,20 @@ export default function ResultsSlip({ student, examSessionId, schoolId, initialA
         format: 'a4'
       });
 
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const pdfWidth = pdf.internal.pageSize.getWidth(); // 210mm
+      const pdfHeight = pdf.internal.pageSize.getHeight(); // 297mm
       
       const imgProps = pdf.getImageProperties(dataUrl);
       const imgRatio = imgProps.width / imgProps.height;
       
-      let finalWidth = pdfWidth - 20; // 10mm margin on each side
-      let finalHeight = finalWidth / imgRatio;
+      const marginX = 8;
+      const marginY = 8;
+      const finalWidth = pdfWidth - (marginX * 2); // 194mm
+      const finalHeight = finalWidth / imgRatio;
 
-      if (finalHeight > pdfHeight - 20) {
-        finalHeight = pdfHeight - 20;
-        finalWidth = finalHeight * imgRatio;
-      }
+      const yOffset = finalHeight < (pdfHeight - marginY * 2) ? Math.max(marginY, (pdfHeight - finalHeight) / 2) : marginY;
 
-      pdf.addImage(dataUrl, 'PNG', 10, 10, finalWidth, finalHeight);
+      pdf.addImage(dataUrl, 'PNG', marginX, yOffset, finalWidth, Math.min(finalHeight, pdfHeight - marginY * 2));
       pdf.save(`ResultsSlip_${student.admissionNumber}_${examSession?.examType || 'Exam'}.pdf`);
     } catch (error) {
       console.error('Error generating PDF:', error);
@@ -191,6 +190,8 @@ export default function ResultsSlip({ student, examSessionId, schoolId, initialA
           html, body {
             overflow: visible !important;
             height: auto !important;
+            width: 100% !important;
+            max-width: 100% !important;
             background: #ffffff !important;
             color: #000000 !important;
           }
@@ -201,13 +202,11 @@ export default function ResultsSlip({ student, examSessionId, schoolId, initialA
             visibility: visible !important;
           }
           #results-slip-print-area {
-            position: absolute !important;
-            left: 0 !important;
-            top: 0 !important;
+            position: static !important;
             width: 100% !important;
-            max-width: none !important;
+            max-width: 100% !important;
             min-width: 100% !important;
-            margin: 0 auto !important;
+            margin: 0 !important;
             padding: 0 !important;
             display: block !important;
             background: #ffffff !important;
@@ -216,6 +215,7 @@ export default function ResultsSlip({ student, examSessionId, schoolId, initialA
           #results-slip-print-area table {
             width: 100% !important;
             max-width: 100% !important;
+            min-width: 100% !important;
             border-collapse: collapse !important;
             box-sizing: border-box !important;
           }
