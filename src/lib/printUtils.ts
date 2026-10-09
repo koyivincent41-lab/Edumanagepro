@@ -72,7 +72,7 @@ export const printElement = (elementId: string, documentTitle: string = 'Report 
             <style>
               @page {
                 size: A4 portrait;
-                margin: 6mm 8mm;
+                margin: 8mm;
               }
               *, *::before, *::after {
                 box-sizing: border-box !important;
@@ -88,15 +88,17 @@ export const printElement = (elementId: string, documentTitle: string = 'Report 
                 width: 100% !important;
                 max-width: 100% !important;
                 height: auto !important;
-                min-height: 100% !important;
                 overflow: visible !important;
                 font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
               }
-              .standalone-print-root {
+              .standalone-print-root,
+              .report-card,
+              #report-form-print-area,
+              .print-area {
                 width: 100% !important;
-                max-width: 100% !important;
+                max-width: none !important;
                 min-width: 100% !important;
-                margin: 0 !important;
+                margin: 0 auto !important;
                 padding: 0 !important;
                 background: #ffffff !important;
                 display: block !important;
@@ -108,10 +110,10 @@ export const printElement = (elementId: string, documentTitle: string = 'Report 
                 break-after: page !important;
                 page-break-inside: avoid !important;
                 break-inside: avoid !important;
-                margin: 0 !important;
+                margin: 0 auto !important;
                 padding: 0 !important;
                 width: 100% !important;
-                max-width: 100% !important;
+                max-width: none !important;
                 min-width: 100% !important;
                 background: #ffffff !important;
                 display: block !important;
@@ -121,13 +123,22 @@ export const printElement = (elementId: string, documentTitle: string = 'Report 
                 box-shadow: none !important;
                 border-radius: 0 !important;
               }
-              #report-form-print-area,
-              .print-area {
+              .report-card table,
+              #report-form-print-area table,
+              .print-area table,
+              table {
                 width: 100% !important;
                 max-width: 100% !important;
-                min-width: 100% !important;
-                margin: 0 !important;
-                padding: 0 !important;
+                border-collapse: collapse !important;
+                box-sizing: border-box !important;
+              }
+              .report-card th,
+              .report-card td,
+              #report-form-print-area th,
+              #report-form-print-area td,
+              .print-area th,
+              .print-area td,
+              th, td {
                 box-sizing: border-box !important;
               }
               .bulk-card-wrapper:last-child,
@@ -142,13 +153,10 @@ export const printElement = (elementId: string, documentTitle: string = 'Report 
                 max-width: 100% !important;
                 display: block;
               }
-              table {
-                width: 100% !important;
-              }
             </style>
           </head>
           <body>
-            <div class="standalone-print-root">
+            <div class="standalone-print-root report-card">
               ${printArea.innerHTML}
             </div>
           </body>

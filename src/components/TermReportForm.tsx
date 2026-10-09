@@ -294,11 +294,11 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
       const pdfWidth = pdf.internal.pageSize.getWidth(); // 210mm
       const pdfHeight = pdf.internal.pageSize.getHeight(); // 297mm
       
-      // Standard 6mm margin so content fills virtually the entire A4 canvas
-      const marginX = 6;
-      const marginY = 6;
-      const printableWidth = pdfWidth - (marginX * 2); // 198mm
-      const printableHeight = pdfHeight - (marginY * 2); // 285mm
+      // Standard 8mm margin so content fills exactly 194mm printable width on A4
+      const marginX = 8;
+      const marginY = 8;
+      const printableWidth = pdfWidth - (marginX * 2); // 194mm
+      const printableHeight = pdfHeight - (marginY * 2); // 281mm
 
       const imgProps = pdf.getImageProperties(dataUrl);
       const imgRatio = imgProps.width / imgProps.height;
@@ -349,7 +349,7 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
   }
 
   const renderReportCardContent = () => (
-    <div className="flex flex-col justify-between w-full max-w-full h-full min-h-[1050px] text-gray-900 font-sans bg-white p-1 md:p-2 box-border">
+    <div className="report-card flex flex-col w-full max-w-full text-gray-900 font-sans bg-white p-0 md:p-2 print:p-0 box-border">
       {/* 1. School Branding & Letterhead */}
       <div>
         {school && (
@@ -414,29 +414,29 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
 
         {/* 4. Marks Table - 18px Font Size */}
         <div className="mb-3 w-full">
-          <table className="w-full border-collapse text-[18px]">
+          <table className="w-full border-collapse text-[18px] table-fixed">
             <thead>
               <tr style={{ backgroundColor: school?.primaryColor ? `${school.primaryColor}22` : '#f3f4f6' }}>
-                <th className="py-2.5 px-3 text-left border-b-2 border-gray-900 font-black text-[18px] uppercase tracking-wide">Subject</th>
-                <th className="py-2.5 px-3 text-right border-b-2 border-gray-900 font-black text-[18px] uppercase tracking-wide">Opener</th>
-                <th className="py-2.5 px-3 text-right border-b-2 border-gray-900 font-black text-[18px] uppercase tracking-wide">Midterm</th>
-                <th className="py-2.5 px-3 text-right border-b-2 border-gray-900 font-black text-[18px] uppercase tracking-wide">End Term</th>
-                <th className="py-2.5 px-3 text-right border-b-2 border-gray-900 font-black text-[18px] uppercase tracking-wide">Total</th>
-                <th className="py-2.5 px-3 text-right border-b-2 border-gray-900 font-black text-[18px] uppercase tracking-wide">Average</th>
-                <th className="py-2.5 px-3 text-right border-b-2 border-gray-900 font-black text-[18px] uppercase tracking-wide">Grade</th>
+                <th className="w-[34%] py-2.5 px-3 text-left border-b-2 border-gray-900 font-black text-[18px] uppercase tracking-wide">Subject</th>
+                <th className="w-[11%] py-2.5 px-3 text-right border-b-2 border-gray-900 font-black text-[18px] uppercase tracking-wide">Opener</th>
+                <th className="w-[11%] py-2.5 px-3 text-right border-b-2 border-gray-900 font-black text-[18px] uppercase tracking-wide">Midterm</th>
+                <th className="w-[11%] py-2.5 px-3 text-right border-b-2 border-gray-900 font-black text-[18px] uppercase tracking-wide">End Term</th>
+                <th className="w-[11%] py-2.5 px-3 text-right border-b-2 border-gray-900 font-black text-[18px] uppercase tracking-wide">Total</th>
+                <th className="w-[11%] py-2.5 px-3 text-right border-b-2 border-gray-900 font-black text-[18px] uppercase tracking-wide">Average</th>
+                <th className="w-[11%] py-2.5 px-3 text-right border-b-2 border-gray-900 font-black text-[18px] uppercase tracking-wide">Grade</th>
               </tr>
             </thead>
             <tbody>
               {combinedResults.length > 0 ? (
                 combinedResults.map(r => (
                   <tr key={r.subjectId} className="border-b border-gray-200">
-                    <td className="py-2.5 px-3 font-bold text-gray-950 text-[18px]">{r.subjectName}</td>
-                    <td className="py-2.5 px-3 text-right font-medium text-gray-800 text-[18px]">{r.opener}</td>
-                    <td className="py-2.5 px-3 text-right font-medium text-gray-800 text-[18px]">{r.midterm}</td>
-                    <td className="py-2.5 px-3 text-right font-medium text-gray-800 text-[18px]">{r.endTerm}</td>
-                    <td className="py-2.5 px-3 text-right font-black text-[19px] text-gray-950">{r.total}</td>
-                    <td className="py-2.5 px-3 text-right font-bold text-gray-900 text-[18px]">{r.average.toFixed(1)}%</td>
-                    <td className="py-2.5 px-3 text-right font-black text-[20px]" style={{ color: school?.primaryColor || '#000000' }}>{r.grade}</td>
+                    <td className="w-[34%] py-2.5 px-3 font-bold text-gray-950 text-[18px] truncate">{r.subjectName}</td>
+                    <td className="w-[11%] py-2.5 px-3 text-right font-medium text-gray-800 text-[18px]">{r.opener}</td>
+                    <td className="w-[11%] py-2.5 px-3 text-right font-medium text-gray-800 text-[18px]">{r.midterm}</td>
+                    <td className="w-[11%] py-2.5 px-3 text-right font-medium text-gray-800 text-[18px]">{r.endTerm}</td>
+                    <td className="w-[11%] py-2.5 px-3 text-right font-black text-[19px] text-gray-950">{r.total}</td>
+                    <td className="w-[11%] py-2.5 px-3 text-right font-bold text-gray-900 text-[18px]">{r.average.toFixed(1)}%</td>
+                    <td className="w-[11%] py-2.5 px-3 text-right font-black text-[20px]" style={{ color: school?.primaryColor || '#000000' }}>{r.grade}</td>
                   </tr>
                 ))
               ) : (
@@ -461,7 +461,7 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
               <h3 className="text-center font-black text-gray-800 mb-2 uppercase tracking-wider text-sm md:text-base">
                 Term Summary Breakdown
               </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-3 print:grid-cols-3 gap-3 text-center">
+              <div className="grid grid-cols-3 gap-3 text-center w-full">
                 <div className="space-y-1">
                   <p className="text-gray-500 font-bold text-xs md:text-sm uppercase tracking-wider">Opener Exams</p>
                   <p className="text-2xl md:text-3xl font-black text-gray-900">{openerTotal} <span className="text-xs text-gray-500 font-normal">/ {maxPossiblePerExam}</span></p>
@@ -481,7 +481,7 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
             </div>
 
             {/* Final Grade & Seal */}
-            <div className="flex flex-col sm:flex-row print:flex-row items-center justify-between gap-3 w-full">
+            <div className="flex flex-row items-center justify-between gap-3 w-full">
               <div className="bg-gray-100/90 p-3.5 rounded-2xl border-2 border-gray-300 flex-1 flex items-center justify-around w-full">
                 <div className="text-center px-4">
                   <p className="text-gray-600 font-bold uppercase text-xs md:text-sm tracking-wider mb-0.5">Final Mean Score</p>
@@ -529,7 +529,7 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 print:grid-cols-2 gap-4 pt-2 w-full">
+        <div className="grid grid-cols-2 gap-4 pt-2 w-full">
           <div className="flex items-end">
             <span className="font-bold text-gray-950 whitespace-nowrap mr-2 text-base md:text-lg">Term Closing Date:</span>
             <div className="flex-1 border-b-2 border-gray-400 border-dashed pb-1 font-bold"></div>
@@ -540,7 +540,7 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 print:grid-cols-2 gap-4 pt-2 w-full">
+        <div className="grid grid-cols-2 gap-4 pt-2 w-full">
           <div className="flex items-end">
             <span className="font-bold text-gray-950 whitespace-nowrap mr-2 text-base">Principal's Signature:</span>
             <div className="flex-1 border-b-2 border-gray-400 border-dashed pb-1"></div>
@@ -568,7 +568,7 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
         {`
           @page { 
             size: A4 portrait; 
-            margin: 6mm 8mm; 
+            margin: 8mm; 
           }
           html, body {
             overflow: visible !important;
@@ -584,20 +584,37 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
             visibility: hidden !important; 
           }
           #report-form-print-area, 
-          #report-form-print-area * { 
+          #report-form-print-area *,
+          .report-card,
+          .report-card * { 
             visibility: visible !important; 
           }
+          .report-card,
           #report-form-print-area { 
             position: absolute !important; 
             left: 0 !important; 
             top: 0 !important; 
             width: 100% !important; 
-            max-width: 100% !important;
-            min-height: 100% !important;
-            margin: 0 !important;
+            max-width: none !important;
+            min-width: 100% !important;
+            margin: 0 auto !important;
             padding: 0 !important;
             display: block !important;
             background: #ffffff !important;
+            box-sizing: border-box !important;
+          }
+          .report-card table,
+          #report-form-print-area table {
+            width: 100% !important;
+            max-width: 100% !important;
+            border-collapse: collapse !important;
+            table-layout: fixed !important;
+            box-sizing: border-box !important;
+          }
+          .report-card th,
+          .report-card td,
+          #report-form-print-area th,
+          #report-form-print-area td {
             box-sizing: border-box !important;
           }
           .report-modal-backdrop {

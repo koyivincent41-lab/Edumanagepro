@@ -205,11 +205,23 @@ export default function ResultsSlip({ student, examSessionId, schoolId, initialA
             left: 0 !important;
             top: 0 !important;
             width: 100% !important;
-            min-height: 100% !important;
-            margin: 0 !important;
+            max-width: none !important;
+            min-width: 100% !important;
+            margin: 0 auto !important;
             padding: 0 !important;
             display: block !important;
             background: #ffffff !important;
+            box-sizing: border-box !important;
+          }
+          #results-slip-print-area table {
+            width: 100% !important;
+            max-width: 100% !important;
+            border-collapse: collapse !important;
+            box-sizing: border-box !important;
+          }
+          #results-slip-print-area th,
+          #results-slip-print-area td {
+            box-sizing: border-box !important;
           }
           .slip-modal-backdrop {
             position: static !important;
