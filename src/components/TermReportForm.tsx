@@ -336,12 +336,20 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
   }, [loading, initialAction]);
 
   if (loading) {
-    if (isBulkPrint) return null;
+    if (isBulkPrint) {
+      return (
+        <div className="p-8 text-center flex flex-col items-center justify-center min-h-[300px] bg-white rounded-2xl border border-dashed border-gray-200">
+          <Loader2 className="animate-spin rounded-full h-8 w-8 text-purple-600 mb-2" />
+          <p className="text-sm font-bold text-gray-700">Loading {student.fullName}...</p>
+          <p className="text-xs text-gray-400">Adm: {student.admissionNumber}</p>
+        </div>
+      );
+    }
     return <div className="p-4 md:p-8 text-center flex items-center justify-center h-full"><Loader2 className="animate-spin rounded-full h-8 w-8 text-blue-600" /></div>;
   }
 
   const renderReportCardContent = () => (
-    <div className="flex flex-col justify-between w-full h-full min-h-[1100px] text-gray-900 font-sans bg-white p-2">
+    <div className="flex flex-col justify-between w-full h-full min-h-[1050px] text-gray-900 font-sans bg-white p-2">
       {/* 1. School Branding & Letterhead */}
       <div>
         {school && (
@@ -548,7 +556,7 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
 
   if (isBulkPrint) {
     return (
-      <div className="print-area relative bg-white" style={{ pageBreakAfter: 'always' }}>
+      <div className="bulk-report-card-page relative bg-white w-full mx-auto" style={{ pageBreakAfter: 'always', breakAfter: 'page' }}>
         {renderReportCardContent()}
       </div>
     );
@@ -572,12 +580,9 @@ export default function TermReportForm({ student, term, academicYear, schoolId, 
             visibility: hidden !important; 
           }
           #report-form-print-area, 
-          #report-form-print-area *, 
-          .print-area, 
-          .print-area * { 
+          #report-form-print-area * { 
             visibility: visible !important; 
           }
-          .print-area,
           #report-form-print-area { 
             position: absolute !important; 
             left: 0 !important; 

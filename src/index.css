@@ -80,14 +80,16 @@
   #printable-document, #printable-document *,
   #report-form-print-area, #report-form-print-area *,
   #results-slip-print-area, #results-slip-print-area *,
-  .print-area, .print-area * {
+  #bulk-print-render-container, #bulk-print-render-container *,
+  .bulk-print-container, .bulk-print-container *,
+  .bulk-report-card-page, .bulk-report-card-page *,
+  .bulk-card-wrapper, .bulk-card-wrapper * {
     visibility: visible !important;
   }
 
   #printable-document,
   #report-form-print-area,
-  #results-slip-print-area,
-  .print-area {
+  #results-slip-print-area {
     position: absolute !important;
     left: 0 !important;
     top: 0 !important;
@@ -98,6 +100,41 @@
     border: none !important;
     box-shadow: none !important;
     display: block !important;
+  }
+
+  /* Multi-page Bulk Printing Rules */
+  #bulk-print-render-container,
+  .bulk-print-container {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    display: block !important;
+    background: #ffffff !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .bulk-card-wrapper,
+  .bulk-report-card-page {
+    position: relative !important;
+    display: block !important;
+    width: 100% !important;
+    max-width: 794px !important;
+    page-break-after: always !important;
+    break-after: page !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    box-sizing: border-box !important;
+  }
+
+  .bulk-card-wrapper:last-child,
+  .bulk-report-card-page:last-child {
+    page-break-after: avoid !important;
+    break-after: avoid !important;
   }
 
   .no-print,

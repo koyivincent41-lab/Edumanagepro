@@ -51,8 +51,10 @@ export const printElement = (elementId: string, documentTitle: string = 'Report 
       const styleTags = Array.from(document.querySelectorAll('style'))
         .map(el => {
           let css = el.innerHTML;
-          // Strip out global visibility hidden rules that cause blank print pages inside isolated iframes
+          // Strip out global visibility hidden rules and conflicting absolute positioning that cause blank or single-page prints
           css = css.replace(/body\s*\*\s*\{\s*visibility\s*:\s*hidden[^}]*\}/gi, '');
+          css = css.replace(/\.print-area\s*\{[^}]*position\s*:\s*absolute[^}]*\}/gi, '');
+          css = css.replace(/#report-form-print-area\s*\{[^}]*position\s*:\s*absolute[^}]*\}/gi, '');
           return `<style>${css}</style>`;
         })
         .join('\n');
@@ -93,9 +95,32 @@ export const printElement = (elementId: string, documentTitle: string = 'Report 
                 width: 100% !important;
                 max-width: 794px !important;
                 margin: 0 auto !important;
-                padding: 6px !important;
+                padding: 0 !important;
                 background: #ffffff !important;
                 display: block !important;
+              }
+              .bulk-card-wrapper,
+              .bulk-report-card-page {
+                page-break-after: always !important;
+                break-after: page !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+                max-width: 794px !important;
+                background: #ffffff !important;
+                display: block !important;
+                position: relative !important;
+                box-sizing: border-box !important;
+              }
+              .bulk-card-wrapper:last-child,
+              .bulk-report-card-page:last-child {
+                page-break-after: avoid !important;
+                break-after: avoid !important;
+              }
+              .print\\:hidden, .no-print {
+                display: none !important;
               }
               img {
                 max-width: 100% !important;
@@ -113,7 +138,10 @@ export const printElement = (elementId: string, documentTitle: string = 'Report 
       iframeDoc.close();
 
       // 5. Ensure all images (logos, stamps, photos) are loaded before firing the print dialog
+      let printed = false;
       const executePrint = () => {
+        if (printed) return;
+        printed = true;
         try {
           iframe.contentWindow?.focus();
           iframe.contentWindow?.print();
@@ -131,14 +159,14 @@ export const printElement = (elementId: string, documentTitle: string = 'Report 
 
       const images = Array.from(iframeDoc.images);
       if (images.length === 0) {
-        setTimeout(executePrint, 200);
+        setTimeout(executePrint, 250);
       } else {
         let loadedCount = 0;
         const total = images.length;
         const checkDone = () => {
           loadedCount++;
           if (loadedCount >= total) {
-            setTimeout(executePrint, 150);
+            setTimeout(executePrint, 200);
           }
         };
 
@@ -152,7 +180,7 @@ export const printElement = (elementId: string, documentTitle: string = 'Report 
         });
 
         // Fail-safe timeout in case an external image fails to fire onload
-        setTimeout(executePrint, 700);
+        setTimeout(executePrint, 2500);
       }
     } catch (e) {
       console.error('Error in printElement:', e);

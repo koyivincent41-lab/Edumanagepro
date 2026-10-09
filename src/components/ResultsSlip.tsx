@@ -197,11 +197,9 @@ export default function ResultsSlip({ student, examSessionId, schoolId, initialA
           body * {
             visibility: hidden !important;
           }
-          #results-slip-print-area, #results-slip-print-area *,
-          .print-area, .print-area * {
+          #results-slip-print-area, #results-slip-print-area * {
             visibility: visible !important;
           }
-          .print-area,
           #results-slip-print-area {
             position: absolute !important;
             left: 0 !important;
