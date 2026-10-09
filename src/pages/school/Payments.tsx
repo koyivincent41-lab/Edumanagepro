@@ -69,6 +69,8 @@ export default function Payments({ schoolId, school }: { schoolId: string; schoo
 
   useEffect(() => {
     if (!schoolId) return;
+    setLoading(true);
+    setPayments([]);
     
     let paymentsQuery = query(
       collection(db, 'schools', schoolId, 'payments'),
@@ -82,6 +84,10 @@ export default function Payments({ schoolId, school }: { schoolId: string; schoo
       paymentsQuery, 
       (snap) => {
         setPayments(snap.docs.map(d => ({ id: d.id, ...d.data() } as Payment)));
+        setLoading(false);
+      },
+      (err) => {
+        console.error('Error fetching payments:', err);
         setLoading(false);
       }
     );
@@ -249,7 +255,10 @@ export default function Payments({ schoolId, school }: { schoolId: string; schoo
               />
             </div>
             <button 
-              onClick={() => setIsModalOpen(true)}
+              onClick={() => {
+                setValue('term', school?.currentTerm || 'Term 1');
+                setIsModalOpen(true);
+              }}
               className="px-4 md:px-6 py-2.5 bg-white text-maroon font-black uppercase tracking-widest text-[10px] rounded-xl shadow-xl hover:scale-105 transition-all flex items-center gap-2"
             >
               <Plus className="h-4 w-4" />
